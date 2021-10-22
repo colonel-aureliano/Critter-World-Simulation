@@ -27,6 +27,7 @@ class ParserImpl implements Parser {
      */
     public static ProgramImpl parseProgram(Tokenizer t) throws SyntaxError {
         // TODO
+        // t.peek().isMulOp();
         throw new UnsupportedOperationException();
     }
 
