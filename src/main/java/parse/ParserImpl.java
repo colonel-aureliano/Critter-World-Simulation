@@ -102,25 +102,47 @@ class ParserImpl implements Parser {
     public static Expr parseExpression(Tokenizer t) throws SyntaxError {
         // parse expression
         // e.g. "1", "1+1", "3-2", "3-5-2-1+6"
-        List<Node> ln = new ArrayList<>();
-        if(t.peek().isNum()) {
-            ln.add(parseTerm(t));
+
+        Expr e = new Expression();
+
+        if(!t.peek().isNum()) {
+            throw new SyntaxError(t.next().lineNumber(), "Missing a number.");
         }
+        e.add(parseTerm(t));
         while(t.peek().isAddOp()){
-            // TODO Create classes of operators
+            Expr operator = new addop(t.next().toString());
+            e.add(operator);
+            if(!t.peek().isNum()) {
+                throw new SyntaxError(t.next().lineNumber(), "Missing a number.");
+            }
+            e.add(parseTerm(t));
         }
 
-        throw new UnsupportedOperationException();
+        return e;
     }
 
     public static Expr parseTerm(Tokenizer t) throws SyntaxError {
-        // TODO
-        throw new UnsupportedOperationException();
+        Expr e = new Term();
+
+        e.add(parseFactor(t));
+        while(t.peek().isMulOp()){
+            Expr operator = new mulop(t.next().toString());
+            e.add(operator);
+            if(!t.peek().isNum()) {
+                throw new SyntaxError(t.next().lineNumber(), "Error.");
+            }
+            e.add(parseFactor(t));
+        }
+
+        return e;
     }
 
     public static Expr parseFactor(Tokenizer t) throws SyntaxError {
-        // TODO
-        throw new UnsupportedOperationException();
+        Expr e = null;
+        if(t.peek().isNum()){
+            e=new Factor(t.next().toString());
+        }
+        return e;
     }
 
     public static Command parseCommand(Tokenizer t) throws SyntaxError {
