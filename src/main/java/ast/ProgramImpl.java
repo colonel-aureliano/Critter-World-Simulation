@@ -2,8 +2,14 @@ package ast;
 
 import cms.util.maybe.Maybe;
 
+import java.util.List;
+
 /** A data structure representing a critter program. */
 public class ProgramImpl extends AbstractNode implements Program {
+
+    public ProgramImpl(List<Rule> lr){
+        super(lr); // lr stored in AbstractNode, lr is protected
+    }
 
     @Override
     public Program mutate() {

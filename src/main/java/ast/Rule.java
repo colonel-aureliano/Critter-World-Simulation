@@ -1,7 +1,16 @@
 package ast;
 
+import parse.Tokenizer;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /** A representation of a critter rule. */
 public class Rule extends AbstractNode {
+
+    public Rule(List<Node> ln){
+        super(ln);
+    }
 
     @Override
     public NodeCategory getCategory() {

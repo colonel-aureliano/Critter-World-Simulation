@@ -5,6 +5,16 @@ import cms.util.maybe.Maybe;
 
 public abstract class AbstractNode implements Node {
 
+    protected List<? extends Node> children;
+
+    public AbstractNode(){
+    }
+
+    public AbstractNode(List<? extends Node> l){
+        // called by ProgramImpl
+        children=l;
+    }
+
     @Override
     public int size() {
         // TODO Auto-generated method stub
@@ -31,8 +41,7 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public List<Node> getChildren() {
-        // TODO Auto-generated method stub
-        return null;
+        return (List<Node>) children;
     }
 
     /**
