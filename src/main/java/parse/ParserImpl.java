@@ -174,10 +174,10 @@ class ParserImpl implements Parser {
         Expr e;
 
         if (t.peek().isSensor()) e = parseSensor(t);
-
+        
         switch(t.peek().getType().toString()){
             case "<number>":
-                e= new Factor(Integer.parseInt(t.next().toString()));
+                e = new Factor(Integer.parseInt(t.next().toString()));
                 break;
             case "mem":
                 consume(t, TokenType.MEM);
@@ -189,8 +189,12 @@ class ParserImpl implements Parser {
                 System.out.println("Finish lbrace");
                 consume(t, TokenType.RPAREN);
                 break;
+            case "-":
+                consume(t, TokenType.MINUS);
+                e = new Factor(Factor.Operator.NEGATIVE, parseFactor(t));
+                break;
             default:
-                throw new SyntaxError(t.peek().lineNumber(), "Factor Syntax Error");
+                throw new SyntaxError(t.peek().lineNumber(), "Factor Syntax Error.");
         }
 
         return e;
@@ -198,8 +202,30 @@ class ParserImpl implements Parser {
     }
 
     public static Expr parseSensor(Tokenizer t) throws SyntaxError {
-        //TODO
-        return null;
+        Expr e;
+
+        switch(t.peek().getType().toString()) {
+            case "nearby":
+                consume(t, TokenType.NEARBY);
+                e = new Sensor(Sensor.Operator.NEARBY, parseExpression(t));
+                break;
+            case "ahead":
+                consume(t, TokenType.AHEAD);
+                e = new Sensor(Sensor.Operator.AHEAD, parseExpression(t));
+                break;
+            case "random":
+                consume(t, TokenType.RANDOM);
+                e = new Sensor(Sensor.Operator.RANDOM, parseExpression(t));
+                break;
+            case "smell":
+                consume(t, TokenType.SMELL);
+                e = new Sensor(Sensor.Operator.SMELL);
+                break;
+            default:
+                throw new SyntaxError(t.peek().lineNumber(), "Sensor Synatx Error.");
+        }
+
+        return e;
     }
 
     public static Command parseCommand(Tokenizer t) throws SyntaxError {
