@@ -1,8 +1,10 @@
 package parse;
 
+import ast.Condition;
 import ast.Expr;
 import ast.Program;
 import exceptions.SyntaxError;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -21,14 +23,14 @@ class ParserImplTest {
         InputStream in = ClassLoader.getSystemResourceAsStream("files/simple_critter.txt");
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
-        Program prog = parser.parse(r);
+        Program p = parser.parse(r);
     }
 
+    @Disabled
     @Test
-    void testExpr() throws SyntaxError {
+    void testCondition() throws SyntaxError {
         InputStream in = ClassLoader.getSystemResourceAsStream("files/simple_critter.txt");
         Tokenizer t = new Tokenizer(new BufferedReader(new InputStreamReader(in)));
-        Expr e = ParserImpl.parseExpression(t);
-
+        Condition e = ParserImpl.parseCondition(t);
     }
 }

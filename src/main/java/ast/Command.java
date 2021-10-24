@@ -9,13 +9,10 @@ public class Command extends AbstractNode{
     private List<Node> coms;
 
     /**
-     * An AST representation of command with Node n.
-     * Requires: n must be Update or Action
-     * @param n
+     * An AST representation of command.
      */
-    public Command(Node n) {
+    public Command() {
         coms = new ArrayList<Node>();
-        coms.add(n);
     }
 
     /**

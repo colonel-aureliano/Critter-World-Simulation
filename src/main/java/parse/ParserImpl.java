@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+
 class ParserImpl implements Parser {
 
     @Override
@@ -24,97 +25,152 @@ class ParserImpl implements Parser {
      */
     public static ProgramImpl parseProgram(Tokenizer t) throws SyntaxError {
         List<Rule> lr = new ArrayList<>();
-        // check that t is not empty
         while (t.hasNext()){
             lr.add(parseRule(t));
-            t.next(); // ? need to call t.next()
         }
         return new ProgramImpl(lr);
     }
 
     public static Rule parseRule(Tokenizer t) throws SyntaxError {
         Condition con = parseCondition(t);
-        if (t.peek().getType()!= TokenType.ARR){ // checking for "-->"
-            throw new SyntaxError(t.peek().lineNumber(),"A rule must have a command.");
-        }
+        consume(t, TokenType.ARR);
         Command com = parseCommand(t);
-
+        consume(t, TokenType.SEMICOLON);
         return new Rule(con, com);
     }
+
+    public static Command parseCommand(Tokenizer t) throws SyntaxError {
+        Command c = new Command();
+        while (t.peek().getType() != TokenType.SEMICOLON) {
+            if (t.peek().isAction()) {
+                c.add(parseAction(t));
+                break;
+            }
+            c.add(parseUpdate(t));
+        }
+        return c;
+    }
+
+    public static Update parseUpdate(Tokenizer t) throws SyntaxError {
+        consume(t, TokenType.MEM);
+        consume(t, TokenType.LBRACKET);
+        Expr first = parseExpression(t);
+        consume(t, TokenType.RBRACKET);
+        consume(t, TokenType.ASSIGN);
+        Expr second = parseExpression(t);
+        return new Update(first, second);
+    }
+
+    public static Action parseAction(Tokenizer t) throws SyntaxError {
+        switch(t.peek().getType().toString()) {
+            case "wait":
+                consume(t, TokenType.WAIT);
+                return new Action(Action.Operator.WAIT);
+            case "forward":
+                consume(t, TokenType.FORWARD);
+                return new Action(Action.Operator.FORWARD);
+            case "backward":
+                consume(t, TokenType.BACKWARD);
+                return new Action(Action.Operator.BACKWARD);
+            case "left":
+                consume(t, TokenType.LEFT);
+                return new Action(Action.Operator.LEFT);
+            case "right":
+                consume(t, TokenType.RIGHT);
+                return new Action(Action.Operator.RIGHT);
+            case "eat":
+                consume(t, TokenType.EAT);
+                return new Action(Action.Operator.EAT);
+            case "attack":
+                consume(t, TokenType.ATTACK);
+                return new Action(Action.Operator.ATTACK);
+            case "grow":
+                consume(t, TokenType.GROW);
+                return new Action(Action.Operator.GROW);
+            case "bud":
+                consume(t, TokenType.BUD);
+                return new Action(Action.Operator.BUD);
+            case "mate":
+                consume(t, TokenType.MATE);
+                return new Action(Action.Operator.MATE);
+            case "serve":
+                consume(t, TokenType.SERVE);
+                consume(t, TokenType.LBRACKET);
+                Action a = new Action(Action.Operator.SERVE, parseExpression(t));
+                consume(t, TokenType.RBRACKET);
+                return a;
+            default:
+                throw new SyntaxError(t.peek().lineNumber(),"Action Syntax Error");
+        }
+    }
+
 
     public static Condition parseCondition(Tokenizer t) throws SyntaxError {
         // parse condition
         // e.g. "3<5 and 2=2"
-
-        Condition left;
-
-        if (t.peek().getType()==TokenType.LBRACE){
-            // {Condition}
-            t.next();
-            left = parseCondition(t);
-            if (t.peek().getType()!=TokenType.RBRACE){
-                throw new SyntaxError(t.peek().lineNumber(), "Braces should be closed.");
-            }
+        Condition con = parseConjunction(t);
+        while(t.peek().getType() == TokenType.OR) {
+            consume(t, TokenType.OR);
+            con = new BinaryCondition(con, BinaryCondition.Operator.OR, parseConjunction(t));
         }
-        else{
-            left = parseRelation(t);
-        }
-
-        if (t.peek().getType()!=TokenType.AND &&
-                t.peek().getType()!=TokenType.OR){
-            return left;
-        }
-        else{
-            Condition right;
-            BinaryCondition bc;
-
-            String s = t.next().toString();
-            right = parseCondition(t);
-            BinaryCondition.Operator o = null;
-            switch(s){
-                case "and":
-                    o= BinaryCondition.Operator.AND;
-                    break;
-                case "or":
-                    o= BinaryCondition.Operator.OR;
-                    break;
-            }
-            bc = new BinaryCondition(left,o,right);
-            return bc;
-        }
+        return con;
     }
 
-    public static Relation parseRelation(Tokenizer t) throws SyntaxError{
+    public static Condition parseConjunction(Tokenizer t) throws SyntaxError {
+        Condition con = parseRelation(t);
+        while(t.peek().getType() == TokenType.AND) {
+            consume(t, TokenType.AND);
+            con = new BinaryCondition(con, BinaryCondition.Operator.AND, parseConjunction(t));
+        }
+        return con;
+    }
+
+    public static Condition parseRelation(Tokenizer t) throws SyntaxError{
         // parse relation
         // e.g. "1 > 0", "2 != 5"
-        //Expr l = parseExpression(t);
-        if (!t.peek().isRelation()){
-            throw new SyntaxError(t.peek().lineNumber(), "Missing relational operator.");
+
+        Condition con;
+        if (t.peek().getType() == TokenType.LBRACE) {
+            consume(t, TokenType.LBRACE);
+            con = parseCondition(t);
+            consume(t, TokenType.RBRACE);
+            return con;
         }
-        Relation.Operator rel = null;
-        switch(t.next().getType().toString()){
+
+        Expr left = parseExpression(t);
+        Relation.Operator rel;
+        switch(t.peek().getType().toString()){
             case "<":
+                consume(t, TokenType.LT);
                 rel = Relation.Operator.LESS_THAN;
                 break;
             case "<=":
+                consume(t, TokenType.LE);
                 rel = Relation.Operator.LESS_THAN_OR_EQUAl;
                 break;
             case ">":
+                consume(t, TokenType.GT);
                 rel = Relation.Operator.GREATER_THAN;
                 break;
             case ">=":
+                consume(t, TokenType.GE);
                 rel = Relation.Operator.GREATER_THAN_OR_EQUAL;
                 break;
             case "=":
+                consume(t, TokenType.EQ);
                 rel = Relation.Operator.EQUAL;
                 break;
             case "!=":
+                consume(t, TokenType.NE);
                 rel = Relation.Operator.NOT_EQUAL;
                 break;
+            default:
+                throw new SyntaxError(t.peek().lineNumber(), "Relation Syntax Error");
         }
-        //Expr r = parseExpression(t);
-        //Relation re = new Relation(l,rel,r);
-        return null;
+        Expr right = parseExpression(t);
+
+        con = new Relation(left, rel, right);
+        return con;
     }
 
 
@@ -174,19 +230,20 @@ class ParserImpl implements Parser {
         Expr e;
 
         if (t.peek().isSensor()) e = parseSensor(t);
-        
+
         switch(t.peek().getType().toString()){
             case "<number>":
                 e = new Factor(Integer.parseInt(t.next().toString()));
                 break;
             case "mem":
                 consume(t, TokenType.MEM);
+                consume(t, TokenType.LBRACKET);
                 e = new Factor(Factor.Operator.MEM,parseExpression(t));
+                consume(t, TokenType.RBRACKET);
                 break;
             case "(":
                 consume(t, TokenType.LPAREN);
                 e = parseExpression(t);
-                System.out.println("Finish lbrace");
                 consume(t, TokenType.RPAREN);
                 break;
             case "-":
@@ -207,19 +264,27 @@ class ParserImpl implements Parser {
         switch(t.peek().getType().toString()) {
             case "nearby":
                 consume(t, TokenType.NEARBY);
+                consume(t, TokenType.LBRACKET);
                 e = new Sensor(Sensor.Operator.NEARBY, parseExpression(t));
+                consume(t, TokenType.RBRACKET);
                 break;
             case "ahead":
                 consume(t, TokenType.AHEAD);
+                consume(t, TokenType.LBRACKET);
                 e = new Sensor(Sensor.Operator.AHEAD, parseExpression(t));
+                consume(t, TokenType.RBRACKET);
                 break;
             case "random":
                 consume(t, TokenType.RANDOM);
+                consume(t, TokenType.LBRACKET);
                 e = new Sensor(Sensor.Operator.RANDOM, parseExpression(t));
+                consume(t, TokenType.RBRACKET);
                 break;
             case "smell":
                 consume(t, TokenType.SMELL);
+                consume(t, TokenType.LBRACKET);
                 e = new Sensor(Sensor.Operator.SMELL);
+                consume(t, TokenType.RBRACKET);
                 break;
             default:
                 throw new SyntaxError(t.peek().lineNumber(), "Sensor Synatx Error.");
@@ -228,10 +293,7 @@ class ParserImpl implements Parser {
         return e;
     }
 
-    public static Command parseCommand(Tokenizer t) throws SyntaxError {
-        // TODO
-        throw new UnsupportedOperationException();
-    }
+
 
     // TODO
     // add more as necessary...
@@ -242,7 +304,7 @@ class ParserImpl implements Parser {
      * @throws SyntaxError if the wrong kind of token is encountered.
      */
     public static void consume(Tokenizer t, TokenType tt) throws SyntaxError {
-        if (t.peek().getType().equals(tt)) t.next();
-        else throw new SyntaxError(t.lineNumber(), "Consumer type error");
+        if (t.peek().getType() == tt) t.next();
+        else throw new SyntaxError(t.lineNumber(), "Expected Type: " + tt + ". Provided Type: " + t.peek().getType());
     }
 }

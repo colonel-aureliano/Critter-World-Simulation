@@ -3,7 +3,7 @@ package ast;
 public class Update extends AbstractNode{
 
     private final String operator = ":=";
-    private final String array = "mem";
+    private final String other = "mem";
     private Expr left, right;
 
     /**
