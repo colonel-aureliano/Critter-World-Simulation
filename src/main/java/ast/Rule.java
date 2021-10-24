@@ -7,18 +7,13 @@ import java.util.List;
 
 /** A representation of a critter rule. */
 public class Rule extends AbstractNode {
-    private Operator operator;
+    private String operator = "-->";
     private Condition left;
     private Command right;
 
-    public Rule(Condition l, Operator op, Command r){
-        operator = op;
+    public Rule(Condition l, Command r){
         left = l;
         right = r;
-    }
-
-    public enum Operator{
-        DO;
     }
 
     @Override
