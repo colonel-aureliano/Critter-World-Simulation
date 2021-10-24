@@ -165,7 +165,7 @@ class ParserImpl implements Parser {
                 rel = Relation.Operator.NOT_EQUAL;
                 break;
             default:
-                throw new SyntaxError(t.peek().lineNumber(), "Relation Syntax Error");
+                throw new SyntaxError(t.peek().lineNumber(), "Relation Syntax Error at " + t.peek().getType());
         }
         Expr right = parseExpression(t);
 
@@ -229,7 +229,7 @@ class ParserImpl implements Parser {
 
         Expr e;
 
-        if (t.peek().isSensor()) e = parseSensor(t);
+        if (t.peek().isSensor()) return parseSensor(t);
 
         switch(t.peek().getType().toString()){
             case "<number>":
@@ -251,7 +251,7 @@ class ParserImpl implements Parser {
                 e = new Factor(Factor.Operator.NEGATIVE, parseFactor(t));
                 break;
             default:
-                throw new SyntaxError(t.peek().lineNumber(), "Factor Syntax Error.");
+                throw new SyntaxError(t.peek().lineNumber(), "Factor Syntax Error at " + t.peek().getType());
         }
 
         return e;
@@ -287,7 +287,7 @@ class ParserImpl implements Parser {
                 consume(t, TokenType.RBRACKET);
                 break;
             default:
-                throw new SyntaxError(t.peek().lineNumber(), "Sensor Synatx Error.");
+                throw new SyntaxError(t.peek().lineNumber(), "Sensor Syntax Syntax Error at " + t.peek().getType());
         }
 
         return e;

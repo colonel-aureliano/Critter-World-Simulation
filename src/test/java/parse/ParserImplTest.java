@@ -15,12 +15,24 @@ import java.io.Reader;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ParserImplTest {
+
     @Test
-    void test() throws SyntaxError {
+    void testSimple() throws SyntaxError {
+
+        System.out.println("-----------------------");
+
+        InputStream in = ClassLoader.getSystemResourceAsStream("files/simple_critter.txt");
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+    }
+
+    @Test
+    void testExample() throws SyntaxError {
 
         System.out.println("-----------------------");
         
-        InputStream in = ClassLoader.getSystemResourceAsStream("files/simple_critter.txt");
+        InputStream in = ClassLoader.getSystemResourceAsStream("files/example-rules.txt");
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
