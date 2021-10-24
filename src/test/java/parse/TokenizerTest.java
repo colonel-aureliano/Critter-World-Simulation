@@ -13,11 +13,24 @@ class TokenizerTest {
     @Test
     void test(){
         System.out.println("-------------------");
-        InputStream in = ClassLoader.getSystemResourceAsStream("files/draw_critter.txt");
+        InputStream in = ClassLoader.getSystemResourceAsStream("files/simple_critter.txt");
         Reader r = new BufferedReader(new InputStreamReader(in));
 
         Tokenizer t = new Tokenizer(r);
-        for (int i = 0; i < 4; i++){
+        System.out.println(t.peek().getType());
+        t.next();
+        System.out.println(t.peek().getType());
+        t.next();
+        System.out.println(t.peek().getType());
+        t.next();
+        System.out.println(t.peek().getType());
+        t.next();
+        System.out.println(t.peek().getType());
+        t.next();
+        System.out.println(t.peek().getType());
+        t.next();
+        System.out.println(t.peek().getType());
+        /*for (int i = 0; i < 4; i++){
             Token token = t.next();
             System.out.println(token);
             switch(i){
@@ -34,7 +47,7 @@ class TokenizerTest {
                     System.out.println(token.getType()); // -->
                     break;
             }
-        }
+        }*/
         System.out.println("-------------------");
     }
 }

@@ -24,9 +24,10 @@ class ParserImpl implements Parser {
      */
     public static ProgramImpl parseProgram(Tokenizer t) throws SyntaxError {
         List<Rule> lr = new ArrayList<>();
-        lr.add(parseRule(t));
+        // check that t is not empty
         while (t.hasNext()){
             lr.add(parseRule(t));
+            t.next(); // ? need to call t.next()
         }
         return new ProgramImpl(lr);
     }
@@ -38,11 +39,7 @@ class ParserImpl implements Parser {
         }
         Command com = parseCommand(t);
 
-        List<Node> ln = new ArrayList<>();
-        ln.add(con); // a Condition node
-        ln.add(com); // a Command node
-
-        return new Rule(ln);
+        return new Rule(con, com);
     }
 
     public static Condition parseCondition(Tokenizer t) throws SyntaxError {
@@ -63,13 +60,34 @@ class ParserImpl implements Parser {
             left = parseRelation(t);
         }
 
-        return left; // Currently only a unary condition
+        if (t.peek().getType()!=TokenType.AND &&
+                t.peek().getType()!=TokenType.OR){
+            return left;
+        }
+        else{
+            Condition right;
+            BinaryCondition bc;
+
+            String s = t.next().toString();
+            right = parseCondition(t);
+            BinaryCondition.Operator o = null;
+            switch(s){
+                case "and":
+                    o= BinaryCondition.Operator.AND;
+                    break;
+                case "or":
+                    o= BinaryCondition.Operator.OR;
+                    break;
+            }
+            bc = new BinaryCondition(left,o,right);
+            return bc;
+        }
     }
 
     public static Relation parseRelation(Tokenizer t) throws SyntaxError{
         // parse relation
         // e.g. "1 > 0", "2 != 5"
-        Expr l = parseExpression(t);
+        //Expr l = parseExpression(t);
         if (!t.peek().isRelation()){
             throw new SyntaxError(t.peek().lineNumber(), "Missing relational operator.");
         }
@@ -94,11 +112,12 @@ class ParserImpl implements Parser {
                 rel = Relation.Operator.NOT_EQUAL;
                 break;
         }
-        Expr r = parseExpression(t);
-        Relation re = new Relation(l,rel,r);
-        return re;
+        //Expr r = parseExpression(t);
+        //Relation re = new Relation(l,rel,r);
+        return null;
     }
 
+    /*
     public static Expr parseExpression(Tokenizer t) throws SyntaxError {
         // parse expression
         // e.g. "1", "1+1", "3-2", "3-5-2-1+6"
@@ -144,7 +163,7 @@ class ParserImpl implements Parser {
         }
         return e;
     }
-
+*/
     public static Command parseCommand(Tokenizer t) throws SyntaxError {
         // TODO
         throw new UnsupportedOperationException();
