@@ -3,8 +3,13 @@ package ast;
 
 public class Relation extends Condition{
 
-    public Relation(Expr l, Operator rel, Expr r){
+    private Operator operator;
+    private Expr left, right;
 
+    public Relation(Expr l, Operator rel, Expr r){
+        operator = rel;
+        left = l;
+        right = r;
     }
 
     public enum Operator {

@@ -1,10 +1,9 @@
 package ast;
 
-/** A representation of a binary Boolean condition: 'and' or 'or' */
-public class BinaryCondition extends Condition {
+public class BinaryExpr extends Expr {
 
     private Operator operator;
-    private Condition left, right;
+    private Expr left, right;
 
     /**
      * Create an AST representation of l op r.
@@ -13,7 +12,7 @@ public class BinaryCondition extends Condition {
      * @param op
      * @param r
      */
-    public BinaryCondition(Condition l, Operator op, Condition r) {
+    public BinaryExpr(Expr l, Operator op, Expr r) {
         operator = op;
         left = l;
         right = r;
@@ -21,8 +20,11 @@ public class BinaryCondition extends Condition {
 
     /** An enumeration of all possible binary condition operators. */
     public enum Operator {
-        OR,
-        AND;
+        PLUS,
+        MINUS,
+        MULTIPLY,
+        DIVIDE,
+        MOD;
     }
 
     @Override
@@ -35,4 +37,5 @@ public class BinaryCondition extends Condition {
         // TODO
         return false;
     }
+
 }
