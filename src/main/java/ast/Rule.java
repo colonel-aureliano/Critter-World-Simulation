@@ -11,6 +11,11 @@ public class Rule extends AbstractNode {
     private Condition left;
     private Command right;
 
+    /**
+     * A AST representation of Condition --> Command.
+     * @param l
+     * @param r
+     */
     public Rule(Condition l, Command r){
         left = l;
         right = r;

@@ -2,11 +2,15 @@ package ast;
 
 public class Update extends AbstractNode{
 
-    private final String operator = "<=";
+    private final String operator = ":=";
     private final String array = "mem";
     private Expr left, right;
 
-
+    /**
+     * A AST representation of mem [l] := r
+     * @param l
+     * @param r
+     */
     public Update(Expr l, Expr r) {
         left = l;
         right = r;

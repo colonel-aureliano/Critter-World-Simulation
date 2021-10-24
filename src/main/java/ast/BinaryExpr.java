@@ -18,7 +18,7 @@ public class BinaryExpr extends Expr {
         right = r;
     }
 
-    /** An enumeration of all possible binary condition operators. */
+    /** An enumeration of all possible binary expression operators. */
     public enum Operator {
         PLUS,
         MINUS,
