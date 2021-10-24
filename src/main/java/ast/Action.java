@@ -28,7 +28,7 @@ public class Action extends AbstractNode {
     public enum Operator {
         WAIT,
         FORWARD,
-        BACKWORD,
+        BACKWARD,
         LEFT,
         RIGHT,
         EAT,

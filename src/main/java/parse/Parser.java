@@ -1,5 +1,6 @@
 package parse;
 
+import ast.Expr;
 import ast.Program;
 import cms.util.maybe.Maybe;
 import exceptions.SyntaxError;
@@ -16,4 +17,5 @@ public interface Parser {
      * @return The parsed program, or Maybe.none if the program contains a syntax error.
      */
     Program parse(Reader r) throws SyntaxError;
+
 }

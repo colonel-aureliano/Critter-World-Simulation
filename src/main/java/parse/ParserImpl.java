@@ -20,7 +20,7 @@ class ParserImpl implements Parser {
      * except that they parse syntactic form X.
      *
      * @return the created AST
-     * @throws SyntaxError if there the input tokens have invalid syntax
+     * @throws SyntaxError if the input tokens have invalid syntax
      */
     public static ProgramImpl parseProgram(Tokenizer t) throws SyntaxError {
         List<Rule> lr = new ArrayList<>();
@@ -117,53 +117,91 @@ class ParserImpl implements Parser {
         return null;
     }
 
-    /*
+
     public static Expr parseExpression(Tokenizer t) throws SyntaxError {
         // parse expression
         // e.g. "1", "1+1", "3-2", "3-5-2-1+6"
 
-        Expr e = new Expression();
-
-        if(!t.peek().isNum()) {
-            throw new SyntaxError(t.next().lineNumber(), "Missing a number.");
-        }
-        e.add(parseTerm(t));
-        while(t.peek().isAddOp()){
-            Expr operator = new addop(t.next().toString());
-            e.add(operator);
-            if(!t.peek().isNum()) {
-                throw new SyntaxError(t.next().lineNumber(), "Missing a number.");
+        Expr e = parseTerm(t);
+        while (t.peek().isAddOp()) {
+            BinaryExpr.Operator op;
+            switch(t.peek().getType().toString()) {
+                case "+":
+                    consume(t, TokenType.PLUS);
+                    op = BinaryExpr.Operator.PLUS;
+                    break;
+                case "-":
+                    consume(t, TokenType.MINUS);
+                    op = BinaryExpr.Operator.MINUS;
+                    break;
+                default:
+                    throw new SyntaxError(t.peek().lineNumber(), "Expected AddOp");
             }
-            e.add(parseTerm(t));
+            e = new BinaryExpr(e, op, parseTerm(t));
         }
 
         return e;
     }
 
     public static Expr parseTerm(Tokenizer t) throws SyntaxError {
-        Expr e = new Term();
 
-        e.add(parseFactor(t));
-        while(t.peek().isMulOp()){
-            Expr operator = new mulop(t.next().toString());
-            e.add(operator);
-            if(!t.peek().isNum()) {
-                throw new SyntaxError(t.next().lineNumber(), "Error.");
+        Expr e = parseFactor(t);
+        while (t.peek().isMulOp()) {
+            BinaryExpr.Operator op;
+            switch(t.peek().getType().toString()) {
+                case "*":
+                    consume(t, TokenType.MUL);
+                    op = BinaryExpr.Operator.MULTIPLY;
+                    break;
+                case "/":
+                    consume(t, TokenType.DIV);
+                    op = BinaryExpr.Operator.DIVIDE;
+                    break;
+                case "mod":
+                    consume(t, TokenType.MOD);
+                    op = BinaryExpr.Operator.MOD;
+                    break;
+                default:
+                    throw new SyntaxError(t.peek().lineNumber(), "Expected MulOp");
             }
-            e.add(parseFactor(t));
+            e = new BinaryExpr(e, op, parseFactor(t));
         }
-
         return e;
     }
 
     public static Expr parseFactor(Tokenizer t) throws SyntaxError {
-        Expr e = null;
-        if(t.peek().isNum()){
-            e=new Factor(t.next().toString());
+
+        Expr e;
+
+        if (t.peek().isSensor()) e = parseSensor(t);
+
+        switch(t.peek().getType().toString()){
+            case "<number>":
+                e= new Factor(Integer.parseInt(t.next().toString()));
+                break;
+            case "mem":
+                consume(t, TokenType.MEM);
+                e = new Factor(Factor.Operator.MEM,parseExpression(t));
+                break;
+            case "(":
+                consume(t, TokenType.LPAREN);
+                e = parseExpression(t);
+                System.out.println("Finish lbrace");
+                consume(t, TokenType.RPAREN);
+                break;
+            default:
+                throw new SyntaxError(t.peek().lineNumber(), "Factor Syntax Error");
         }
+
         return e;
+
     }
-*/
+
+    public static Expr parseSensor(Tokenizer t) throws SyntaxError {
+        //TODO
+        return null;
+    }
+
     public static Command parseCommand(Tokenizer t) throws SyntaxError {
         // TODO
         throw new UnsupportedOperationException();
@@ -178,7 +216,7 @@ class ParserImpl implements Parser {
      * @throws SyntaxError if the wrong kind of token is encountered.
      */
     public static void consume(Tokenizer t, TokenType tt) throws SyntaxError {
-        // TODO
-        throw new UnsupportedOperationException();
+        if (t.peek().getType().equals(tt)) t.next();
+        else throw new SyntaxError(t.lineNumber(), "Consumer type error");
     }
 }

@@ -1,5 +1,6 @@
 package parse;
 
+import ast.Expr;
 import ast.Program;
 import exceptions.SyntaxError;
 import org.junit.jupiter.api.Test;
@@ -21,5 +22,13 @@ class ParserImplTest {
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program prog = parser.parse(r);
+    }
+
+    @Test
+    void testExpr() throws SyntaxError {
+        InputStream in = ClassLoader.getSystemResourceAsStream("files/simple_critter.txt");
+        Tokenizer t = new Tokenizer(new BufferedReader(new InputStreamReader(in)));
+        Expr e = ParserImpl.parseExpression(t);
+
     }
 }
