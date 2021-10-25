@@ -14,8 +14,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class TokenizerTest {
     @Test
     void test(){
-        System.out.println("-------------------");
-
-        System.out.println("-------------------");
+        InputStream in = ClassLoader.getSystemResourceAsStream("files/simple_critter.txt");
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Tokenizer t = new Tokenizer(r);
+        while (t.peek().getType() != TokenType.EOF) {
+            System.out.println(t.peek().getType());
+            t.next();
+        }
     }
+
 }

@@ -118,10 +118,11 @@ public class Tokenizer implements Iterator<Token> {
                 c = in.next();
             }
 
+            // consume comment
             while (c=='/' && in.peek()=='/'){
-                while(in.next()!='\n'){
-                }
+                while (in.next()!='\n'){}
                 c = in.next();
+                lineNumber++;
             }
 
             switch (c) {
@@ -156,8 +157,7 @@ public class Tokenizer implements Iterator<Token> {
                     addToken(TokenType.MUL);
                     break;
                 case '/':
-                    if (in.peek() == '/') lexComment();
-                    else addToken(TokenType.DIV);
+                    addToken(TokenType.DIV);
                     break;
                 case '<':
                     lexLAngle();
@@ -183,20 +183,6 @@ public class Tokenizer implements Iterator<Token> {
         } catch (EOF eof) {
             addEOFToken();
         }
-    }
-
-    /**
-     * Lexes comment. Pass through the content of a comment and arrive at the first element in the next new line.
-     * @throws EOF if the end of file is reached
-     */
-    private void lexComment() throws EOF, IOException {
-        // consume comment
-        char c = in.next();
-        while (c != '\n') {
-            c = in.next();
-        }
-        lineNumber++;
-        lexOneToken();
     }
 
     /**
