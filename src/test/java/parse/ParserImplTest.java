@@ -37,6 +37,17 @@ class ParserImplTest {
         Program p = parser.parse(r);
     }
 
+    @Test
+    void testDrawCritter() throws SyntaxError {
+
+        System.out.println("-----------------------");
+
+        InputStream in = ClassLoader.getSystemResourceAsStream("files/draw_critter.txt");
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+    }
+
     @Disabled
     @Test
     void testCondition() throws SyntaxError {

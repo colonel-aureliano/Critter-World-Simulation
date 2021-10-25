@@ -52,13 +52,50 @@ class ParserImpl implements Parser {
     }
 
     public static Update parseUpdate(Tokenizer t) throws SyntaxError {
-        consume(t, TokenType.MEM);
-        consume(t, TokenType.LBRACKET);
-        Expr first = parseExpression(t);
-        consume(t, TokenType.RBRACKET);
-        consume(t, TokenType.ASSIGN);
+        Expr first;
+        if (t.peek().isMemSugar()) {
+            first = parseSugar(t);
+            consume(t, TokenType.ASSIGN);
+        } else {
+            consume(t, TokenType.MEM);
+            consume(t, TokenType.LBRACKET);
+            first = parseExpression(t);
+            consume(t, TokenType.RBRACKET);
+            consume(t, TokenType.ASSIGN);
+        }
         Expr second = parseExpression(t);
         return new Update(first, second);
+    }
+
+    public static Expr parseSugar(Tokenizer t) throws SyntaxError {
+        int i;
+        switch(t.peek().getType().toString()) {
+            case "MEMSIZE":
+                i = 0;
+                break;
+            case "DEFENSE":
+                i = 1;
+                break;
+            case "OFFENSE":
+                i = 2;
+                break;
+            case "SIZE":
+                i = 3;
+                break;
+            case "ENERGY":
+                i = 4;
+                break;
+            case "PASS":
+                i = 5;
+                break;
+            case "POSTURE":
+                i = 6;
+                break;
+            default:
+                throw new SyntaxError(t.peek().lineNumber(), "Memory Sugar Syntax Error.");
+        }
+        t.next();
+        return new Factor(i);
     }
 
     public static Action parseAction(Tokenizer t) throws SyntaxError {
@@ -141,32 +178,27 @@ class ParserImpl implements Parser {
         Relation.Operator rel;
         switch(t.peek().getType().toString()){
             case "<":
-                consume(t, TokenType.LT);
                 rel = Relation.Operator.LESS_THAN;
                 break;
             case "<=":
-                consume(t, TokenType.LE);
                 rel = Relation.Operator.LESS_THAN_OR_EQUAl;
                 break;
             case ">":
-                consume(t, TokenType.GT);
                 rel = Relation.Operator.GREATER_THAN;
                 break;
             case ">=":
-                consume(t, TokenType.GE);
                 rel = Relation.Operator.GREATER_THAN_OR_EQUAL;
                 break;
             case "=":
-                consume(t, TokenType.EQ);
                 rel = Relation.Operator.EQUAL;
                 break;
             case "!=":
-                consume(t, TokenType.NE);
                 rel = Relation.Operator.NOT_EQUAL;
                 break;
             default:
                 throw new SyntaxError(t.peek().lineNumber(), "Relation Syntax Error");
         }
+        t.next();
         Expr right = parseExpression(t);
 
         con = new Relation(left, rel, right);
@@ -183,16 +215,15 @@ class ParserImpl implements Parser {
             BinaryExpr.Operator op;
             switch(t.peek().getType().toString()) {
                 case "+":
-                    consume(t, TokenType.PLUS);
                     op = BinaryExpr.Operator.PLUS;
                     break;
                 case "-":
-                    consume(t, TokenType.MINUS);
                     op = BinaryExpr.Operator.MINUS;
                     break;
                 default:
                     throw new SyntaxError(t.peek().lineNumber(), "Expected AddOp");
             }
+            t.next();
             e = new BinaryExpr(e, op, parseTerm(t));
         }
 
@@ -206,20 +237,18 @@ class ParserImpl implements Parser {
             BinaryExpr.Operator op;
             switch(t.peek().getType().toString()) {
                 case "*":
-                    consume(t, TokenType.MUL);
                     op = BinaryExpr.Operator.MULTIPLY;
                     break;
                 case "/":
-                    consume(t, TokenType.DIV);
                     op = BinaryExpr.Operator.DIVIDE;
                     break;
                 case "mod":
-                    consume(t, TokenType.MOD);
                     op = BinaryExpr.Operator.MOD;
                     break;
                 default:
                     throw new SyntaxError(t.peek().lineNumber(), "Expected MulOp");
             }
+            t.next();
             e = new BinaryExpr(e, op, parseFactor(t));
         }
         return e;
@@ -230,6 +259,7 @@ class ParserImpl implements Parser {
         Expr e;
 
         if (t.peek().isSensor()) return parseSensor(t);
+        else if (t.peek().isMemSugar()) return parseSugar(t);
 
         switch(t.peek().getType().toString()){
             case "<number>":
@@ -251,6 +281,7 @@ class ParserImpl implements Parser {
                 e = new Factor(Factor.Operator.NEGATIVE, parseFactor(t));
                 break;
             default:
+                System.out.println(t.peek().getType());
                 throw new SyntaxError(t.peek().lineNumber(), "Factor Syntax Error");
         }
 

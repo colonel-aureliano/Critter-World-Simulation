@@ -188,7 +188,7 @@ public class Tokenizer implements Iterator<Token> {
         char c = in.next();
         while (c != '\n') {
             c = in.next();
-        }
+        } // not sure if handles EOF well? seems to pass the test
         in.next();
         lineNumber ++;
         lexOneToken();
