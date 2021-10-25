@@ -34,10 +34,10 @@ public class BinaryExpr extends Expr {
 
         switch(operator){
             case PLUS:
-                sb.append("+");
+                sb.append(" + ");
                 break;
             case MINUS:
-                sb.append("-");
+                sb.append(" - ");
                 break;
             case MULTIPLY:
                 sb.append(" * ");

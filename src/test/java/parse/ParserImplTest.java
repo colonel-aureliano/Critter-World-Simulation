@@ -18,7 +18,7 @@ class ParserImplTest {
 
         System.out.println("-----------------------");
 
-        InputStream in = ClassLoader.getSystemResourceAsStream("files/example-rules.txt");
+        InputStream in = ClassLoader.getSystemResourceAsStream("files/simple_critter.txt");
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
@@ -30,10 +30,11 @@ class ParserImplTest {
 
         System.out.println("-----------------------");
         
-        InputStream in = ClassLoader.getSystemResourceAsStream("files/simple_critter.txt");
+        InputStream in = ClassLoader.getSystemResourceAsStream("files/example-rules.txt");
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
-        parser.parse(r);
+        Program p = parser.parse(r);
+        System.out.println(p);
     }
 
     @Test
@@ -47,11 +48,4 @@ class ParserImplTest {
         parser.parse(r);
     }
 
-    @Disabled
-    @Test
-    void testCondition() throws SyntaxError {
-        InputStream in = ClassLoader.getSystemResourceAsStream("files/simple_critter.txt");
-        Tokenizer t = new Tokenizer(new BufferedReader(new InputStreamReader(in)));
-        ParserImpl.parseCondition(t);
-    }
 }

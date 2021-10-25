@@ -270,7 +270,7 @@ class ParserImpl implements Parser {
                 break;
             case "(":
                 consume(t, TokenType.LPAREN);
-                e = parseExpression(t);
+                e = new Factor(parseExpression(t));
                 consume(t, TokenType.RPAREN);
                 break;
             case "-":
