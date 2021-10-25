@@ -27,7 +27,21 @@ public class BinaryCondition extends Condition {
 
     @Override
     public String toString(){
-        return left+" "+operator.toString().toLowerCase()+" "+right;
+        StringBuilder sb = new StringBuilder();
+        if(left instanceof BinaryCondition){
+            sb.append("{"+left+"}");
+        }
+        else{
+            sb.append(left);
+        }
+        sb.append(" "+operator.toString().toLowerCase()+" ");
+        if(right instanceof BinaryCondition){
+            sb.append("{"+right+"}");
+        }
+        else{
+            sb.append(right);
+        }
+        return sb.toString();
     }
 
     public boolean classInv() {
