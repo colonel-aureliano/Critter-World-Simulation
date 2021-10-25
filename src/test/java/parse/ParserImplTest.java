@@ -1,7 +1,6 @@
 package parse;
 
 import ast.Condition;
-import ast.Expr;
 import ast.Program;
 import exceptions.SyntaxError;
 import org.junit.jupiter.api.Disabled;
@@ -33,6 +32,17 @@ class ParserImplTest {
         System.out.println("-----------------------");
         
         InputStream in = ClassLoader.getSystemResourceAsStream("files/example-rules.txt");
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+    }
+
+    @Test
+    void testDrawCritter() throws SyntaxError {
+
+        System.out.println("-----------------------");
+
+        InputStream in = ClassLoader.getSystemResourceAsStream("files/draw_critter.txt");
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
