@@ -7,8 +7,10 @@ import java.util.List;
 /** A data structure representing a critter program. */
 public class ProgramImpl extends AbstractNode implements Program {
 
+    private List<Rule> children;
+
     public ProgramImpl(List<Rule> lr){
-        super(lr); // lr stored in AbstractNode, lr is protected
+        children = lr;
     }
 
     @Override
@@ -36,8 +38,11 @@ public class ProgramImpl extends AbstractNode implements Program {
 
     @Override
     public String toString(){
-        // TODO Auto-generated method stub
-        return null;
+        StringBuilder sb = new StringBuilder();
+        for (Node n: children){
+            sb.append(n);
+        }
+        return sb.toString();
     }
 
     public boolean classInv() {

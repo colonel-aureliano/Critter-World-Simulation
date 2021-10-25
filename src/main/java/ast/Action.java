@@ -41,7 +41,10 @@ public class Action extends AbstractNode {
 
     @Override
     public String toString() {
-        return null;
+        if(operator== Operator.SERVE){
+            return operator.toString().toLowerCase()+"["+expression+"]";
+        }
+        return operator.toString().toLowerCase();
     }
 
     @Override

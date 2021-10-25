@@ -26,7 +26,11 @@ public class Command extends AbstractNode{
 
     @Override
     public String toString() {
-        return null;
+        StringBuilder sb = new StringBuilder();
+        for (Node n: coms){
+            sb.append(n);
+        }
+        return sb.toString();
     }
 
     @Override

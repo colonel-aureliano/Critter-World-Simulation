@@ -29,8 +29,30 @@ public class BinaryExpr extends Expr {
 
     @Override
     public String toString(){
-        // TODO
-        return null;
+        StringBuilder sb = new StringBuilder();
+        sb.append(left);
+
+        switch(operator){
+            case PLUS:
+                sb.append(" + ");
+                break;
+            case MINUS:
+                sb.append(" - ");
+                break;
+            case MULTIPLY:
+                sb.append(" * ");
+                break;
+            case DIVIDE:
+                sb.append(" / ");
+                break;
+            case MOD:
+                sb.append(" mod ");
+                break;
+        }
+
+        sb.append(right);
+
+        return sb.toString();
     }
 
     public boolean classInv() {

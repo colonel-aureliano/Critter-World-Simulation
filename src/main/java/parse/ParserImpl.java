@@ -57,11 +57,11 @@ class ParserImpl implements Parser {
             first = parseSugar(t);
             consume(t, TokenType.ASSIGN);
         } else {
-            consume(t, TokenType.MEM);
-            consume(t, TokenType.LBRACKET);
+            //consume(t, TokenType.MEM);
+            //consume(t, TokenType.LBRACKET);
             first = parseExpression(t);
-            consume(t, TokenType.RBRACKET);
-            consume(t, TokenType.ASSIGN);
+            //consume(t, TokenType.RBRACKET);
+            //consume(t, TokenType.ASSIGN);
         }
         Expr second = parseExpression(t);
         return new Update(first, second);
@@ -95,7 +95,7 @@ class ParserImpl implements Parser {
                 throw new SyntaxError(t.peek().lineNumber(), "Memory Sugar Syntax Error.");
         }
         t.next();
-        return new Factor(i);
+        return new Mem(i);
     }
 
     public static Action parseAction(Tokenizer t) throws SyntaxError {
@@ -268,7 +268,7 @@ class ParserImpl implements Parser {
             case "mem":
                 consume(t, TokenType.MEM);
                 consume(t, TokenType.LBRACKET);
-                e = new Factor(Factor.Operator.MEM,parseExpression(t));
+                e = new Mem(parseExpression(t));
                 consume(t, TokenType.RBRACKET);
                 break;
             case "(":
@@ -278,7 +278,7 @@ class ParserImpl implements Parser {
                 break;
             case "-":
                 consume(t, TokenType.MINUS);
-                e = new Factor(Factor.Operator.NEGATIVE, parseFactor(t));
+                e = new Factor(Factor.Operator.NEGATIVE, (Factor) parseFactor(t));
                 break;
             default:
                 System.out.println(t.peek().getType());

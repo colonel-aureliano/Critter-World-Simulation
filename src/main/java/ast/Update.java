@@ -24,7 +24,7 @@ public class Update extends AbstractNode{
 
     @Override
     public String toString() {
-        return null;
+        return other+"["+left+"]"+" "+operator+" "+right;
     }
 
     // assert that left is mem[expr]

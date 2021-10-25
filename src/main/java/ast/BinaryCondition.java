@@ -27,8 +27,7 @@ public class BinaryCondition extends Condition {
 
     @Override
     public String toString(){
-        // TODO
-        return null;
+        return left+" "+operator.toString().toLowerCase()+" "+right;
     }
 
     public boolean classInv() {

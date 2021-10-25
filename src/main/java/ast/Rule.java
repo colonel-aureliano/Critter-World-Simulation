@@ -28,8 +28,7 @@ public class Rule extends AbstractNode {
 
     @Override
     public String toString(){
-        // TODO Auto-generated method stub
-        return null;
+        return left+" "+operator+" "+right+";"+'\n';
     }
 
     public boolean classInv() {

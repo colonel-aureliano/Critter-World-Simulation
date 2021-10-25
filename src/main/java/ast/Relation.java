@@ -30,7 +30,33 @@ public class Relation extends Condition{
 
     @Override
     public String toString() {
-        return null;
+        StringBuilder sb = new StringBuilder();
+        sb.append(left);
+
+        switch(operator){
+            case EQUAL:
+                sb.append(" = ");
+                break;
+            case LESS_THAN:
+                sb.append(" < ");
+                break;
+            case NOT_EQUAL:
+                sb.append(" != ");
+                break;
+            case GREATER_THAN:
+                sb.append(" > ");
+                break;
+            case GREATER_THAN_OR_EQUAL:
+                sb.append(" >= ");
+                break;
+            case LESS_THAN_OR_EQUAl:
+                sb.append(" <= ");
+                break;
+        }
+
+        sb.append(right);
+
+        return sb.toString();
     }
 
     @Override

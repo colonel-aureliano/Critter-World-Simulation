@@ -2,9 +2,9 @@ package ast;
 
 public class Factor extends Expr {
     private int value;
-    private Expr expression;
     private Factor factor;
     private Operator operator;
+    private int which;
 
     /**
      * Create a factor for a number.
@@ -12,6 +12,7 @@ public class Factor extends Expr {
      */
     public Factor (int v) {
         value = v;
+        which = 0;
     }
 
     /**
@@ -23,27 +24,22 @@ public class Factor extends Expr {
     public Factor (Operator op, Factor f) {
         operator = op;
         factor = f;
-    }
-
-    /**
-     * Create a factor for mem[expr]
-     * Requires: op must be MEM
-     * @param op
-     * @param e
-     */
-    public Factor (Operator op, Expr e) {
-        operator = op;
-        expression = e;
+        which = 1;
     }
 
     public enum Operator {
         NEGATIVE,
-        MEM;
     }
 
     @Override
     public String toString() {
-        return null;
+        switch(which){
+            case 0:
+                return String.valueOf(value);
+            case 1:
+                return "-"+factor;
+        }
+        return "Factor class toString() error.";
     }
 
     @Override

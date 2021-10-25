@@ -1,5 +1,7 @@
 package ast;
 
+import static ast.Sensor.Operator.NEARBY;
+
 public class Sensor extends Expr {
     private Operator operator;
     private Expr expression;
@@ -34,7 +36,21 @@ public class Sensor extends Expr {
 
     @Override
     public String toString() {
-        return null;
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(operator.toString().toLowerCase());
+
+        switch(operator){
+            case AHEAD:
+            case NEARBY:
+            case RANDOM:
+                sb.append('[');
+                sb.append(expression);
+                sb.append(']');
+        }
+
+        return sb.toString();
     }
 
     @Override
