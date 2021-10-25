@@ -1,6 +1,6 @@
 package ast;
 
-public class Update extends AbstractNode{
+public class Update extends Command{
 
     private final String operator = ":=";
     private final String other = "mem";
@@ -24,7 +24,7 @@ public class Update extends AbstractNode{
 
     @Override
     public String toString() {
-        return other+"["+left+"]"+" "+operator+" "+right;
+        return left+" "+operator+" "+right;
     }
 
     // assert that left is mem[expr]

@@ -6,13 +6,13 @@ import java.util.List;
 public class Command extends AbstractNode{
 
     /** A list of commands, all Updates except the last one, which could be an Action. */
-    private List<Node> coms;
+    private List<Command> coms;
 
     /**
      * An AST representation of command.
      */
     public Command() {
-        coms = new ArrayList<Node>();
+        coms = new ArrayList<Command>();
     }
 
     /**
@@ -20,15 +20,16 @@ public class Command extends AbstractNode{
      * Requires: n must be Update or Action
      * @param n
      */
-    public void add(Node n) {
+    public void add(Command n) {
         coms.add(n);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Node n: coms){
-            sb.append(n);
+        sb.append(coms.get(0));
+        for (int i = 1; i < coms.size(); i++){
+            sb.append("\n"+"\t"+coms.get(i));
         }
         return sb.toString();
     }

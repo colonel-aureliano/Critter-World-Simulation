@@ -57,11 +57,8 @@ class ParserImpl implements Parser {
             first = parseSugar(t);
             consume(t, TokenType.ASSIGN);
         } else {
-            //consume(t, TokenType.MEM);
-            //consume(t, TokenType.LBRACKET);
             first = parseExpression(t);
-            //consume(t, TokenType.RBRACKET);
-            //consume(t, TokenType.ASSIGN);
+            consume(t, TokenType.ASSIGN);
         }
         Expr second = parseExpression(t);
         return new Update(first, second);

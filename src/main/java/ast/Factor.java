@@ -37,7 +37,7 @@ public class Factor extends Expr {
             case 0:
                 return String.valueOf(value);
             case 1:
-                return "-"+factor;
+                return " -"+factor;
         }
         return "Factor class toString() error.";
     }

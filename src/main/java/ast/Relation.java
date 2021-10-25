@@ -31,12 +31,8 @@ public class Relation extends Condition{
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        if(left instanceof BinaryExpr) {
-            sb.append("("+left+")");
-        }
-        else {
-            sb.append(left);
-        }
+
+        sb.append(left);
 
         switch(operator){
             case EQUAL:
@@ -59,12 +55,7 @@ public class Relation extends Condition{
                 break;
         }
 
-        if(right instanceof BinaryExpr) {
-            sb.append("("+right+")");
-        }
-        else {
-            sb.append(right);
-        }
+        sb.append(right);
 
         return sb.toString();
     }

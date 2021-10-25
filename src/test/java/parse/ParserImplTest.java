@@ -18,7 +18,7 @@ class ParserImplTest {
 
         System.out.println("-----------------------");
 
-        InputStream in = ClassLoader.getSystemResourceAsStream("files/unmutated_critter.txt");
+        InputStream in = ClassLoader.getSystemResourceAsStream("files/example-rules.txt");
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
@@ -30,7 +30,7 @@ class ParserImplTest {
 
         System.out.println("-----------------------");
         
-        InputStream in = ClassLoader.getSystemResourceAsStream("files/example-rules.txt");
+        InputStream in = ClassLoader.getSystemResourceAsStream("files/simple_critter.txt");
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         parser.parse(r);

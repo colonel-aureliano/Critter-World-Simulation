@@ -1,6 +1,6 @@
 package ast;
 
-public class Action extends AbstractNode {
+public class Action extends Command {
 
     private Operator operator;
     private Expr expression;
