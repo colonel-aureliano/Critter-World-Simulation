@@ -1,7 +1,6 @@
 package parse;
 
 import ast.Condition;
-import ast.Expr;
 import ast.Program;
 import exceptions.SyntaxError;
 import org.junit.jupiter.api.Disabled;

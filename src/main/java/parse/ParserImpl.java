@@ -165,7 +165,7 @@ class ParserImpl implements Parser {
                 rel = Relation.Operator.NOT_EQUAL;
                 break;
             default:
-                throw new SyntaxError(t.peek().lineNumber(), "Relation Syntax Error at " + t.peek().getType());
+                throw new SyntaxError(t.peek().lineNumber(), "Relation Syntax Error");
         }
         Expr right = parseExpression(t);
 
@@ -251,7 +251,7 @@ class ParserImpl implements Parser {
                 e = new Factor(Factor.Operator.NEGATIVE, parseFactor(t));
                 break;
             default:
-                throw new SyntaxError(t.peek().lineNumber(), "Factor Syntax Error at " + t.peek().getType());
+                throw new SyntaxError(t.peek().lineNumber(), "Factor Syntax Error");
         }
 
         return e;
@@ -287,16 +287,12 @@ class ParserImpl implements Parser {
                 consume(t, TokenType.RBRACKET);
                 break;
             default:
-                throw new SyntaxError(t.peek().lineNumber(), "Sensor Syntax Syntax Error at " + t.peek().getType());
+                throw new SyntaxError(t.peek().lineNumber(), "Sensor Syntax Syntax Error");
         }
 
         return e;
     }
 
-
-
-    // TODO
-    // add more as necessary...
 
     /**
      * Consumes a token of the expected type.
@@ -305,6 +301,7 @@ class ParserImpl implements Parser {
      */
     public static void consume(Tokenizer t, TokenType tt) throws SyntaxError {
         if (t.peek().getType() == tt) t.next();
-        else throw new SyntaxError(t.lineNumber(), "Expected Type: " + tt + ". Provided Type: " + t.peek().getType());
+        else throw new SyntaxError(t.lineNumber(),
+                String.format("Expected Type: %c. Provided Type: %c.", tt, t.peek().getType()));
     }
 }

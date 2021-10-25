@@ -17,37 +17,17 @@ class TokenizerTest {
         Reader r = new BufferedReader(new InputStreamReader(in));
 
         Tokenizer t = new Tokenizer(r);
-        System.out.println(t.peek().getType());
-        t.next();
-        System.out.println(t.peek().getType());
-        t.next();
-        System.out.println(t.peek().getType());
-        t.next();
-        System.out.println(t.peek().getType());
-        t.next();
-        System.out.println(t.peek().getType());
-        t.next();
-        System.out.println(t.peek().getType());
-        t.next();
-        System.out.println(t.peek().getType());
-        /*for (int i = 0; i < 4; i++){
-            Token token = t.next();
-            System.out.println(token);
-            switch(i){
-                case 0:
-                    System.out.println(token.isMemSugar()); // POSTURE
-                    break;
-                case 1:
-                    System.out.println(token.isRelation()); // !=
-                    break;
-                case 2:
-                    System.out.println(token.isNum()); // 17
-                    break;
-                case 3:
-                    System.out.println(token.getType()); // -->
-                    break;
-            }
-        }*/
+        while (t.peek().getType() != TokenType.EOF) {
+            System.out.println(t.peek().getType());
+            t.next();
+        }
         System.out.println("-------------------");
     }
+
+    @Test
+    void testComment() {
+
+    }
+
+
 }
