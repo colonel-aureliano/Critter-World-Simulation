@@ -1,5 +1,7 @@
 package parse;
 
+import easyIO.EOF;
+import easyIO.Scanner;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -13,41 +15,7 @@ class TokenizerTest {
     @Test
     void test(){
         System.out.println("-------------------");
-        InputStream in = ClassLoader.getSystemResourceAsStream("files/simple_critter.txt");
-        Reader r = new BufferedReader(new InputStreamReader(in));
 
-        Tokenizer t = new Tokenizer(r);
-        System.out.println(t.peek().getType());
-        t.next();
-        System.out.println(t.peek().getType());
-        t.next();
-        System.out.println(t.peek().getType());
-        t.next();
-        System.out.println(t.peek().getType());
-        t.next();
-        System.out.println(t.peek().getType());
-        t.next();
-        System.out.println(t.peek().getType());
-        t.next();
-        System.out.println(t.peek().getType());
-        /*for (int i = 0; i < 4; i++){
-            Token token = t.next();
-            System.out.println(token);
-            switch(i){
-                case 0:
-                    System.out.println(token.isMemSugar()); // POSTURE
-                    break;
-                case 1:
-                    System.out.println(token.isRelation()); // !=
-                    break;
-                case 2:
-                    System.out.println(token.isNum()); // 17
-                    break;
-                case 3:
-                    System.out.println(token.getType()); // -->
-                    break;
-            }
-        }*/
         System.out.println("-------------------");
     }
 }

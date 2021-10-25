@@ -1,3 +1,5 @@
-1 = 0 --> forward;
+1 = 0 --> forward; // Moving forward!
+// Finds a monster!
 nearby[1] = 0 --> forward;
 ahead[1] = 0 --> forward;
+// Goodbye.

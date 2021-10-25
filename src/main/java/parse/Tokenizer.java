@@ -118,6 +118,12 @@ public class Tokenizer implements Iterator<Token> {
                 c = in.next();
             }
 
+            while (c=='/' && in.peek()=='/'){
+                while(in.next()!='\n'){
+                }
+                c = in.next();
+            }
+
             switch (c) {
                 case '[':
                     addToken(TokenType.LBRACKET);
