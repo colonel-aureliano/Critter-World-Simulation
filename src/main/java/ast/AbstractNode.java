@@ -1,17 +1,62 @@
 package ast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import cms.util.maybe.Maybe;
 
 public abstract class AbstractNode implements Node {
 
+    protected List<Node> children;
+    protected Node left;
+    protected Node right;
+    protected Node single;
+    private int which;
+    // which = 0: leaf node, no children
+    // 1: one children
+    // 2: two children
+    // 3: more than two children
+
     public AbstractNode(){
+        which = 0;
+    }
+
+    public AbstractNode(Node s){
+        single=s;
+        which = 1;
+    }
+
+    public AbstractNode(Node l, Node r){
+        left=l;
+        right=r;
+        which = 2;
+    }
+
+    public AbstractNode(List<Node> c) {
+        children = c;
+        which = 3;
     }
 
     @Override
-    public int size() {
-        // TODO Auto-generated method stub
-        return 0;
+    public final int size() {
+        int t = 0;
+        switch(which){
+            case 0:
+                return 1;
+            case 1:
+                t+=single.size();
+                break;
+            case 2:
+                t+=left.size();
+                t+=right.size();
+                break;
+            case 3:
+                for(Node n: children){
+                    t+=n.size();
+                }
+                break;
+        }
+        return t+1;
     }
 
     @Override
@@ -34,7 +79,15 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public List<Node> getChildren() {
-        return null;
+        switch(which){
+            case 1:
+                return new ArrayList<>(Arrays.asList(single));
+            case 2:
+                return new ArrayList<>(Arrays.asList(left,right));
+            case 3:
+                return children;
+        }
+        throw new IllegalArgumentException("getChildren() is called on a leaf node.");
     }
 
     /**
