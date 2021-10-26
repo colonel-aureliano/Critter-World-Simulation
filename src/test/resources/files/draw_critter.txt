@@ -3,5 +3,5 @@ nearby[3] = 0 and ENERGY > 2500 --> bud; // com 2
 {ENERGY > SIZE * 400 and SIZE < 7} --> grow;
 ahead[0] < -1 and ENERGY < 500 * SIZE --> eat;
 (ahead[1] / 10 mod 100) != 17 and ahead[1] > 0 --> attack;
-1 = 1 --> wait; // last com
+-5 - -5 = 1 --> wait; // last com
 // new comment

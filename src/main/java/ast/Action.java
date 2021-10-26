@@ -63,7 +63,8 @@ public class Action extends AbstractNode {
 
     @Override
     public boolean classInv() {
-        return (operator!=null && children.size() == 0) ||
+
+        return (operator != null && children == null) ||
                 (operator==Operator.SERVE && children.size()==1 && children.get(0) instanceof Expr);
     }
 }

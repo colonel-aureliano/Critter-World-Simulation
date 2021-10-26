@@ -21,7 +21,8 @@ class ProgramImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        p.mutate(2,new Mutation);
+        p.mutate(2,new MutationImpl(2));
+        System.out.println(p);
     }
 
 }

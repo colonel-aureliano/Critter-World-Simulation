@@ -19,7 +19,7 @@ class AbstractNodeTest {
     @Test
     void test_nodeAt() throws SyntaxError {
 
-        String s = " 5 * (1 + 2) * 3 > 0 --> forward;";
+        String s = "1 + 2 > 0 --> forward;";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
 
         Reader r = new BufferedReader(new InputStreamReader(in));
@@ -31,6 +31,7 @@ class AbstractNodeTest {
 
         for (int i = 0; i < p.size(); i++) {
             System.out.println(p.nodeAt(i).getCategory());
+            assert(p.nodeAt(i).classInv());
         }
         try {
             p.nodeAt(p.size());
@@ -140,6 +141,18 @@ class AbstractNodeTest {
         BinaryCondition bc = new BinaryCondition(null,BinaryCondition.Operator.AND,null);
         assert(((Relation) n).setParent(bc));
         assert(p.toString().equals("1 = 0 and 1 = 0 --> forward;\n"));
+    }
+
+    @Test
+    void testInvariant() throws SyntaxError {
+        InputStream in = ClassLoader.getSystemResourceAsStream("files/draw_critter.txt");
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+        for (int i = 0; i < p.size(); i++) {
+            assert(p.nodeAt(i).classInv());
+        }
+        System.out.println(p);
     }
 
 }

@@ -39,7 +39,7 @@ public class MutationImpl implements Mutation {
                 if (node.getCategory() == NodeCategory.RULE ||
                         node.getCategory() == NodeCategory.ACTION ||
                         node.getCategory() == NodeCategory.ACTION) {
-                    ()
+                    return null;
                 }
             case 2:
                 List<Node> nodes = node.getChildren();
@@ -67,7 +67,7 @@ public class MutationImpl implements Mutation {
                 }
                 return true;
             case 2:
-                return n.getChildren().size() > 1;
+                return n.getChildren().size() == 2;
             case 3:
             case 4:
                 return true;

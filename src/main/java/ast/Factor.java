@@ -60,7 +60,7 @@ public class Factor extends Expr {
             case 0:
                 return String.valueOf(value);
             case 1:
-                return " -"+children.get(0);
+                return "-"+children.get(0);
             case 2:
                 return "("+children.get(0)+")";
         }
@@ -71,6 +71,6 @@ public class Factor extends Expr {
     public boolean classInv() {
         return (which==0 && value>=0 && children==null) ||
                 (which==1 && operator==Operator.NEGATIVE && children.get(0) instanceof Factor) ||
-                (which==2 && children.get(0) instanceof Factor);
+                (which==2 && children.get(0) instanceof Expr);
     }
 }
