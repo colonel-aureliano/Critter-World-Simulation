@@ -40,7 +40,7 @@ public abstract class AbstractNode implements Node {
     @Override
     public final int size() {
         int t = 0;
-        if (hasChild){
+        if (hasChild) {
             for(Node n: children){
                 t+=n.size();
             }
@@ -50,19 +50,19 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public Node nodeAt(int index) {
-        if(index==0){
+        if (index == 0) {
             return this;
         }
         int t = 1;
-            for(Node n: children){
-                try{
-                    return (n.nodeAt(index-t));
-                }
-                catch (Exception e){
-                    t+=n.size();
-                }
+        for(Node n: children){
+            try{
+                return (n.nodeAt(index-t));
             }
-        throw new IllegalArgumentException("nodeAt() called with illegal index.");
+            catch (Exception e){
+                t += n.size();
+            }
+        }
+        throw new IndexOutOfBoundsException();
     }
 
     @Override
@@ -77,7 +77,7 @@ public abstract class AbstractNode implements Node {
     @Override
     public List<Node> getChildren() {
         if(hasChild) {
-            return (List<Node>) children;
+            return children;
         }
         throw new IllegalArgumentException("getChildren() called on a leaf node.");
     }

@@ -30,27 +30,27 @@ public class BinaryCondition extends Condition {
 
     @Override
     public String toString(){
-//        return visit(new PrintVisitor());
+        return visit(new PrintVisitor());
 
-        StringBuilder sb = new StringBuilder();
-        if(children.get(0) instanceof BinaryCondition){
-            sb.append("{"+children.get(0)+"}");
-        }
-        else{
-            sb.append(children.get(0));
-        }
-        sb.append(" "+operator.toString().toLowerCase()+" ");
-        if(children.get(1) instanceof BinaryCondition){
-            sb.append("{"+children.get(1)+"}");
-        }
-        else{
-            sb.append(children.get(1));
-        }
-        return sb.toString();
+//        StringBuilder sb = new StringBuilder();
+//        if(children.get(0) instanceof BinaryCondition){
+//            sb.append("{"+children.get(0)+"}");
+//        }
+//        else{
+//            sb.append(children.get(0));
+//        }
+//        sb.append(" "+operator.toString().toLowerCase()+" ");
+//        if(children.get(1) instanceof BinaryCondition){
+//            sb.append("{"+children.get(1)+"}");
+//        }
+//        else{
+//            sb.append(children.get(1));
+//        }
+//        return sb.toString();
     }
 
     public String visit(Visitor v) {
-        return v.visit(this);
+        return v.visit(this, operator);
     }
 
     public boolean classInv() {

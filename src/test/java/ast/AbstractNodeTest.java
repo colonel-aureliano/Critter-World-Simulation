@@ -20,7 +20,7 @@ class AbstractNodeTest {
     void test_nodeAt() throws SyntaxError {
         System.out.println("-----------------------");
 
-        String s = "1 = 0 --> forward;";
+        String s = " 5 * (1 + 2) * 3 > 0 --> forward;";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
 
         Reader r = new BufferedReader(new InputStreamReader(in));
@@ -30,14 +30,14 @@ class AbstractNodeTest {
         StringBuilder sb = new StringBuilder();
         System.out.println(p.prettyPrint(sb).toString());
 
-        assert(p.size() == 7);
-        assert(p.nodeAt(0) instanceof ProgramImpl);
-        assert(p.nodeAt(1) instanceof Rule);
-        assert(p.nodeAt(2) instanceof Relation);
-        assert(p.nodeAt(3) instanceof Factor);
-        assert(p.nodeAt(4) instanceof Factor);
-        assert(p.nodeAt(5) instanceof Command);
-        assert(p.nodeAt(6) instanceof Action);
+        for (int i = 0; i < p.size(); i++) {
+            System.out.println(p.nodeAt(i).getCategory());
+        }
+        try {
+            p.nodeAt(p.size());
+        } catch (IndexOutOfBoundsException e) {
+            assert(true);
+        }
 
         System.out.println("-----------------------");
 
