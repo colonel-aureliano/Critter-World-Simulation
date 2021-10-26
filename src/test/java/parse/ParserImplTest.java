@@ -23,6 +23,7 @@ class ParserImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
         System.out.println(p);
+        System.out.println(p.size());
     }
 
     @Test

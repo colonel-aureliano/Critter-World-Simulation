@@ -1,11 +1,10 @@
 package ast;
 
 public class Mem extends Expr{
-    private Expr e;
     private int i = -1;
 
     public Mem(Expr e){
-        this.e=e;
+        super(e);
     }
 
     public Mem(int e){
@@ -15,11 +14,12 @@ public class Mem extends Expr{
     @Override
     public String toString() {
         if(i!=-1) return "mem["+i+"]";
-        return "mem["+e+"]";
+        return "mem["+single+"]";
     }
 
     @Override
     public boolean classInv() {
-        return false;
+        return (single!=null || i!=-1);
     }
+    
 }

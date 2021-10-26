@@ -1,15 +1,8 @@
 package ast;
 
-import parse.Tokenizer;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /** A representation of a critter rule. */
 public class Rule extends AbstractNode {
     private String operator = "-->";
-    private Condition left;
-    private Command right;
 
     /**
      * A AST representation of Condition --> Command.
@@ -17,8 +10,7 @@ public class Rule extends AbstractNode {
      * @param r
      */
     public Rule(Condition l, Command r){
-        left = l;
-        right = r;
+        super(l,r);
     }
 
     @Override
@@ -32,7 +24,6 @@ public class Rule extends AbstractNode {
     }
 
     public boolean classInv() {
-        // TODO implement/override
-        return false;
+        return left!=null && right!=null;
     }
 }

@@ -1,9 +1,8 @@
 package ast;
 
-public class Action extends Command {
+public class Action extends AbstractNode {
 
     private Operator operator;
-    private Expr expression;
 
     /**
      * Create an Action node
@@ -21,8 +20,8 @@ public class Action extends Command {
      * @param e
      */
     public Action(Operator op, Expr e) {
+        super(e);
         operator = op;
-        expression = e;
     }
 
     public enum Operator {
@@ -42,7 +41,7 @@ public class Action extends Command {
     @Override
     public String toString() {
         if(operator== Operator.SERVE){
-            return operator.toString().toLowerCase()+"["+expression+"]";
+            return operator.toString().toLowerCase()+"["+single+"]";
         }
         return operator.toString().toLowerCase();
     }
@@ -54,6 +53,7 @@ public class Action extends Command {
 
     @Override
     public boolean classInv() {
-        return false;
+        return (operator!=null && single== null) ||
+                (operator==Operator.SERVE && single!= null);
     }
 }

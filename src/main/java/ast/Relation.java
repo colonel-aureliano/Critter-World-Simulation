@@ -4,7 +4,6 @@ package ast;
 public class Relation extends Condition{
 
     private Operator operator;
-    private Expr left, right;
 
     /**
      * An AST representation of a relation with l and r.
@@ -13,9 +12,8 @@ public class Relation extends Condition{
      * @param r
      */
     public Relation(Expr l, Operator rel, Expr r){
+        super(l,r);
         operator = rel;
-        left = l;
-        right = r;
     }
 
     /** An enumeration of all possible relation operators. */
@@ -62,6 +60,6 @@ public class Relation extends Condition{
 
     @Override
     public boolean classInv() {
-        return false;
+        return left!=null && right!=null && operator!=null;
     }
 }

@@ -2,13 +2,12 @@ package ast;
 
 public class Factor extends Expr {
     private int value;
-    private Factor factor;
     private Operator operator;
-    private Expr e;
     private int which;
 
     /**
      * Create a factor for a number.
+     * Requires: v is nonnegative.
      * @param v
      */
     public Factor (int v) {
@@ -23,8 +22,8 @@ public class Factor extends Expr {
      * @param f
      */
     public Factor (Operator op, Factor f) {
+        super(f);
         operator = op;
-        factor = f;
         which = 1;
     }
 
@@ -37,7 +36,7 @@ public class Factor extends Expr {
      * @param e
      */
     public Factor (Expr e) {
-        this.e=e;
+        super(e);
         which = 2;
     }
 
@@ -47,15 +46,17 @@ public class Factor extends Expr {
             case 0:
                 return String.valueOf(value);
             case 1:
-                return " -"+factor;
+                return " -"+single;
             case 2:
-                return "("+e+")";
+                return "("+single+")";
         }
         return "Factor class toString() error.";
     }
 
     @Override
     public boolean classInv() {
-        return false;
+        return (which==0 && value>=0) ||
+                (which==1 && operator==Operator.NEGATIVE && single!=null) ||
+                (which==2 && single!=null);
     }
 }

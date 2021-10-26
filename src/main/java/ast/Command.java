@@ -5,31 +5,30 @@ import java.util.List;
 
 public class Command extends AbstractNode{
 
-    /** A list of commands, all Updates except the last one, which could be an Action. */
-    private List<Command> coms;
+    /** A list of commands comprising of >= 0 Update and (1 or 0) Action.
+     * Size must be greater than or equal to 1.*/
 
     /**
      * An AST representation of command.
      */
     public Command() {
-        coms = new ArrayList<Command>();
+        super(new ArrayList<Node>());
     }
 
     /**
      * Add node n to the end of commands list.
-     * Requires: n must be Update or Action
      * @param n
      */
-    public void add(Command n) {
-        coms.add(n);
+    public void add(Node n) {
+        children.add(n);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(coms.get(0));
-        for (int i = 1; i < coms.size(); i++){
-            sb.append("\n"+"\t"+coms.get(i));
+        sb.append(children.get(0));
+        for (int i = 1; i < children.size(); i++){
+            sb.append("\n"+"\t"+children.get(i));
         }
         return sb.toString();
     }
@@ -41,6 +40,6 @@ public class Command extends AbstractNode{
 
     @Override
     public boolean classInv() {
-        return false;
+        return children.size()>=1;
     }
 }

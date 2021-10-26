@@ -4,7 +4,6 @@ package ast;
 public class BinaryCondition extends Condition {
 
     private Operator operator;
-    private Condition left, right;
 
     /**
      * Create an AST representation of l op r.
@@ -14,9 +13,8 @@ public class BinaryCondition extends Condition {
      * @param r
      */
     public BinaryCondition(Condition l, Operator op, Condition r) {
+        super(l,r);
         operator = op;
-        left = l;
-        right = r;
     }
 
     /** An enumeration of all possible binary condition operators. */
@@ -51,7 +49,6 @@ public class BinaryCondition extends Condition {
     }
 
     public boolean classInv() {
-        // TODO
-        return false;
+        return left!=null && operator!=null && right!=null;
     }
 }

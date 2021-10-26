@@ -1,10 +1,10 @@
 package ast;
 
-import static ast.Sensor.Operator.NEARBY;
+import static ast.Sensor.Operator.SMELL;
 
 public class Sensor extends Expr {
     private Operator operator;
-    private Expr expression;
+    //private Expr expression;
 
     /**
      * Create an AST representation of sensor.
@@ -13,8 +13,8 @@ public class Sensor extends Expr {
      * @param e
      */
     public Sensor(Operator op, Expr e) {
+        super(e);
         operator = op;
-        expression = e;
     }
 
     /**
@@ -33,7 +33,6 @@ public class Sensor extends Expr {
         SMELL
     }
 
-
     @Override
     public String toString() {
 
@@ -46,7 +45,7 @@ public class Sensor extends Expr {
             case NEARBY:
             case RANDOM:
                 sb.append('[');
-                sb.append(expression);
+                sb.append(single);
                 sb.append(']');
         }
 
@@ -55,6 +54,7 @@ public class Sensor extends Expr {
 
     @Override
     public boolean classInv() {
-        return false;
+        return (operator!=null && single!= null) ||
+                (operator==SMELL && single== null);
     }
 }

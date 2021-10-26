@@ -7,10 +7,8 @@ import java.util.List;
 /** A data structure representing a critter program. */
 public class ProgramImpl extends AbstractNode implements Program {
 
-    private List<Rule> children;
-
-    public ProgramImpl(List<Rule> lr){
-        children = lr;
+    public ProgramImpl(List<Node> lr){
+        super(lr);
     }
 
     @Override

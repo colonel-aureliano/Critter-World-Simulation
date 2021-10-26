@@ -1,21 +1,17 @@
 package ast;
 
-public class Update extends Command{
+public class Update extends AbstractNode{
 
     private final String operator = ":=";
-    private final String other = "mem";
-    private Expr left, right;
 
     /**
-     * A AST representation of mem [l] := r
-     * @param l
+     * A AST representation of l := r
+     * @param l Mem class, representing mem[expr]
      * @param r
      */
-    public Update(Expr l, Expr r) {
-        left = l;
-        right = r;
+    public Update(Mem l, Expr r) {
+        super(l,r);
     }
-
 
     @Override
     public NodeCategory getCategory() {
@@ -30,6 +26,6 @@ public class Update extends Command{
     // assert that left is mem[expr]
     @Override
     public boolean classInv() {
-        return false;
+        return left!=null && right!=null;
     }
 }

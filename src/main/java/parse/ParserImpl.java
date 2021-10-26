@@ -24,7 +24,7 @@ class ParserImpl implements Parser {
      * @throws SyntaxError if the input tokens have invalid syntax
      */
     public static ProgramImpl parseProgram(Tokenizer t) throws SyntaxError {
-        List<Rule> lr = new ArrayList<>();
+        List<Node> lr = new ArrayList<>();
         while (t.hasNext()){
             lr.add(parseRule(t));
         }
@@ -55,13 +55,12 @@ class ParserImpl implements Parser {
         Expr first;
         if (t.peek().isMemSugar()) {
             first = parseSugar(t);
-            consume(t, TokenType.ASSIGN);
         } else {
             first = parseExpression(t);
-            consume(t, TokenType.ASSIGN);
         }
+        consume(t, TokenType.ASSIGN);
         Expr second = parseExpression(t);
-        return new Update(first, second);
+        return new Update((Mem)first, second);
     }
 
     public static Expr parseSugar(Tokenizer t) throws SyntaxError {

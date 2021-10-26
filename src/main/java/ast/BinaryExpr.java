@@ -3,7 +3,6 @@ package ast;
 public class BinaryExpr extends Expr {
 
     private Operator operator;
-    private Expr left, right;
 
     /**
      * Create an AST representation of l op r.
@@ -13,9 +12,8 @@ public class BinaryExpr extends Expr {
      * @param r
      */
     public BinaryExpr(Expr l, Operator op, Expr r) {
+        super(l,r);
         operator = op;
-        left = l;
-        right = r;
     }
 
     /** An enumeration of all possible binary expression operators. */
@@ -56,8 +54,7 @@ public class BinaryExpr extends Expr {
     }
 
     public boolean classInv() {
-        // TODO
-        return false;
+        return left!=null && operator!=null && right!=null;
     }
 
 }
