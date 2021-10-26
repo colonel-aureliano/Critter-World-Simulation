@@ -21,7 +21,7 @@ public interface Node extends Cloneable {
      * 3. All nodes in the AST rooted at {@code this} must be reachable by a call to {@code
      * this.nodeAt(i)} with an appropriate index {@code i}
      *
-     * @param index The index of the node to retrieve
+     * @param index The index of the node to retrieve (index of preorder traversal using DFS)
      * @return The node at {@code index}
      * @throws IndexOutOfBoundsException if {@code index} is not in the range of valid indices
      */

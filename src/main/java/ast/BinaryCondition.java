@@ -27,6 +27,8 @@ public class BinaryCondition extends Condition {
 
     @Override
     public String toString(){
+//        return visit(new PrintVisitor());
+
         StringBuilder sb = new StringBuilder();
         if(left instanceof BinaryCondition){
             sb.append("{"+left+"}");
@@ -42,6 +44,10 @@ public class BinaryCondition extends Condition {
             sb.append(right);
         }
         return sb.toString();
+    }
+
+    public String visit(Visitor v) {
+        return v.visit(this);
     }
 
     public boolean classInv() {
