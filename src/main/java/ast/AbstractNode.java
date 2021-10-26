@@ -13,9 +13,13 @@ import javax.management.relation.RelationNotFoundException;
 
 public abstract class AbstractNode implements Node {
 
-    static protected Node root;
+    protected static Node root;
     protected List<Node> children;
     protected boolean hasChild = true; // indicates whether the Node has child
+
+    public static Node getRoot(){
+        return root;
+    }
 
     protected void setRoot(Node n){
         root=n;

@@ -69,7 +69,37 @@ public class MutationImpl implements Mutation {
                 nodes.set(1, temp);
                 return Maybe.some(program);
             case 3:
+                String c = node.getClass().getSimpleName();
+                Node root = ((AbstractNode) node).getRoot();
+                int size = root.size();
+                Random rand = new Random();
 
+                Node replacement;
+                int z = 0;
+                while(true){
+                    int i = rand.nextInt(size);
+                    if(root.nodeAt(i).getClass().getSimpleName().equals(c)){
+                        if(root.nodeAt(i)==node){
+                            continue;
+                        }
+                        replacement = root.nodeAt(i);
+                        break;
+                    }
+                    z++;
+                    if(z>size*30){
+                        return Maybe.none();
+                    }
+                }
+
+                try {
+                    Node parent = ((AbstractNode) node).getParent().get();
+                    int i = parent.getChildren().indexOf(node);
+                    parent.getChildren().remove(i);
+                    parent.getChildren().add(i,replacement);
+                    return Maybe.some(program);
+                } catch (NoMaybeValue noMaybeValue) {
+                    return Maybe.none();
+                }
         }
         return null;
     }
@@ -87,7 +117,8 @@ public class MutationImpl implements Mutation {
                         return false;
                     }
                 }
-                else if (n instanceof Relation || n.getCategory() == NodeCategory.PROGRAM){
+                else if (n instanceof Relation || n.getCategory() == NodeCategory.PROGRAM
+                || n instanceof Factor && n.getChildren()==null){
                     return false; // n is Relation or ProgramImpl
                 }
                 return true;
