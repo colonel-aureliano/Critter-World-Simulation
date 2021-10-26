@@ -36,10 +36,28 @@ public class MutationImpl implements Mutation {
         if (!canApply(node) ) return Maybe.none();
         switch (type) {
             case 1:
-                if (node.getCategory() == NodeCategory.RULE ||
-                        node.getCategory() == NodeCategory.ACTION ||
-                        node.getCategory() == NodeCategory.ACTION) {
-                    return null;
+                try {
+                    Node parent = ((AbstractNode) node).getParent().get();
+
+                    int i = parent.getChildren().indexOf(node);
+                    parent.getChildren().remove(i);
+                    parent.getChildren().add(i,node.getChildren().get(0));
+
+
+                    try {
+                        int in = 1;
+                        while (!parent.classInv()) {
+                            parent.getChildren().remove(i);
+                            parent.getChildren().add(i, node.getChildren().get(in));
+                            in++;
+                        }
+                    } catch(Exception e){
+                        System.err.println("canApply() does not catch an invalid" +
+                                "node attempting to undergo Mutation 1");
+                        return Maybe.none();
+                    }
+                } catch (NoMaybeValue noMaybeValue) {
+                    noMaybeValue.printStackTrace();
                 }
             case 2:
                 List<Node> nodes = node.getChildren();
@@ -57,17 +75,19 @@ public class MutationImpl implements Mutation {
             case 1:
                 if (n.getCategory() == NodeCategory.RULE ||
                         n.getCategory() == NodeCategory.UPDATE ||
-                        n.getCategory() == NodeCategory.ACTION ||
-                        n.getCategory() == NodeCategory.PROGRAM) {
+                        n.getCategory() == NodeCategory.ACTION ) {
                     try {
                         return ((AbstractNode) n).getParent().get().getChildren().size() > 1;
                     } catch (NoMaybeValue e) {
-                        return false; // n is Program
+                        return false;
                     }
+                }
+                else if (n instanceof Relation || n.getCategory() == NodeCategory.PROGRAM){
+                    return false; // n is Relation or ProgramImpl
                 }
                 return true;
             case 2:
-                return n.getChildren().size() == 2;
+                return n.getChildren().size() == 2; // If swap, the node must have two children.
             case 3:
             case 4:
                 return true;
