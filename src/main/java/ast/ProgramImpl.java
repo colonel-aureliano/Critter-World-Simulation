@@ -10,6 +10,7 @@ public class ProgramImpl extends AbstractNode implements Program {
 
     public ProgramImpl(List<Node> lr){
         super(lr);
+        setRoot(this);
     }
 
     @Override

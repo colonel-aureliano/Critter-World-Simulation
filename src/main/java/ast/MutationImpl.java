@@ -32,7 +32,8 @@ public class MutationImpl implements Mutation {
     @Override
     public boolean canApply(Node n) {
         switch(type){
-
+            case 1:
+                
         }
         return false;
     }

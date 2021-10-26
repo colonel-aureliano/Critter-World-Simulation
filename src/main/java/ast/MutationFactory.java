@@ -3,32 +3,26 @@ package ast;
 /** A factory that produces the public static Mutation objects corresponding to each mutation */
 public class MutationFactory {
     public static Mutation getRemove() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException();
+        return new MutationImpl(1);
     }
 
     public static Mutation getSwap() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException();
+        return new MutationImpl(2);
     }
 
     public static Mutation getReplace() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException();
+        return new MutationImpl(3);
     }
 
     public static Mutation getTransform() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException();
+        return new MutationImpl(4);
     }
 
     public static Mutation getInsert() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException();
+        return new MutationImpl(5);
     }
 
     public static Mutation getDuplicate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException();
+        return new MutationImpl(6);
     }
 }

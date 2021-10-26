@@ -20,15 +20,15 @@ public class Rule extends AbstractNode {
 
     @Override
     public Node clone() {
-        return new Rule((Condition)left.clone(),(Command) right.clone());
+        return new Rule((Condition)children.get(0).clone(),(Command) children.get(1).clone());
     }
 
     @Override
     public String toString(){
-        return left+" "+operator+" "+right+";"+'\n';
+        return children.get(0)+" "+operator+" "+children.get(1)+";"+'\n';
     }
 
     public boolean classInv() {
-        return left!=null && right!=null;
+        return children.get(0)!=null && children.get(1)!=null;
     }
 }

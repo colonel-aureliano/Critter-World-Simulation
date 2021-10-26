@@ -20,17 +20,17 @@ public class Update extends AbstractNode{
 
     @Override
     public Node clone() {
-        return new Update((Mem) left.clone(),(Expr) right.clone());
+        return new Update((Mem) children.get(0).clone(),(Expr) children.get(1).clone());
     }
 
     @Override
     public String toString() {
-        return left+" "+operator+" "+right;
+        return children.get(0)+" "+operator+" "+children.get(1);
     }
 
-    // assert that left is mem[expr]
+    // assert that children.get(0) is mem[expr]
     @Override
     public boolean classInv() {
-        return left!=null && right!=null;
+        return children.get(0)!=null && children.get(1)!=null;
     }
 }

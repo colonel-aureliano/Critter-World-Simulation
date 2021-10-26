@@ -27,13 +27,13 @@ public class BinaryExpr extends Expr {
 
     @Override
     public Node clone() {
-        return new BinaryExpr((Expr) left.clone(),operator,(Expr) right.clone());
+        return new BinaryExpr((Expr) children.get(0).clone(),operator,(Expr) children.get(1).clone());
     }
 
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append(left);
+        sb.append(children.get(0));
 
         switch(operator){
             case PLUS:
@@ -53,13 +53,13 @@ public class BinaryExpr extends Expr {
                 break;
         }
 
-        sb.append(right);
+        sb.append(children.get(1));
 
         return sb.toString();
     }
 
     public boolean classInv() {
-        return left!=null && operator!=null && right!=null;
+        return children.get(0)!=null && operator!=null && children.get(1)!=null;
     }
 
 }

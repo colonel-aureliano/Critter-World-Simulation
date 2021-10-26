@@ -41,7 +41,7 @@ public class Action extends AbstractNode {
     @Override
     public Node clone() {
         if(operator== Operator.SERVE){
-            return new Action(operator, (Expr) single.clone());
+            return new Action(operator, (Expr) children.get(0).clone());
         }
         else{
             return new Action(operator);
@@ -51,7 +51,7 @@ public class Action extends AbstractNode {
     @Override
     public String toString() {
         if(operator== Operator.SERVE){
-            return operator.toString().toLowerCase()+"["+single+"]";
+            return operator.toString().toLowerCase()+"["+children.get(0)+"]";
         }
         return operator.toString().toLowerCase();
     }
@@ -63,7 +63,7 @@ public class Action extends AbstractNode {
 
     @Override
     public boolean classInv() {
-        return (operator!=null && single== null) ||
-                (operator==Operator.SERVE && single!= null);
+        return (operator!=null && children.get(0)== null) ||
+                (operator==Operator.SERVE && children.get(0)!= null);
     }
 }

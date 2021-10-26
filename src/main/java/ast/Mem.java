@@ -14,7 +14,7 @@ public class Mem extends Expr{
     @Override
     public String toString() {
         if(i!=-1) return "mem["+i+"]";
-        return "mem["+single+"]";
+        return "mem["+children.get(0)+"]";
     }
 
     @Override
@@ -23,13 +23,13 @@ public class Mem extends Expr{
             return new Mem(i);
         }
         else{
-            return new Mem((Expr) single.clone());
+            return new Mem((Expr) children.get(0).clone());
         }
     }
 
     @Override
     public boolean classInv() {
-        return (single!=null || i!=-1);
+        return (children.get(0)!=null || i!=-1);
     }
     
 }

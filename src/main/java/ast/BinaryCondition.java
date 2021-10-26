@@ -25,7 +25,7 @@ public class BinaryCondition extends Condition {
 
     @Override
     public Node clone() {
-        return new BinaryCondition((Condition) left.clone(),operator,(Condition) right.clone());
+        return new BinaryCondition((Condition) children.get(0).clone(),operator,(Condition) children.get(1).clone());
     }
 
     @Override
@@ -33,18 +33,18 @@ public class BinaryCondition extends Condition {
 //        return visit(new PrintVisitor());
 
         StringBuilder sb = new StringBuilder();
-        if(left instanceof BinaryCondition){
-            sb.append("{"+left+"}");
+        if(children.get(0) instanceof BinaryCondition){
+            sb.append("{"+children.get(0)+"}");
         }
         else{
-            sb.append(left);
+            sb.append(children.get(0));
         }
         sb.append(" "+operator.toString().toLowerCase()+" ");
-        if(right instanceof BinaryCondition){
-            sb.append("{"+right+"}");
+        if(children.get(1) instanceof BinaryCondition){
+            sb.append("{"+children.get(1)+"}");
         }
         else{
-            sb.append(right);
+            sb.append(children.get(1));
         }
         return sb.toString();
     }
@@ -54,6 +54,6 @@ public class BinaryCondition extends Condition {
     }
 
     public boolean classInv() {
-        return left!=null && operator!=null && right!=null;
+        return children.get(0)!=null && operator!=null && children.get(1)!=null;
     }
 }

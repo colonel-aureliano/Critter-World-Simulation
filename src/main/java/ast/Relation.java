@@ -28,14 +28,14 @@ public class Relation extends Condition{
 
     @Override
     public Node clone(){
-        return new Relation((Expr)left.clone(),operator,(Expr)right.clone());
+        return new Relation((Expr)children.get(0).clone(),operator,(Expr)children.get(1).clone());
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(left);
+        sb.append(children.get(0));
 
         switch(operator){
             case EQUAL:
@@ -58,13 +58,13 @@ public class Relation extends Condition{
                 break;
         }
 
-        sb.append(right);
+        sb.append(children.get(1));
 
         return sb.toString();
     }
 
     @Override
     public boolean classInv() {
-        return left!=null && right!=null && operator!=null;
+        return children.get(0)!=null && children.get(1)!=null && operator!=null;
     }
 }

@@ -4,58 +4,46 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+
 import cms.util.maybe.Maybe;
+import cms.util.maybe.NoMaybeValue;
+
+import javax.management.relation.RelationNotFoundException;
 
 public abstract class AbstractNode implements Node {
 
+    static protected Node root;
     protected List<Node> children;
-    protected Node left;
-    protected Node right;
-    protected Node single;
-    private int which;
-    // which = 0: leaf node, no children
-    // 1: one children
-    // 2: two children
-    // 3: more than two children
+    protected boolean hasChild = true; // indicates whether the Node has child
+
+    protected void setRoot(Node n){
+        root=n;
+    }
 
     public AbstractNode(){
-        which = 0;
+        hasChild = false;
     }
 
     public AbstractNode(Node s){
-        single=s;
-        which = 1;
+        children = new ArrayList<>(Arrays.asList(s));
     }
 
     public AbstractNode(Node l, Node r){
-        left=l;
-        right=r;
-        which = 2;
+        children = new ArrayList<>(Arrays.asList(l,r));
     }
 
     public AbstractNode(List<Node> c) {
         children = c;
-        which = 3;
     }
 
     @Override
     public final int size() {
         int t = 0;
-        switch(which){
-            case 0:
-                return 1;
-            case 1:
-                t+=single.size();
-                break;
-            case 2:
-                t+=left.size();
-                t+=right.size();
-                break;
-            case 3:
-                for(Node n: children){
-                    t+=n.size();
-                }
-                break;
+        if (hasChild){
+            for(Node n: children){
+                t+=n.size();
+            }
         }
         return t+1;
     }
@@ -65,30 +53,15 @@ public abstract class AbstractNode implements Node {
         if(index==0){
             return this;
         }
-        switch(which){
-            case 0:
-                break;
-            case 1:
-                return single.nodeAt(index-1);
-            case 2:
+        int t = 1;
+            for(Node n: children){
                 try{
-                    return left.nodeAt(index-1);
+                    return (n.nodeAt(index-t));
                 }
                 catch (Exception e){
-                    return right.nodeAt(index-1-left.size());
+                    t+=n.size();
                 }
-            case 3:
-                int t = 1;
-                for(Node n: children){
-                    try{
-                        return (n.nodeAt(index-t));
-                    }
-                    catch (Exception e){
-                        t+=n.size();
-                    }
-                }
-                break;
-        }
+            }
         throw new IllegalArgumentException("nodeAt() called with illegal index.");
     }
 
@@ -103,13 +76,8 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public List<Node> getChildren() {
-        switch(which){
-            case 1:
-                return new ArrayList<>(Arrays.asList(single));
-            case 2:
-                return new ArrayList<>(Arrays.asList(left,right));
-            case 3:
-                return children;
+        if(hasChild) {
+            return (List<Node>) children;
         }
         throw new IllegalArgumentException("getChildren() called on a leaf node.");
     }
@@ -122,8 +90,24 @@ public abstract class AbstractNode implements Node {
      * This method does not need to be implemented and may be removed from the interface.
      */
     public Maybe<Node> getParent() {
-        // TODO Auto-generated method stub
-        return Maybe.none();
+        if(this==root){
+            return Maybe.none();
+        }
+        else{
+            Node n;
+            for (int i = 0; i < root.size(); i++){
+                n=root.nodeAt(i);
+                try{
+                    if(n.getChildren().contains(this)){
+                        return Maybe.some(n);
+                    }
+                } catch (IllegalArgumentException e) {
+                    continue;
+                }
+            }
+
+            throw new IllegalArgumentException("getParent() error.");
+        }
     }
 
     /**
@@ -133,9 +117,87 @@ public abstract class AbstractNode implements Node {
      *
      * @param p the node to set as this {@code Node}'s parent.
      */
-    public void setParent(Node p) {
-        // TODO Auto-generated method stub
+    public boolean setParent(Node p) {
+        if(!((AbstractNode) p).hasChild){
+            return false; // e.g. 3 cannot be the parent of anything.
+        }
+
+        try {
+            AbstractNode n = (AbstractNode) this.getParent().get();
+            int i = n.children.indexOf(this);
+            n.children.remove(i);
+            n.children.add(i,p);
+
+            int count = ((AbstractNode) p).children.size();
+            ((AbstractNode) p).children.clear();
+            ((AbstractNode) p).children.add(this);
+            count--;
+            if(count==0) {return true;}
+
+            Random rand = new Random();
+            int s = root.size();
+
+            int t = -1;
+            // 0 means Expr
+            // 1 means Condition
+            // 2 means Command
+            // 3 means Rule
+
+            switch(this.getParent().getClass().getName()){
+                case "Mem":
+                case "Sensor":
+                case "Relation":
+                    t = 0;
+                    break;
+                case "BinaryCondition":
+                    t = 1;
+                    break;
+                case "Command:":
+                    t = 2;
+                    break;
+                case "Rule":
+                    if (this.getClass().getName()=="Command"){
+                        t=1;
+                    }
+                    else{
+                        t=2;
+                    }
+                    break;
+                case "ProgramImpl":
+                    t=3;
+            }
+
+            while (count > 0) {
+                try{
+                    int index = rand.nextInt(s);
+
+                    switch(t) {
+                        case 0:
+                            if (!(root.nodeAt(index) instanceof Expr)) { continue;}
+                            break;
+                        case 1:
+                            if (!(root.nodeAt(index) instanceof Condition)) { continue;}
+                            break;
+                        case 2:
+                            if (!(root.nodeAt(index) instanceof Command)) { continue;}
+                            break;
+                        case 3:
+                            if (!(root.nodeAt(index) instanceof Rule)) { continue;}
+                            break;
+                    }
+                    ((AbstractNode) p).children.add(root.nodeAt(index));
+                    count--;
+                } catch (Exception e){
+                    continue;
+                }
+            }
+
+            return true;
+        } catch (NoMaybeValue noMaybeValue) {
+            return false;
+        }
     }
+
 
     /**
      * @return the String representation of the tree rooted at this {@code Node}.

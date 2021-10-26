@@ -36,7 +36,7 @@ public class Sensor extends Expr {
             return new Sensor(operator);
         }
         else{
-            return new Sensor(operator, (Expr) single.clone());
+            return new Sensor(operator, (Expr) children.get(0).clone());
         }
     }
 
@@ -52,7 +52,7 @@ public class Sensor extends Expr {
             case NEARBY:
             case RANDOM:
                 sb.append('[');
-                sb.append(single);
+                sb.append(children.get(0));
                 sb.append(']');
         }
 
@@ -61,7 +61,7 @@ public class Sensor extends Expr {
 
     @Override
     public boolean classInv() {
-        return (operator!=null && single!= null) ||
-                (operator==Operator.SMELL && single== null);
+        return (operator!=null && children.get(0)!= null) ||
+                (operator==Operator.SMELL && children.get(0)== null);
     }
 }

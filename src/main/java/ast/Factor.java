@@ -46,9 +46,9 @@ public class Factor extends Expr {
             case 0:
                 return new Factor(value);
             case 1:
-                return new Factor(operator, (Factor) single.clone());
+                return new Factor(operator, (Factor) children.get(0).clone());
             case 2:
-                return new Factor((Factor) single.clone());
+                return new Factor((Factor) children.get(0).clone());
             default:
                 throw new IllegalArgumentException("Factor clone() error.");
         }
@@ -60,9 +60,9 @@ public class Factor extends Expr {
             case 0:
                 return String.valueOf(value);
             case 1:
-                return " -"+single;
+                return " -"+children.get(0);
             case 2:
-                return "("+single+")";
+                return "("+children.get(0)+")";
         }
         return "Factor class toString() error.";
     }
@@ -70,7 +70,7 @@ public class Factor extends Expr {
     @Override
     public boolean classInv() {
         return (which==0 && value>=0) ||
-                (which==1 && operator==Operator.NEGATIVE && single!=null) ||
-                (which==2 && single!=null);
+                (which==1 && operator==Operator.NEGATIVE && children.get(0)!=null) ||
+                (which==2 && children.get(0)!=null);
     }
 }
