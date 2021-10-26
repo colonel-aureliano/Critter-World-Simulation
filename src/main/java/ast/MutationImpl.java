@@ -4,6 +4,9 @@ import cms.util.maybe.Maybe;
 import cms.util.maybe.NoMaybeValue;
 import exceptions.SyntaxError;
 
+import java.util.List;
+import java.util.Random;
+
 public class MutationImpl implements Mutation {
     int type;
 
@@ -23,7 +26,9 @@ public class MutationImpl implements Mutation {
 
     @Override
     public boolean equals(Mutation m) {
+        // TODO
         return false;
+
     }
 
     @Override
@@ -31,7 +36,17 @@ public class MutationImpl implements Mutation {
         if (!canApply(node) ) return Maybe.none();
         switch (type) {
             case 1:
-                
+                if (node.getCategory() == NodeCategory.RULE ||
+                        node.getCategory() == NodeCategory.ACTION ||
+                        node.getCategory() == NodeCategory.ACTION) {
+                    ()
+                }
+            case 2:
+                List<Node> nodes = node.getChildren();
+                Node temp = nodes.get(0);
+                nodes.set(0, nodes.get(1));
+                nodes.set(1, temp);
+                return Maybe.some(program);
         }
         return null;
     }
@@ -40,10 +55,12 @@ public class MutationImpl implements Mutation {
     public boolean canApply(Node n) {
         switch(type){
             case 1:
-                if (n.getCategory() == NodeCategory.RULE || n.getCategory() == NodeCategory.PROGRAM) {
-                    AbstractNode node = (AbstractNode) n;
+                if (n.getCategory() == NodeCategory.RULE ||
+                        n.getCategory() == NodeCategory.UPDATE ||
+                        n.getCategory() == NodeCategory.ACTION ||
+                        n.getCategory() == NodeCategory.PROGRAM) {
                     try {
-                        return node.getParent().get().getChildren().size() > 1;
+                        return ((AbstractNode) n).getParent().get().getChildren().size() > 1;
                     } catch (NoMaybeValue e) {
                         return false; // n is Program
                     }

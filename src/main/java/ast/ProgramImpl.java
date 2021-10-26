@@ -21,13 +21,11 @@ public class ProgramImpl extends AbstractNode implements Program {
 
     @Override
     public Maybe<Program> mutate(int index, Mutation m) {
-        // TODO Auto-generated method stub
-        return null;
+        return m.apply(this, this.nodeAt(index));
     }
 
     @Override
     public Maybe<Node> findNodeOfType(NodeCategory type) {
-        // TODO Auto-generated method stub
         return null;
     }
 
