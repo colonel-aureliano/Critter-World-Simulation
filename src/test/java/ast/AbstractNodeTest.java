@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class AbstractNodeTest {
 
     @Test
-    void test_one_line() throws SyntaxError {
+    void test_nodeAt() throws SyntaxError {
         System.out.println("-----------------------");
 
         // Please add "-ea" to VM options field.
@@ -42,7 +42,7 @@ class AbstractNodeTest {
     }
 
     @Test
-    void test_one_line_2() throws SyntaxError{
+    void test_nodeAt_2() throws SyntaxError{
         System.out.println("-----------------------");
 
         String s = "POSTURE != 17 --> mem[6] := 51/3;";
@@ -61,4 +61,21 @@ class AbstractNodeTest {
 
         System.out.println("-----------------------");
     }
+
+    @Test
+    void test_clone() throws SyntaxError {
+        String s = "POSTURE != 17 --> mem[6] := 51/3;\n1 = 0 --> forward;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+        String original = p.toString();
+
+        Program clone = (Program) p.clone();
+        String cloned = clone.toString();
+        assert(cloned.equals(original));
+    }
+
+
 }

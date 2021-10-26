@@ -26,6 +26,11 @@ public class BinaryExpr extends Expr {
     }
 
     @Override
+    public Node clone() {
+        return new BinaryExpr((Expr) left.clone(),operator,(Expr) right.clone());
+    }
+
+    @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append(left);

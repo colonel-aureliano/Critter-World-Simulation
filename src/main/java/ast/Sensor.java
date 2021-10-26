@@ -1,10 +1,7 @@
 package ast;
 
-import static ast.Sensor.Operator.SMELL;
-
 public class Sensor extends Expr {
     private Operator operator;
-    //private Expr expression;
 
     /**
      * Create an AST representation of sensor.
@@ -34,6 +31,16 @@ public class Sensor extends Expr {
     }
 
     @Override
+    public Node clone() {
+        if(operator == Operator.SMELL){
+            return new Sensor(operator);
+        }
+        else{
+            return new Sensor(operator, (Expr) single.clone());
+        }
+    }
+
+    @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
@@ -55,6 +62,6 @@ public class Sensor extends Expr {
     @Override
     public boolean classInv() {
         return (operator!=null && single!= null) ||
-                (operator==SMELL && single== null);
+                (operator==Operator.SMELL && single== null);
     }
 }

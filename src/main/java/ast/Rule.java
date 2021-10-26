@@ -19,6 +19,11 @@ public class Rule extends AbstractNode {
     }
 
     @Override
+    public Node clone() {
+        return new Rule((Condition)left.clone(),(Command) right.clone());
+    }
+
+    @Override
     public String toString(){
         return left+" "+operator+" "+right+";"+'\n';
     }

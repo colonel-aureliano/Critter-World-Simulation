@@ -24,6 +24,11 @@ public class BinaryCondition extends Condition {
     }
 
     @Override
+    public Node clone() {
+        return new BinaryCondition((Condition) left.clone(),operator,(Condition) right.clone());
+    }
+
+    @Override
     public String toString(){
 //        return visit(new PrintVisitor());
 

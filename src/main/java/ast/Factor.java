@@ -41,6 +41,20 @@ public class Factor extends Expr {
     }
 
     @Override
+    public Node clone() {
+        switch(which){
+            case 0:
+                return new Factor(value);
+            case 1:
+                return new Factor(operator, (Factor) single.clone());
+            case 2:
+                return new Factor((Factor) single.clone());
+            default:
+                throw new IllegalArgumentException("Factor clone() error.");
+        }
+    }
+
+    @Override
     public String toString() {
         switch(which){
             case 0:

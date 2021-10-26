@@ -27,6 +27,11 @@ public class Relation extends Condition{
     }
 
     @Override
+    public Node clone(){
+        return new Relation((Expr)left.clone(),operator,(Expr)right.clone());
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 

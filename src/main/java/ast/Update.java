@@ -19,6 +19,11 @@ public class Update extends AbstractNode{
     }
 
     @Override
+    public Node clone() {
+        return new Update((Mem) left.clone(),(Expr) right.clone());
+    }
+
+    @Override
     public String toString() {
         return left+" "+operator+" "+right;
     }

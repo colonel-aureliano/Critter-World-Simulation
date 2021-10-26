@@ -16,6 +16,15 @@ public class Command extends AbstractNode{
     }
 
     @Override
+    public Node clone(){
+        List<Node> ln = new ArrayList<>();
+        for (Node n: children){
+            ln.add(n.clone());
+        }
+        return new Command(ln);
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(children.get(0));

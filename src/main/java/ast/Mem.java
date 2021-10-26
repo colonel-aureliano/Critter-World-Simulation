@@ -18,6 +18,16 @@ public class Mem extends Expr{
     }
 
     @Override
+    public Node clone() {
+        if(i!=-1){
+            return new Mem(i);
+        }
+        else{
+            return new Mem((Expr) single.clone());
+        }
+    }
+
+    @Override
     public boolean classInv() {
         return (single!=null || i!=-1);
     }

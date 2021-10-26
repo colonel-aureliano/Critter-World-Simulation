@@ -1,5 +1,6 @@
 package ast;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -98,10 +99,7 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
-    public Node clone() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    public abstract Node clone();
 
     @Override
     public List<Node> getChildren() {

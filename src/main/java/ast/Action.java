@@ -39,6 +39,16 @@ public class Action extends AbstractNode {
     }
 
     @Override
+    public Node clone() {
+        if(operator== Operator.SERVE){
+            return new Action(operator, (Expr) single.clone());
+        }
+        else{
+            return new Action(operator);
+        }
+    }
+
+    @Override
     public String toString() {
         if(operator== Operator.SERVE){
             return operator.toString().toLowerCase()+"["+single+"]";

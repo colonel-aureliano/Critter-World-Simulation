@@ -2,6 +2,7 @@ package ast;
 
 import cms.util.maybe.Maybe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /** A data structure representing a critter program. */
@@ -32,6 +33,15 @@ public class ProgramImpl extends AbstractNode implements Program {
     @Override
     public NodeCategory getCategory() {
         return NodeCategory.PROGRAM;
+    }
+
+    @Override
+    public Node clone(){
+        List<Node> ln = new ArrayList<>();
+        for (Node n: children){
+            ln.add(n.clone());
+        }
+        return new ProgramImpl(ln);
     }
 
     @Override
