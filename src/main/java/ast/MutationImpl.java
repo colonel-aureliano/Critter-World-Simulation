@@ -41,8 +41,10 @@ public class MutationImpl implements Mutation {
 
                     int i = parent.getChildren().indexOf(node);
                     parent.getChildren().remove(i);
+                    if(parent instanceof Command){
+                        return Maybe.some(program);
+                    }
                     parent.getChildren().add(i,node.getChildren().get(0));
-
 
                     try {
                         int in = 1;
@@ -59,12 +61,15 @@ public class MutationImpl implements Mutation {
                 } catch (NoMaybeValue noMaybeValue) {
                     noMaybeValue.printStackTrace();
                 }
+                return Maybe.some(program);
             case 2:
                 List<Node> nodes = node.getChildren();
                 Node temp = nodes.get(0);
                 nodes.set(0, nodes.get(1));
                 nodes.set(1, temp);
                 return Maybe.some(program);
+            case 3:
+
         }
         return null;
     }
