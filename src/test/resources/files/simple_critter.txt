@@ -1,1 +1,1 @@
-1 = 0 --> forward;
+POSTURE != 17 --> mem[6]:= 51/3;

@@ -11,16 +11,8 @@ public class Command extends AbstractNode{
     /**
      * An AST representation of command.
      */
-    public Command() {
-        super(new ArrayList<Node>());
-    }
-
-    /**
-     * Add node n to the end of commands list.
-     * @param n
-     */
-    public void add(Node n) {
-        children.add(n);
+    public Command(List<Node> ln) {
+        super(ln);
     }
 
     @Override

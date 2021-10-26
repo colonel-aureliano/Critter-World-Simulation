@@ -24,11 +24,11 @@ class ParserImpl implements Parser {
      * @throws SyntaxError if the input tokens have invalid syntax
      */
     public static ProgramImpl parseProgram(Tokenizer t) throws SyntaxError {
-        List<Node> lr = new ArrayList<>();
+        List<Node> ln = new ArrayList<>();
         while (t.hasNext()){
-            lr.add(parseRule(t));
+            ln.add(parseRule(t));
         }
-        return new ProgramImpl(lr);
+        return new ProgramImpl(ln);
     }
 
     public static Rule parseRule(Tokenizer t) throws SyntaxError {
@@ -40,15 +40,16 @@ class ParserImpl implements Parser {
     }
 
     public static Command parseCommand(Tokenizer t) throws SyntaxError {
-        Command c = new Command();
+        List<Node> ln = new ArrayList<>();
+
         while (t.peek().getType() != TokenType.SEMICOLON) {
             if (t.peek().isAction()) {
-                c.add(parseAction(t));
+                ln.add(parseAction(t));
                 break;
             }
-            c.add(parseUpdate(t));
+            ln.add(parseUpdate(t));
         }
-        return c;
+        return new Command(ln);
     }
 
     public static Update parseUpdate(Tokenizer t) throws SyntaxError {
@@ -264,7 +265,12 @@ class ParserImpl implements Parser {
             case "mem":
                 consume(t, TokenType.MEM);
                 consume(t, TokenType.LBRACKET);
-                e = new Mem(parseExpression(t));
+                if(t.peek().getType().toString()=="<number>") {
+                    e = new Mem(Integer.valueOf(t.next().toString()));
+                }
+                else{
+                    e = new Mem(parseExpression(t));
+                }
                 consume(t, TokenType.RBRACKET);
                 break;
             case "(":

@@ -61,14 +61,40 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public Node nodeAt(int index) {
-        // TODO Auto-generated method stub
-        return null;
+        if(index==0){
+            return this;
+        }
+        switch(which){
+            case 0:
+                break;
+            case 1:
+                return single.nodeAt(index-1);
+            case 2:
+                try{
+                    return left.nodeAt(index-1);
+                }
+                catch (Exception e){
+                    return right.nodeAt(index-1-left.size());
+                }
+            case 3:
+                int t = 1;
+                for(Node n: children){
+                    try{
+                        return (n.nodeAt(index-t));
+                    }
+                    catch (Exception e){
+                        t+=n.size();
+                    }
+                }
+                break;
+        }
+        throw new IllegalArgumentException("nodeAt() called with illegal index.");
     }
 
     @Override
     public StringBuilder prettyPrint(StringBuilder sb) {
-        // TODO Auto-generated method stub
-        return null;
+        sb.append(this);
+        return sb;
     }
 
     @Override
@@ -87,7 +113,7 @@ public abstract class AbstractNode implements Node {
             case 3:
                 return children;
         }
-        throw new IllegalArgumentException("getChildren() is called on a leaf node.");
+        throw new IllegalArgumentException("getChildren() called on a leaf node.");
     }
 
     /**
