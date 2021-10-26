@@ -29,6 +29,7 @@ public class Rule extends AbstractNode {
     }
 
     public boolean classInv() {
-        return children.get(0)!=null && children.get(1)!=null;
+        return children.size()==2 && children.get(0) instanceof Condition
+                && children.get(1) instanceof Command;
     }
 }

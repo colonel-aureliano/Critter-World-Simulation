@@ -18,7 +18,6 @@ class AbstractNodeTest {
 
     @Test
     void test_nodeAt() throws SyntaxError {
-        System.out.println("-----------------------");
 
         String s = " 5 * (1 + 2) * 3 > 0 --> forward;";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
@@ -28,7 +27,7 @@ class AbstractNodeTest {
         Program p = parser.parse(r);
 
         StringBuilder sb = new StringBuilder();
-        System.out.println(p.prettyPrint(sb).toString());
+        //assert(p.prettyPrint(sb).toString().equals("1 = 0 --> forward;\n"));
 
         for (int i = 0; i < p.size(); i++) {
             System.out.println(p.nodeAt(i).getCategory());
@@ -39,7 +38,6 @@ class AbstractNodeTest {
             assert(true);
         }
 
-        System.out.println("-----------------------");
 
     }
 
@@ -122,7 +120,6 @@ class AbstractNodeTest {
 
         Mem m = new Mem(new Factor(5));
         assert(((Factor) n).setParent(m));
-        System.out.println(p);
         assert(p.toString().equals("1 = mem[0] --> forward;\n"));
     }
 
@@ -142,7 +139,7 @@ class AbstractNodeTest {
 
         BinaryCondition bc = new BinaryCondition(null,BinaryCondition.Operator.AND,null);
         assert(((Relation) n).setParent(bc));
-        System.out.println(p);
+        assert(p.toString().equals("1 = 0 and 1 = 0 --> forward;\n"));
     }
 
 }

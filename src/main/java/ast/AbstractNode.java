@@ -123,6 +123,8 @@ public abstract class AbstractNode implements Node {
         }
 
         try {
+            String oldParent = this.getParent().get().getClass().getSimpleName();
+
             AbstractNode n = (AbstractNode) this.getParent().get();
             int i = n.children.indexOf(this);
             n.children.remove(i);
@@ -138,12 +140,15 @@ public abstract class AbstractNode implements Node {
             int s = root.size();
 
             int t = -1;
-            // 0 means Expr
-            // 1 means Condition
-            // 2 means Command
-            // 3 means Rule
+            // t represents what nodes are needed to fill up children nodes in inserted node
+            // 0: Expr
+            // 1: Condition
+            // 2: Command
+            // 3: Rule
 
-            switch(this.getParent().getClass().getName()){
+            String newParent = p.getClass().getSimpleName();
+
+            switch(oldParent){
                 case "Mem":
                 case "Sensor":
                 case "Relation":
@@ -156,11 +161,16 @@ public abstract class AbstractNode implements Node {
                     t = 2;
                     break;
                 case "Rule":
-                    if (this.getClass().getName()=="Command"){
-                        t=1;
+                    if(oldParent.equals(newParent)){
+                        if (this.getClass().getSimpleName()=="Command"){
+                            t=1;
+                        }
+                        else{
+                            t=2;
+                        }
                     }
                     else{
-                        t=2;
+                        t=1;
                     }
                     break;
                 case "ProgramImpl":
@@ -184,6 +194,9 @@ public abstract class AbstractNode implements Node {
                         case 3:
                             if (!(root.nodeAt(index) instanceof Rule)) { continue;}
                             break;
+                    }
+                    if(root.nodeAt(index)==p){
+                        continue; // the child of a node cannot be itself
                     }
                     ((AbstractNode) p).children.add(root.nodeAt(index));
                     count--;

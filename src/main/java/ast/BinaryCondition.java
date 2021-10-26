@@ -54,6 +54,7 @@ public class BinaryCondition extends Condition {
     }
 
     public boolean classInv() {
-        return children.get(0)!=null && operator!=null && children.get(1)!=null;
+        return children.size()==2 && children.get(0) instanceof Condition
+                && children.get(1) instanceof Condition;
     }
 }

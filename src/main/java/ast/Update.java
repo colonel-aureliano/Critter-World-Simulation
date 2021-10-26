@@ -31,6 +31,7 @@ public class Update extends AbstractNode{
     // assert that children.get(0) is mem[expr]
     @Override
     public boolean classInv() {
-        return children.get(0)!=null && children.get(1)!=null;
+        return children.size()==2 && children.get(0) instanceof Mem
+                && children.get(1) instanceof Expr;
     }
 }

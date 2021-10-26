@@ -59,7 +59,8 @@ public class BinaryExpr extends Expr {
     }
 
     public boolean classInv() {
-        return children.get(0)!=null && operator!=null && children.get(1)!=null;
+        return children.size()==2 && children.get(0) instanceof Expr
+                && children.get(1) instanceof Expr;
     }
 
 }

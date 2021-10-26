@@ -53,7 +53,6 @@ public class ProgramImpl extends AbstractNode implements Program {
     }
 
     public boolean classInv() {
-        // TODO
-        return false;
+        return children.size()!=0 && children.stream().allMatch(x -> x instanceof Rule);
     }
 }

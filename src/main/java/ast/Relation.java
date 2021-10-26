@@ -58,6 +58,8 @@ public class Relation extends Condition{
                 break;
         }
 
+        //System.out.println("here");
+
         sb.append(children.get(1));
 
         return sb.toString();
@@ -65,6 +67,7 @@ public class Relation extends Condition{
 
     @Override
     public boolean classInv() {
-        return children.get(0)!=null && children.get(1)!=null && operator!=null;
+        return children.size()==2 && children.get(0) instanceof Expr
+                && children.get(1) instanceof Expr;
     }
 }

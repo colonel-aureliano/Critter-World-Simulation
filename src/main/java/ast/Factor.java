@@ -69,8 +69,8 @@ public class Factor extends Expr {
 
     @Override
     public boolean classInv() {
-        return (which==0 && value>=0) ||
-                (which==1 && operator==Operator.NEGATIVE && children.get(0)!=null) ||
-                (which==2 && children.get(0)!=null);
+        return (which==0 && value>=0 && children==null) ||
+                (which==1 && operator==Operator.NEGATIVE && children.get(0) instanceof Factor) ||
+                (which==2 && children.get(0) instanceof Factor);
     }
 }

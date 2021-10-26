@@ -24,7 +24,8 @@ public class ParserTest {
         InputStream in = ClassLoader.getSystemResourceAsStream("files/draw_critter.txt");
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
-        try{Program prog = parser.parse(r);}
+        try{Program prog = parser.parse(r);
+            System.out.println(prog);}
         catch(SyntaxError e){
             fail("A valid program should not have syntax errors");
         }

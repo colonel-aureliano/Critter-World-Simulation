@@ -61,7 +61,7 @@ public class Sensor extends Expr {
 
     @Override
     public boolean classInv() {
-        return (operator!=null && children.get(0)!= null) ||
-                (operator==Operator.SMELL && children.get(0)== null);
+        return (children.size()==1 && children.get(0) instanceof Expr) ||
+                (operator==Operator.SMELL && children==null);
     }
 }

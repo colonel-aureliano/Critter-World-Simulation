@@ -50,7 +50,7 @@ public class Action extends AbstractNode {
 
     @Override
     public String toString() {
-        if(operator== Operator.SERVE){
+        if(operator==Operator.SERVE){
             return operator.toString().toLowerCase()+"["+children.get(0)+"]";
         }
         return operator.toString().toLowerCase();
@@ -63,7 +63,7 @@ public class Action extends AbstractNode {
 
     @Override
     public boolean classInv() {
-        return (operator!=null && children.get(0)== null) ||
-                (operator==Operator.SERVE && children.get(0)!= null);
+        return (operator!=null && children.size() == 0) ||
+                (operator==Operator.SERVE && children.size()==1 && children.get(0) instanceof Expr);
     }
 }

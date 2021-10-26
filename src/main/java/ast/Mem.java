@@ -29,7 +29,7 @@ public class Mem extends Expr{
 
     @Override
     public boolean classInv() {
-        return (children.get(0)!=null || i!=-1);
+        return (children.size()==1 && children.get(0) instanceof Expr || i!=-1);
     }
     
 }
