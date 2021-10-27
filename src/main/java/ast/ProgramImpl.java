@@ -9,7 +9,7 @@ import java.util.List;
 public class ProgramImpl extends AbstractNode implements Program {
 
     public ProgramImpl(List<Node> lr){
-        super(lr);
+        super(lr); // a list of rules
         setRoot(this);
     }
 

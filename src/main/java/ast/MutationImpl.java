@@ -57,20 +57,19 @@ public class MutationImpl implements Mutation {
                             in++;
                         }
                     } catch(Exception e){
-                        System.err.println("canApply() does not catch an invalid" +
-                                "node attempting to undergo Mutation 1");
+                        System.err.println("canApply() didn't catch an invalid node attempting to undergo Mutation 1");
                         return Maybe.none();
                     }
                 } catch (NoMaybeValue noMaybeValue) {
                     noMaybeValue.printStackTrace();
                 }
-                return Maybe.some(program);
+                break;
             case 2:
                 List<Node> nodes = node.getChildren();
                 Node temp = nodes.get(0);
                 nodes.set(0, nodes.get(1));
                 nodes.set(1, temp);
-                return Maybe.some(program);
+                break;
             case 3:
                 String c = node.getClass().getSimpleName();
                 Node root = ((AbstractNode) node).getRoot();
@@ -96,103 +95,36 @@ public class MutationImpl implements Mutation {
                 try {
                     Node parent = ((AbstractNode) node).getParent().get();
                     int i = parent.getChildren().indexOf(node);
-                    parent.getChildren().remove(i);
-                    parent.getChildren().add(i,replacement);
-                    return Maybe.some(program);
+                    parent.getChildren().set(i,replacement);
                 } catch (NoMaybeValue noMaybeValue) {
                     return Maybe.none();
                 }
+                break;
             case 4:
                 // Mutation 4 if successful gurantees that the mutated node is different from the original node.
 
                 rand = new Random();
                 if(node instanceof Action){
-                    Action.Operator operator = null;
+                    Action.Operator operator;
                     do {
                         int i = rand.nextInt(10);
-                        switch(i){
-                            case 0:
-                                operator = Action.Operator.WAIT;
-                                break;
-                            case 1:
-                                operator = Action.Operator.FORWARD;
-                                break;
-                            case 2:
-                                operator = Action.Operator.BACKWARD;
-                                break;
-                            case 3:
-                                operator = Action.Operator.LEFT;
-                                break;
-                            case 4:
-                                operator = Action.Operator.RIGHT;
-                                break;
-                            case 5:
-                                operator = Action.Operator.EAT;
-                                break;
-                            case 6:
-                                operator = Action.Operator.ATTACK;
-                                break;
-                            case 7:
-                                operator = Action.Operator.GROW;
-                                break;
-                            case 8:
-                                operator = Action.Operator.BUD;
-                                break;
-                            case 9:
-                                operator = Action.Operator.MATE;
-                                break;
-                        }
+                        operator=getActionOperator(i);
                     } while(!((Action) node).resetOperator(operator));
                 }
 
                 if(node instanceof BinaryExpr){
-                    BinaryExpr.Operator operator = null;
+                    BinaryExpr.Operator operator;
                     do{
                         int i = rand.nextInt(5);
-                        switch(i){
-                            case 0:
-                                operator= BinaryExpr.Operator.PLUS;
-                                break;
-                            case 1:
-                                operator= BinaryExpr.Operator.MINUS;
-                                break;
-                            case 2:
-                                operator= BinaryExpr.Operator.MULTIPLY;
-                                break;
-                            case 3:
-                                operator= BinaryExpr.Operator.DIVIDE;
-                                break;
-                            case 4:
-                                operator= BinaryExpr.Operator.MOD;
-                                break;
-                        }
+                        operator = getBinaryExprOperator(i);
                     }while(!((BinaryExpr) node).resetOperator(operator));
                 }
 
                 if(node instanceof Relation){
-                    Relation.Operator operator = null;
+                    Relation.Operator operator;
                     do{
                         int i = rand.nextInt(6);
-                        switch(i){
-                            case 0:
-                                operator=Relation.Operator.LESS_THAN;
-                                break;
-                            case 1:
-                                operator=Relation.Operator.LESS_THAN_OR_EQUAl;
-                                break;
-                            case 2:
-                                operator=Relation.Operator.GREATER_THAN;
-                                break;
-                            case 3:
-                                operator=Relation.Operator.GREATER_THAN_OR_EQUAL;
-                                break;
-                            case 4:
-                                operator=Relation.Operator.EQUAL;
-                                break;
-                            case 5:
-                                operator=Relation.Operator.NOT_EQUAL;
-                                break;
-                        }
+                        operator = getRelationOperator(i);
                     }while(!((Relation) node).resetOperator(operator));
                 }
 
@@ -209,20 +141,19 @@ public class MutationImpl implements Mutation {
                             replacement = new Factor(i);
                         } while (node.toString().equals(replacement.toString()));
                     } catch (Exception e) {
-                        System.err.println("canApply() does not catch an invalid" +
-                                "node attempting to undergo Mutation 4"); // TODO need to comment out
+                        System.err.println("canApply() didn't catch an invalid node attempting to undergo Mutation 4");
                         return Maybe.none();
                     }
                     try {
                         Node parent = ((AbstractNode) node).getParent().get();
                         int in = parent.getChildren().indexOf(node);
-                        parent.getChildren().remove(in);
-                        parent.getChildren().add(in,replacement);
+                        parent.getChildren().set(in,replacement);
                     } catch (NoMaybeValue noMaybeValue) {
                         return Maybe.none();
                     }
                 }
-                return Maybe.some(program);
+                break;
+
             case 5:
                 if(node instanceof Factor){
                     // Parent of factor is either Mem(0) or Sensor(1) or BinaryExpr or Relation.
@@ -261,8 +192,156 @@ public class MutationImpl implements Mutation {
                     }
                 }
 
+                if(node instanceof Relation | node instanceof BinaryCondition){
+                    try{
+                        Node p = ((Condition) node).getParent().get();
+
+                        int i = rand.nextInt(2);
+                        BinaryCondition.Operator o = getBinaryConditionOperator(i);
+                        i = rand.nextInt(6);
+                        Relation.Operator operator = getRelationOperator(i);
+                        BinaryCondition b = new BinaryCondition((Condition) node,o,
+                                new Relation(new Factor((int) (100*rand.nextDouble())),operator,
+                                        new Factor((int) (100*rand.nextDouble()))));
+
+                        if(p instanceof BinaryCondition){
+                            int in = p.getChildren().indexOf(node);
+                            p.getChildren().set(in,b);
+                        }
+                        else if(p instanceof Rule){
+                            int in = p.getChildren().indexOf(node);
+                            p.getChildren().set(in,b);
+                        }
+                        else{
+                            System.err.println("canApply() didn't catch an invalid node attempting to undergo Mutation 5");
+                            return Maybe.none();
+                        }
+                    } catch (NoMaybeValue noMaybeValue) {
+                        noMaybeValue.printStackTrace();
+                    }
+
+                }
+
+                if(node instanceof Mem){
+                    // Acceptable direct paretns of Mem are Relation, BinaryExpr, and Update.
+                    // The latter two do not allow Mutation 5.
+                    try {
+                        Node p = ((Condition) node).getParent().get();
+                        // Parent is Relation
+                        if(p instanceof Relation){
+                            BinaryExpr.Operator operator= getBinaryExprOperator(rand.nextInt(5));
+                            BinaryExpr be = new BinaryExpr((Expr) node,operator,new Factor((int) (100*rand.nextDouble())));
+                        }
+                        else{
+                            System.err.println("canApply() didn't catch an invalid node attempting to undergo Mutation 5");
+                            return Maybe.none();
+                        }
+
+                    } catch (NoMaybeValue noMaybeValue) {
+                        noMaybeValue.printStackTrace();
+                    }
+                }
+                break;
+
+            case 6:
+                if (node instanceof ProgramImpl){
+                    // should append a randomly selected Rule
+                    int n = node.getChildren().size();
+                    int in = rand.nextInt(n);
+                    node.getChildren().add(node.getChildren().get(in));
+                }
+                else if(node instanceof Command){
+                    // should append a randomly selected Update
+                    int n = node.getChildren().size();
+                    int in = rand.nextInt(n);
+                    if(node.getChildren().get(n-1) instanceof Action){
+                        if(in==n-1){
+                            in--;
+                        }
+                        node.getChildren().add(in,node.getChildren().get(in));
+                    }
+                    else{
+                        node.getChildren().add(node.getChildren().get(in));
+                    }
+                }
+                else{
+                    System.err.println("canApply() didn't catch an invalid node attempting to undergo Mutation 6");
+                    return Maybe.none();
+                }
+                break;
+
         }
         return Maybe.some(program);
+    }
+
+    private Action.Operator getActionOperator(int i){
+        switch(i){
+            case 0:
+                return Action.Operator.WAIT;
+            case 1:
+                return Action.Operator.FORWARD;
+            case 2:
+                return Action.Operator.BACKWARD;
+            case 3:
+                return Action.Operator.LEFT;
+            case 4:
+                return Action.Operator.RIGHT;
+            case 5:
+                return Action.Operator.EAT;
+            case 6:
+                return Action.Operator.ATTACK;
+            case 7:
+                return Action.Operator.GROW;
+            case 8:
+                return Action.Operator.BUD;
+            case 9:
+                return Action.Operator.MATE;
+        }
+        throw new IllegalArgumentException ("getActionOperator error.");
+    }
+
+    private BinaryCondition.Operator getBinaryConditionOperator(int i){
+        switch(i){
+            case 0:
+                return BinaryCondition.Operator.AND;
+            case 1:
+                return BinaryCondition.Operator.OR;
+        }
+        throw new IllegalArgumentException ("getBinaryConditionOperator error.");
+    }
+
+    private Relation.Operator getRelationOperator(int i) {
+        switch(i){
+            case 0:
+                return Relation.Operator.LESS_THAN;
+            case 1:
+                return Relation.Operator.LESS_THAN_OR_EQUAl;
+            case 2:
+                return Relation.Operator.GREATER_THAN;
+            case 3:
+                return Relation.Operator.GREATER_THAN_OR_EQUAL;
+            case 4:
+                return Relation.Operator.EQUAL;
+            case 5:
+                return Relation.Operator.NOT_EQUAL;
+        }
+        throw new IllegalArgumentException ("getRelationOperator error.");
+    }
+
+    private BinaryExpr.Operator getBinaryExprOperator(int i) {
+        switch(i){
+            case 0:
+                return BinaryExpr.Operator.PLUS;
+            case 1:
+                return BinaryExpr.Operator.MINUS;
+            case 2:
+                return BinaryExpr.Operator.MULTIPLY;
+            case 3:
+                return BinaryExpr.Operator.DIVIDE;
+            case 4:
+                return BinaryExpr.Operator.MOD;
+        }
+        throw new IllegalArgumentException ("getBinaryExprOperator error.");
     }
 
     @Override
@@ -320,7 +399,8 @@ public class MutationImpl implements Mutation {
                     return false;
                 }
                 try {
-                    if (n instanceof Mem && ((Mem) n).getParent().get() instanceof Update){
+                    if (n instanceof Mem && (((Mem) n).getParent().get() instanceof Update
+                            || ((Mem) n).getParent().get() instanceof BinaryExpr)){
                         // Update, the parent of Mem, has to be the parent of Mem.
                         // Mem can't be the parent of itself.
                         return false;
@@ -330,6 +410,9 @@ public class MutationImpl implements Mutation {
                 }
                 return n.getCategory() != NodeCategory.PROGRAM;
             case 6:
+                if(n.getChildren().size()==1 && n.getChildren().get(0).getCategory()==NodeCategory.ACTION){
+                    return false;
+                }
                 return n.getCategory() == NodeCategory.PROGRAM | n.getCategory() == NodeCategory.COMMAND;
             default:
                 throw new IllegalArgumentException("Unsupported Mutation");

@@ -67,7 +67,7 @@ class MutationImplTest_Yanny {
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
-        // p.nodeAt(23) is an Action, expressing "backward"
+        // p.nodeAt(23) is an Action, representing "backward"
 
         Mutation m = new MutationImpl(4);
 
@@ -129,13 +129,14 @@ class MutationImplTest_Yanny {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        // p.nodeAt(4) is a Factor, representign "1"
+        // p.nodeAt(4) is a Factor, representing "1"
 
         Mutation m = new MutationImpl(4);
 
         Node n = m.apply(p,p.nodeAt(4)).get(); // mutating "1"
         System.out.println(n);
     }
+
     @Test
     void test_mutation5_1() throws SyntaxError, NoMaybeValue {
         String s = "1+3 = 0 --> bud;";
@@ -148,5 +149,47 @@ class MutationImplTest_Yanny {
 
         Node n = m.apply(p,p.nodeAt(4)).get(); // mutating "1", inserting a random Node at this Node
         System.out.println(n);
+    }
+
+    @Test
+    void test_mutation5_2() throws SyntaxError, NoMaybeValue {
+        String s = "1+3 = 0 --> bud;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+
+        Mutation m = new MutationImpl(5);
+
+        Node n = m.apply(p,p.nodeAt(2)).get(); // mutating "1+3 = 0", inserting a random Node at this Node
+        System.out.println(n);
+    }
+
+    @Test
+    void test_mutation6_1() throws SyntaxError, NoMaybeValue {
+        String s = "nearby[3] = 0 and ENERGY > 2500 --> bud;\nnearby[0] > 0 and nearby[3] = 0 --> backward;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+
+        Mutation m = new MutationImpl(6);
+
+        Node n = m.apply(p,p.nodeAt(0)).get(); // mutating ProgramImpl, inserting a random rule from AST
+        System.out.println(n);
+    }
+
+    @Test
+    void test_mutation6_2() throws SyntaxError, NoMaybeValue {
+        String s = "POSTURE != 17 --> POSTURE := 17;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+
+        Mutation m = new MutationImpl(6);
+
+        Node n = m.apply(p,p.nodeAt(5)).get(); // mutating Command "POSTURE := 17", inserting a random Update from AST
+        assert(n.toString().equals("mem[6] != 17 --> mem[6] := 17\n\tmem[6] := 17;\n"));
     }
 }
