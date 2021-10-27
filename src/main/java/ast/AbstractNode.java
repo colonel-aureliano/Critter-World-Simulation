@@ -22,7 +22,7 @@ public abstract class AbstractNode implements Node {
     }
 
     protected void setRoot(Node n){
-        root=n;
+        root = n;
     }
 
     public AbstractNode(){
@@ -94,13 +94,13 @@ public abstract class AbstractNode implements Node {
      * This method does not need to be implemented and may be removed from the interface.
      */
     public Maybe<Node> getParent() {
-        if(this==root){
+        if(this == root){
             return Maybe.none();
         }
         else{
             Node n;
             for (int i = 0; i < root.size(); i++){
-                n=root.nodeAt(i);
+                n = root.nodeAt(i);
                 try{
                     if(n.getChildren().contains(this)){
                         return Maybe.some(n);

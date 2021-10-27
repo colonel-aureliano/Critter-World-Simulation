@@ -25,7 +25,11 @@ public class Rule extends AbstractNode {
 
     @Override
     public String toString(){
-        return children.get(0)+" "+operator+" "+children.get(1)+";"+'\n';
+        return visit(new PrintVisitor());
+    }
+
+    private String visit(Visitor v) {
+        return v.visit(this, operator);
     }
 
     public boolean classInv() {

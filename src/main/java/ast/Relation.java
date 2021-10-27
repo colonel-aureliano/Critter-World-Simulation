@@ -49,35 +49,12 @@ public class Relation extends Condition{
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(children.get(0));
-
-        switch(operator){
-            case EQUAL:
-                sb.append(" = ");
-                break;
-            case LESS_THAN:
-                sb.append(" < ");
-                break;
-            case NOT_EQUAL:
-                sb.append(" != ");
-                break;
-            case GREATER_THAN:
-                sb.append(" > ");
-                break;
-            case GREATER_THAN_OR_EQUAL:
-                sb.append(" >= ");
-                break;
-            case LESS_THAN_OR_EQUAl:
-                sb.append(" <= ");
-                break;
-        }
-
-        sb.append(children.get(1));
-
-        return sb.toString();
+        return visit(new PrintVisitor());
     }
+
+    private String visit(Visitor v) { return v.visit(this, operator); }
+
+
 
     @Override
     public boolean classInv() {

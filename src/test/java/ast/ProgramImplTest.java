@@ -13,16 +13,25 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProgramImplTest {
 
     @Test
-    public void mutation2() throws SyntaxError {
-        String s = "1 = 0 --> forward;";
-
+    public void testClass() throws SyntaxError {
+        String s = "(ahead[1] / 10 mod 100) != 17 and ahead[1] > 0 --> attack;";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
+        for (int i = 1; i < p.size(); i++) {
+            System.out.println(p.nodeAt(i).toString() + '\t' + p.nodeAt(i).getClass().getSimpleName());
+        }
+    }
 
-        p.mutate(2,new MutationImpl(2));
+    @Test
+    public void testPrint() throws SyntaxError {
+        InputStream in = ClassLoader.getSystemResourceAsStream("files/example-rules.txt");
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
         System.out.println(p);
     }
+
 
 }

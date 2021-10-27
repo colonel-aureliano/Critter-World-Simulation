@@ -66,10 +66,11 @@ public class Action extends AbstractNode {
 
     @Override
     public String toString() {
-        if(operator==Operator.SERVE){
-            return operator.toString().toLowerCase()+"["+children.get(0)+"]";
-        }
-        return operator.toString().toLowerCase();
+        return visit(new PrintVisitor());
+    }
+
+    private String visit(Visitor v){
+        return v.visit(this, operator);
     }
 
     @Override

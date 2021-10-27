@@ -56,15 +56,11 @@ public class Factor extends Expr {
 
     @Override
     public String toString() {
-        switch(which){
-            case 0:
-                return String.valueOf(value);
-            case 1:
-                return "-"+children.get(0);
-            case 2:
-                return "("+children.get(0)+")";
-        }
-        return "Factor class toString() error.";
+        return visit(new PrintVisitor());
+    }
+
+    private String visit(Visitor v){
+        return v.visit(this, which, value);
     }
 
     @Override

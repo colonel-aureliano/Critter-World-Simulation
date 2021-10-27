@@ -41,22 +41,12 @@ public class Sensor extends Expr {
     }
 
     @Override
-    public String toString() {
+    public String toString(){
+        return visit(new PrintVisitor());
+    }
 
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(operator.toString().toLowerCase());
-
-        switch(operator){
-            case AHEAD:
-            case NEARBY:
-            case RANDOM:
-                sb.append('[');
-                sb.append(children.get(0));
-                sb.append(']');
-        }
-
-        return sb.toString();
+    private String visit(Visitor v) {
+        return v.visit(this, operator);
     }
 
     @Override

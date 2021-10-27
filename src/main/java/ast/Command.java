@@ -25,13 +25,12 @@ public class Command extends AbstractNode{
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(children.get(0));
-        for (int i = 1; i < children.size(); i++){
-            sb.append("\n"+"\t"+children.get(i));
-        }
-        return sb.toString();
+    public String toString(){
+        return visit(new PrintVisitor());
+    }
+
+    private String visit(Visitor v) {
+        return v.visit(this);
     }
 
     @Override

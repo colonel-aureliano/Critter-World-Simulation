@@ -48,30 +48,11 @@ public class BinaryExpr extends Expr {
 
     @Override
     public String toString(){
-        StringBuilder sb = new StringBuilder();
-        sb.append(children.get(0));
+        return visit(new PrintVisitor());
+    }
 
-        switch(operator){
-            case PLUS:
-                sb.append(" + ");
-                break;
-            case MINUS:
-                sb.append(" - ");
-                break;
-            case MULTIPLY:
-                sb.append(" * ");
-                break;
-            case DIVIDE:
-                sb.append(" / ");
-                break;
-            case MOD:
-                sb.append(" mod ");
-                break;
-        }
-
-        sb.append(children.get(1));
-
-        return sb.toString();
+    private String visit(Visitor v) {
+        return v.visit(this, operator);
     }
 
     public boolean classInv() {

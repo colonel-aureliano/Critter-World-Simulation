@@ -25,7 +25,11 @@ public class Update extends AbstractNode{
 
     @Override
     public String toString() {
-        return children.get(0)+" "+operator+" "+children.get(1);
+        return visit(new PrintVisitor());
+    }
+
+    private String visit(Visitor v){
+        return v.visit(this, operator);
     }
 
     // assert that children.get(0) is mem[expr]
