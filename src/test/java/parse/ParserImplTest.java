@@ -5,10 +5,8 @@ import exceptions.SyntaxError;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 
 class ParserImplTest {
@@ -48,6 +46,15 @@ class ParserImplTest {
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         parser.parse(r);
+    }
+
+    @Test
+    void testSmell() throws SyntaxError{
+        String s = "smell+3 = 0 --> bud;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
     }
 
 }

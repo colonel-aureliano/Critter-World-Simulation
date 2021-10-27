@@ -105,7 +105,7 @@ public abstract class AbstractNode implements Node {
                     if(n.getChildren().contains(this)){
                         return Maybe.some(n);
                     }
-                } catch (IllegalArgumentException e) {
+                } catch (Exception e) {
                     continue;
                 }
             }
@@ -208,7 +208,6 @@ public abstract class AbstractNode implements Node {
                     continue;
                 }
             }
-
             return true;
         } catch (NoMaybeValue noMaybeValue) {
             return false;

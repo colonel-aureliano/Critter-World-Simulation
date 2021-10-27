@@ -316,9 +316,7 @@ class ParserImpl implements Parser {
                 break;
             case "smell":
                 consume(t, TokenType.SMELL);
-                consume(t, TokenType.LBRACKET);
                 e = new Sensor(Sensor.Operator.SMELL);
-                consume(t, TokenType.RBRACKET);
                 break;
             default:
                 throw new SyntaxError(t.peek().lineNumber(), "Sensor Syntax Syntax Error");

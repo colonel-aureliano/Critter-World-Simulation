@@ -35,6 +35,8 @@ public class MutationImpl implements Mutation {
     @Override
     public Maybe<Program> apply(Program program, Node node) {
         if (!canApply(node) ) return Maybe.none();
+        Random rand = new Random();
+
         switch (type) {
             case 1:
                 try {
@@ -73,7 +75,6 @@ public class MutationImpl implements Mutation {
                 String c = node.getClass().getSimpleName();
                 Node root = ((AbstractNode) node).getRoot();
                 int size = root.size();
-                Random rand = new Random();
 
                 Node replacement;
                 int z = 0;
@@ -223,9 +224,45 @@ public class MutationImpl implements Mutation {
                 }
                 return Maybe.some(program);
             case 5:
+                if(node instanceof Factor){
+                    // Parent of factor is either Mem(0) or Sensor(1) or BinaryExpr or Relation.
+                    int which = -1; // which tyep of node to insert
+                    try {
+                        Node p = ((Factor) node).getParent().get();
+                        if (p instanceof Relation || p instanceof Mem || p instanceof Sensor
+                                || p instanceof BinaryExpr){
+                            which=rand.nextInt(2);
+                        }
+                        switch(which){
+                            case 0:
+                                Mem m = new Mem(new Factor(0));
+                                ((Factor) node).setParent(m);
+                                break;
+                            case 1:
+                                int l = rand.nextInt(3);
+                                Sensor.Operator o = null;
+                                switch(l){
+                                    case 0:
+                                        o= Sensor.Operator.NEARBY;
+                                        break;
+                                    case 1:
+                                        o= Sensor.Operator.AHEAD;
+                                        break;
+                                    case 2:
+                                        o= Sensor.Operator.RANDOM;
+                                        break;
+                                }
+                                Sensor s=new Sensor(o,null);
+                                ((Factor) node).setParent(s);
+                                break;
+                        }
+                    } catch (NoMaybeValue e) {
+                        e.printStackTrace();
+                    }
+                }
 
         }
-        return null;
+        return Maybe.some(program);
     }
 
     @Override
@@ -269,6 +306,28 @@ public class MutationImpl implements Mutation {
                 }
                 return true;
             case 5:
+                // A: parent of Node B
+                // B
+                // C: the Node to be inserted
+                // A is a valid parent of C / C is a valid child of A
+                // B is a valid child of C / C is a valid parent of B
+                if(n instanceof Action || n instanceof Update){
+                    // Command, only parent of Action and Update, can't be the parent of itself.
+                    return false;
+                }
+                if(n instanceof Command){
+                    // Rule, only parent of Command, can't be the parent of itself.
+                    return false;
+                }
+                try {
+                    if (n instanceof Mem && ((Mem) n).getParent().get() instanceof Update){
+                        // Update, the parent of Mem, has to be the parent of Mem.
+                        // Mem can't be the parent of itself.
+                        return false;
+                    }
+                } catch (NoMaybeValue noMaybeValue) {
+                    noMaybeValue.printStackTrace();
+                }
                 return n.getCategory() != NodeCategory.PROGRAM;
             case 6:
                 return n.getCategory() == NodeCategory.PROGRAM | n.getCategory() == NodeCategory.COMMAND;

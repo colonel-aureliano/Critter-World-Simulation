@@ -136,4 +136,17 @@ class MutationImplTest_Yanny {
         Node n = m.apply(p,p.nodeAt(4)).get(); // mutating "1"
         System.out.println(n);
     }
+    @Test
+    void test_mutation5_1() throws SyntaxError, NoMaybeValue {
+        String s = "1+3 = 0 --> bud;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+
+        Mutation m = new MutationImpl(5);
+
+        Node n = m.apply(p,p.nodeAt(4)).get(); // mutating "1", inserting a random Node at this Node
+        System.out.println(n);
+    }
 }
