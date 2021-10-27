@@ -58,8 +58,6 @@ public class Relation extends Condition{
                 break;
         }
 
-        //System.out.println("here");
-
         sb.append(children.get(1));
 
         return sb.toString();
