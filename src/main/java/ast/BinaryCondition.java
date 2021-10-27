@@ -17,6 +17,20 @@ public class BinaryCondition extends Condition {
         operator = op;
     }
 
+    /**
+     * Resets the operator of this node.
+     * Intended to be called only by MutationImpl.
+     * @return
+     */
+    protected void resetOperator(){
+        if(operator.equals(Operator.OR)){
+            operator=Operator.AND;
+        }
+        else{
+            operator=Operator.OR;
+        }
+    }
+
     /** An enumeration of all possible binary condition operators. */
     public enum Operator {
         OR,

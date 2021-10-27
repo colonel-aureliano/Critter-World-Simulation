@@ -102,7 +102,7 @@ class MutationImplTest_Yanny {
         Mutation m = new MutationImpl(4);
 
         Node n = m.apply(p,p.nodeAt(2)).get(); // mutating "and"
-        System.out.println(n);
+        assert(n.toString().equals("1 + 3 = 0 or mem[4] > 2500 --> bud;\n"));
     }
 
     @Test
@@ -113,11 +113,11 @@ class MutationImplTest_Yanny {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        // p.nodeAt(4) is a Factor, representign "1"
+        // p.nodeAt(2) is a Relation, representing "1 + 3 = 0"
 
         Mutation m = new MutationImpl(4);
 
-        Node n = m.apply(p,p.nodeAt(4)).get(); // mutating "1"
+        Node n = m.apply(p,p.nodeAt(2)).get(); // mutating "="
         System.out.println(n);
     }
 
@@ -129,11 +129,11 @@ class MutationImplTest_Yanny {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        // p.nodeAt(2) is a Relation, representign "1 + 3 = 0"
+        // p.nodeAt(4) is a Factor, representign "1"
 
         Mutation m = new MutationImpl(4);
 
-        Node n = m.apply(p,p.nodeAt(2)).get(); // mutating "="
+        Node n = m.apply(p,p.nodeAt(4)).get(); // mutating "1"
         System.out.println(n);
     }
 }

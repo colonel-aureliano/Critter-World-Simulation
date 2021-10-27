@@ -38,6 +38,22 @@ public class Action extends AbstractNode {
         SERVE
     }
 
+    /**
+     * Resets the operator of this node.
+     * Intended to be called only by MutationImpl.
+     * @param o
+     * @return
+     */
+    protected boolean resetOperator(Operator o){
+        if(operator.equals(o)){
+            return false;
+        }
+        else{
+            operator=o;
+            return true;
+        }
+    }
+
     @Override
     public Node clone() {
         if(operator== Operator.SERVE){

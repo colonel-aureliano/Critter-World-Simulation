@@ -102,19 +102,13 @@ public class MutationImpl implements Mutation {
                     return Maybe.none();
                 }
             case 4:
-                List<Node> ln;
-                try{
-                    ln=node.getChildren();
-                } catch (Exception e){
-                    ln=null;
-                }
+                // Mutation 4 if successful gurantees that the mutated node is different from the original node.
 
                 rand = new Random();
-                replacement = null;
                 if(node instanceof Action){
+                    Action.Operator operator = null;
                     do {
                         int i = rand.nextInt(10);
-                        Action.Operator operator = null;
                         switch(i){
                             case 0:
                                 operator = Action.Operator.WAIT;
@@ -147,14 +141,13 @@ public class MutationImpl implements Mutation {
                                 operator = Action.Operator.MATE;
                                 break;
                         }
-                        replacement = new Action(operator);
-                    } while(replacement.toString().equals(node.toString()));
+                    } while(!((Action) node).resetOperator(operator));
                 }
 
                 if(node instanceof BinaryExpr){
+                    BinaryExpr.Operator operator = null;
                     do{
                         int i = rand.nextInt(5);
-                        BinaryExpr.Operator operator = null;
                         switch(i){
                             case 0:
                                 operator= BinaryExpr.Operator.PLUS;
@@ -172,40 +165,13 @@ public class MutationImpl implements Mutation {
                                 operator= BinaryExpr.Operator.MOD;
                                 break;
                         }
-                        replacement = new BinaryExpr((Expr)ln.get(0),operator,(Expr)ln.get(1));
-                    }while(replacement.toString().equals(node.toString()));
-                }
-
-                if(node instanceof BinaryCondition){
-                    BinaryCondition.Operator o;
-                    if(node.toString().contains("and")){
-                         o = BinaryCondition.Operator.OR;
-                    }
-                    else{
-                        o = BinaryCondition.Operator.AND;
-                    }
-                    replacement = new BinaryCondition((Condition)ln.get(0),o,(Condition)ln.get(1));
-                }
-
-                if(node instanceof Factor){
-                    int i;
-                    try{
-                        do {
-                            i = Integer.parseInt(node.toString());
-                            i += java.lang.Integer.MAX_VALUE / rand.nextInt();
-                            replacement = new Factor(i);
-                        }while(node.toString().equals(replacement.toString()));
-                    } catch(Exception e){
-                        System.err.println("canApply() does not catch an invalid" +
-                                "node attempting to undergo Mutation 4");
-                        return Maybe.none();
-                    }
+                    }while(!((BinaryExpr) node).resetOperator(operator));
                 }
 
                 if(node instanceof Relation){
+                    Relation.Operator operator = null;
                     do{
                         int i = rand.nextInt(6);
-                        Relation.Operator operator = null;
                         switch(i){
                             case 0:
                                 operator=Relation.Operator.LESS_THAN;
@@ -226,19 +192,36 @@ public class MutationImpl implements Mutation {
                                 operator=Relation.Operator.NOT_EQUAL;
                                 break;
                         }
-                        replacement = new Relation((Expr)ln.get(0),operator,(Expr)ln.get(1));
-                    }while(replacement.toString().equals(node.toString()));
+                    }while(!((Relation) node).resetOperator(operator));
                 }
 
-                try {
-                    Node parent = ((AbstractNode) node).getParent().get();
-                    int i = parent.getChildren().indexOf(node);
-                    parent.getChildren().remove(i);
-                    parent.getChildren().add(i,replacement);
-                    return Maybe.some(program);
-                } catch (NoMaybeValue noMaybeValue) {
-                    return Maybe.none();
+                if(node instanceof BinaryCondition){
+                    ((BinaryCondition) node).resetOperator();
                 }
+
+                if(node instanceof Factor) {
+                    int i;
+                    try {
+                        do {
+                            i = Integer.parseInt(node.toString());
+                            i += java.lang.Integer.MAX_VALUE / rand.nextInt();
+                            replacement = new Factor(i);
+                        } while (node.toString().equals(replacement.toString()));
+                    } catch (Exception e) {
+                        System.err.println("canApply() does not catch an invalid" +
+                                "node attempting to undergo Mutation 4"); // TODO need to comment out
+                        return Maybe.none();
+                    }
+                    try {
+                        Node parent = ((AbstractNode) node).getParent().get();
+                        int in = parent.getChildren().indexOf(node);
+                        parent.getChildren().remove(in);
+                        parent.getChildren().add(in,replacement);
+                    } catch (NoMaybeValue noMaybeValue) {
+                        return Maybe.none();
+                    }
+                }
+                return Maybe.some(program);
             case 5:
 
         }

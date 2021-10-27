@@ -25,6 +25,22 @@ public class BinaryExpr extends Expr {
         MOD;
     }
 
+    /**
+     * Resets the operator of this node.
+     * Intended to be called only by MutationImpl.
+     * @param o
+     * @return
+     */
+    protected boolean resetOperator(BinaryExpr.Operator o){
+        if(operator.equals(o)){
+            return false;
+        }
+        else{
+            operator=o;
+            return true;
+        }
+    }
+
     @Override
     public Node clone() {
         return new BinaryExpr((Expr) children.get(0).clone(),operator,(Expr) children.get(1).clone());
