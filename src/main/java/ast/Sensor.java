@@ -6,6 +6,7 @@ public class Sensor extends Expr {
     /**
      * Create an AST representation of sensor.
      * Requires: op must be NEARBY, AHEAD, or RANDOM
+     *
      * @param op
      * @param e
      */
@@ -17,6 +18,7 @@ public class Sensor extends Expr {
     /**
      * Create an AST representation of token smell
      * Requires: op must be SMELL
+     *
      * @param op
      */
     public Sensor(Operator op) {
@@ -32,16 +34,15 @@ public class Sensor extends Expr {
 
     @Override
     public Node clone() {
-        if(operator == Operator.SMELL){
+        if (operator == Operator.SMELL) {
             return new Sensor(operator);
-        }
-        else{
+        } else {
             return new Sensor(operator, (Expr) children.get(0).clone());
         }
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return visit(new PrintVisitor());
     }
 
@@ -51,7 +52,7 @@ public class Sensor extends Expr {
 
     @Override
     public boolean classInv() {
-        return (children.size()==1 && children.get(0) instanceof Expr) ||
-                (operator==Operator.SMELL && children==null);
+        return (children.size() == 1 && children.get(0) instanceof Expr) ||
+                (operator == Operator.SMELL && children == null);
     }
 }

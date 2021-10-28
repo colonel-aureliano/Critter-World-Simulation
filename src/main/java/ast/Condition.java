@@ -7,10 +7,6 @@ public abstract class Condition extends AbstractNode {
         super(l,r);
     }
 
-    public Condition(Node s){
-        super(s);
-    }
-
     @Override
     public NodeCategory getCategory() {
         return NodeCategory.CONDITION;

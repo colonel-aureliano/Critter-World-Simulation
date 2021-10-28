@@ -33,5 +33,12 @@ class ProgramImplTest {
         System.out.println(p);
     }
 
+    @Test
+    public void test() {
+        for (int i = 0; i < 30; i ++) {
+            System.out.print((int) (Math.random() * 10) + ' ');
+        }
+    }
+
 
 }

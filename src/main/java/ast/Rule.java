@@ -1,16 +1,19 @@
 package ast;
 
-/** A representation of a critter rule. */
+/**
+ * A representation of a critter rule.
+ */
 public class Rule extends AbstractNode {
     private String operator = "-->";
 
     /**
      * A AST representation of Condition --> Command.
+     *
      * @param l
      * @param r
      */
-    public Rule(Condition l, Command r){
-        super(l,r);
+    public Rule(Condition l, Command r) {
+        super(l, r);
     }
 
     @Override
@@ -20,11 +23,11 @@ public class Rule extends AbstractNode {
 
     @Override
     public Node clone() {
-        return new Rule((Condition)children.get(0).clone(),(Command) children.get(1).clone());
+        return new Rule((Condition) children.get(0).clone(), (Command) children.get(1).clone());
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return visit(new PrintVisitor());
     }
 
@@ -33,7 +36,7 @@ public class Rule extends AbstractNode {
     }
 
     public boolean classInv() {
-        return children.size()==2 && children.get(0) instanceof Condition
+        return children.size() == 2 && children.get(0) instanceof Condition
                 && children.get(1) instanceof Command;
     }
 }

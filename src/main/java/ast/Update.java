@@ -1,16 +1,17 @@
 package ast;
 
-public class Update extends AbstractNode{
+public class Update extends AbstractNode {
 
     private final String operator = ":=";
 
     /**
-     * A AST representation of l := r
-     * @param l Mem class, representing mem[expr]
+     * A AST representation of mem[l] := r
+     *
+     * @param l
      * @param r
      */
-    public Update(Mem l, Expr r) {
-        super(l,r);
+    public Update(Expr l, Expr r) {
+        super(l, r);
     }
 
     @Override
@@ -20,7 +21,7 @@ public class Update extends AbstractNode{
 
     @Override
     public Node clone() {
-        return new Update((Mem) children.get(0).clone(),(Expr) children.get(1).clone());
+        return new Update((Expr) children.get(0).clone(), (Expr) children.get(1).clone());
     }
 
     @Override
@@ -28,14 +29,14 @@ public class Update extends AbstractNode{
         return visit(new PrintVisitor());
     }
 
-    private String visit(Visitor v){
+    private String visit(Visitor v) {
         return v.visit(this, operator);
     }
 
     // assert that children.get(0) is mem[expr]
     @Override
     public boolean classInv() {
-        return children.size()==2 && children.get(0) instanceof Mem
+        return children.size() == 2 && children.get(0) instanceof Expr
                 && children.get(1) instanceof Expr;
     }
 }

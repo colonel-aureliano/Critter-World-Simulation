@@ -22,7 +22,8 @@ public class PrintVisitor implements Visitor {
 
     @Override
     public String visit(Update n, String operator) {
-        return n.getChildren().get(0) + " " + operator + " " + n.getChildren().get(1);
+        return "mem[" + n.getChildren().get(0) + "] "
+                + operator + " " + n.getChildren().get(1);
     }
 
     @Override
@@ -100,23 +101,16 @@ public class PrintVisitor implements Visitor {
     }
 
     @Override
-    public String visit(Factor n, int which, int value) {
-        switch(which){
-            case 0:
-                return String.valueOf(value);
-            case 1:
-                return "-"+ n.getChildren().get(0);
-            case 2:
-                return "("+ n.getChildren().get(0)+")";
-        }
-        return "Factor class toString() error.";
+    public String visit(Factor n, Factor.Operator operator, int value) {
+        if (operator == null) return String.valueOf(value);
+        else return "-" + n.getChildren().get(0);
     }
 
     @Override
     public String visit(Sensor n, Sensor.Operator operator) {
         StringBuilder sb = new StringBuilder();
         sb.append(operator.toString().toLowerCase());
-        switch(operator){
+        switch (operator) {
             case SMELL:
                 break;
             default:

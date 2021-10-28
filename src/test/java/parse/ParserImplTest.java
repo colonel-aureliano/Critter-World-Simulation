@@ -20,7 +20,6 @@ class ParserImplTest {
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
-        StringBuilder sb = new StringBuilder();
         System.out.println(p);
         System.out.println("-----------------------");
     }

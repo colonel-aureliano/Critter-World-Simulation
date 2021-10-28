@@ -58,11 +58,14 @@ class ParserImpl implements Parser {
         if (t.peek().isMemSugar()) {
             first = parseSugar(t);
         } else {
+            consume(t, TokenType.MEM);
+            consume(t, TokenType.LBRACKET);
             first = parseExpression(t);
+            consume(t, TokenType.RBRACKET);
         }
         consume(t, TokenType.ASSIGN);
         Expr second = parseExpression(t);
-        return new Update((Mem)first, second);
+        return new Update(first, second);
     }
 
     public static Expr parseSugar(Tokenizer t) throws SyntaxError {
@@ -93,7 +96,7 @@ class ParserImpl implements Parser {
                 throw new SyntaxError(t.peek().lineNumber(), "Memory Sugar Syntax Error.");
         }
         t.next();
-        return new Mem(new Factor(i));
+        return new Factor(i);
     }
 
     public static Action parseAction(Tokenizer t) throws SyntaxError {
@@ -257,7 +260,7 @@ class ParserImpl implements Parser {
         Expr e;
 
         if (t.peek().isSensor()) return parseSensor(t);
-        else if (t.peek().isMemSugar()) return parseSugar(t);
+        else if (t.peek().isMemSugar()) return new Mem(parseSugar(t));
 
         switch(t.peek().getType().toString()){
             case "<number>":

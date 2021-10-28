@@ -16,7 +16,7 @@ public interface Visitor {
 
     String visit(BinaryExpr n, BinaryExpr.Operator operator);
 
-    String visit(Factor n, int which, int value);
+    String visit(Factor n, Factor.Operator operator, int value);
 
     String visit(Sensor n, Sensor.Operator operator);
 
