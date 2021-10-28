@@ -238,51 +238,27 @@ public class MutationImpl implements Mutation {
 
     private Maybe<Program> mutate3(Program program, Node node) {
         Node root = ((AbstractNode) node).getRoot();
+
+        //Program has one Rule, and Condition of Rule is Relation
+        if (node instanceof Relation && root.getChildren().size() == 1
+                && root.getChildren().get(0).getChildren().get(0) == node) {
+            return Maybe.none();
+        }
+
         Node searchNode = root;
         while (searchNode == node | searchNode.getCategory() != node.getCategory()) {
             searchNode = root.nodeAt((int)(Math.random() * root.size()));
         }
+        Node copy = searchNode.clone();
         try {
             Node parent = ((AbstractNode) node).getParent().get();
             int i = parent.getChildren().indexOf(node);
             parent.getChildren().remove(i);
-            parent.getChildren().add(i, searchNode.clone()); // deep clone
+            parent.getChildren().add(i, copy); // deep clone
         } catch (NoMaybeValue e) {
             e.printStackTrace(); // cannot happen
         }
         return Maybe.some(program);
-
-
-
-//        Random rand = new Random();
-//        String c = node.getClass().getSimpleName();
-//        Node root = ((AbstractNode) node).getRoot();
-//        int size = root.size();
-//        Node replacement;
-//        int z = 0;
-//        while (true) {
-//            int i = rand.nextInt(size);
-//            if (root.nodeAt(i).getClass().getSimpleName().equals(c)) {
-//                if (root.nodeAt(i) == node) {
-//                    continue;
-//                }
-//                replacement = root.nodeAt(i);
-//                break;
-//            }
-//            z++;
-//            if (z > size * 30) {
-//                return Maybe.none();
-//            }
-//        }
-//
-//        try {
-//            Node parent = ((AbstractNode) node).getParent().get();
-//            int i = parent.getChildren().indexOf(node);
-//            parent.getChildren().set(i, replacement);
-//        } catch (NoMaybeValue noMaybeValue) {
-//            return Maybe.none();
-//        }
-//        return Maybe.some(program);
     }
 
     private Action.Operator getActionOperator(int i) {
@@ -404,16 +380,15 @@ public class MutationImpl implements Mutation {
                         try {
                             Node parent =  ((AbstractNode) n).getParent().get();
                             int i = 1;
-                            if (parent.getChildren().get(parent.size()-1).getCategory() == NodeCategory.ACTION) {
+                            if (parent.getChildren().get(parent.getChildren().size()-1).getCategory() == NodeCategory.ACTION) {
                                 i = 2; // last Node in Command is Action
                             }
                             return parent.getChildren().size() > i;
-
                         } catch (NoMaybeValue e) {
                             return false; // case PROGRAM
                         }
-                    case EXPRESSION:
                     case CONDITION:
+                    case EXPRESSION:
                         return true;
                 }
 
