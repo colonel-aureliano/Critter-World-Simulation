@@ -52,6 +52,45 @@ public class ProgramImpl extends AbstractNode implements Program {
         }
     }
 
+    /**
+     * Mutates this program with mutation rule i on a random node.
+     *
+     * @return The root of the mutated AST
+     */
+    public Program mutateR(int i){
+        Random r = new Random();
+        Mutation m = null;
+        switch(i){
+            case 1:
+                m=MutationFactory.getRemove();
+                break;
+            case 2:
+                m=MutationFactory.getSwap();
+                break;
+            case 3:
+                m=MutationFactory.getReplace();
+                break;
+            case 4:
+                m=MutationFactory.getTransform();
+                break;
+            case 5:
+                m=MutationFactory.getInsert();
+                break;
+            case 6:
+                m=MutationFactory.getDuplicate();
+                break;
+        }
+        do{
+            i = r.nextInt(this.size());
+        }while (!m.canApply(this.nodeAt(i)));
+
+        try {
+            return m.apply(this, this.nodeAt(i)).get();
+        } catch (NoMaybeValue noMaybeValue) {
+            throw new IllegalArgumentException("Program.mutateR() failed.");
+        }
+    }
+
     @Override
     public Maybe<Program> mutate(int index, Mutation m) {
         return m.apply(this, this.nodeAt(index));
