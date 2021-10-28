@@ -30,7 +30,7 @@ class ProgramImplTest {
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
-        System.out.println(p);
+        System.out.println(((AbstractNode)p.nodeAt(3)).getParent().getClass());
     }
 
     @Test

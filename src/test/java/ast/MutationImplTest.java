@@ -70,7 +70,7 @@ class MutationImplTest {
 
     @Test
     void test_mutation3() throws SyntaxError, NoMaybeValue {
-        String s = "ahead[0] < -1 and ENERGY < 500 * SIZE --> eat;";
+        String s = "ahead[0] < -1 and ENERGY < 500 * SIZE --> ENERGY := 500 eat;";
 
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Reader r = new BufferedReader(new InputStreamReader(in));
