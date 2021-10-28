@@ -110,10 +110,28 @@ public abstract class AbstractNode implements Node {
                     continue;
                 }
             }
-
             throw new IllegalArgumentException("getParent() error.");
         }
     }
+
+    /**
+     * Set the parent
+     * Only intended to be called by Mutation 3 and 5
+     * @param replacement
+     * @return true of method is successful
+     */
+    protected boolean replace(Node replacement) {
+        Node parent;
+        try {
+            parent = getParent().get();
+        } catch (NoMaybeValue e) {
+            return false;
+        }
+        int i = parent.getChildren().indexOf(this);
+        parent.getChildren().set(i, replacement); // deep clone
+        return true;
+    }
+
 
     /**
      * @return the String representation of the tree rooted at this {@code Node}.

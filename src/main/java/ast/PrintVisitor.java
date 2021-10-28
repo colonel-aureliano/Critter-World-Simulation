@@ -78,7 +78,10 @@ public class PrintVisitor implements Visitor {
     @Override
     public String visit(BinaryExpr n, BinaryExpr.Operator operator) {
         StringBuilder sb = new StringBuilder();
-        sb.append(n.getChildren().get(0));
+        Node left = n.getChildren().get((0));
+        if (left instanceof BinaryExpr &&
+                LNeedParen(operator, ((BinaryExpr)left).operator)) sb.append("(" + left + ")");
+        else sb.append(left);
         switch (operator) {
             case PLUS:
                 sb.append(" + ");
@@ -96,7 +99,10 @@ public class PrintVisitor implements Visitor {
                 sb.append(" mod ");
                 break;
         }
-        sb.append(n.getChildren().get(1));
+        Node right = n.getChildren().get((1));
+        if (right instanceof BinaryExpr &&
+                RNeedParen(operator, ((BinaryExpr)right).operator)) sb.append("(" + right + ")");
+        else sb.append(right);
         return sb.toString();
     }
 
@@ -125,4 +131,38 @@ public class PrintVisitor implements Visitor {
     public String visit(Mem n) {
         return "mem[" + n.getChildren().get(0) + "]";
     }
+
+    private boolean LNeedParen(BinaryExpr.Operator nodeOp, BinaryExpr.Operator childOp) {
+        switch(nodeOp) {
+            case PLUS:
+            case MINUS:
+                return false;
+            case MULTIPLY:
+            case DIVIDE:
+            case MOD:
+                return (childOp == BinaryExpr.Operator.MINUS | childOp == BinaryExpr.Operator.PLUS); // child is AddOp
+            default:
+                return true;
+        }
+    }
+
+    private boolean RNeedParen(BinaryExpr.Operator nodeOp, BinaryExpr.Operator childOp) {
+        switch(nodeOp) {
+            case MINUS:
+                if (childOp == BinaryExpr.Operator.PLUS) return true;
+            case PLUS:
+                return LNeedParen(nodeOp, childOp);
+            case MOD:
+                if (childOp == BinaryExpr.Operator.DIVIDE) return true;
+            case DIVIDE:
+                if (childOp == BinaryExpr.Operator.MULTIPLY) return true;
+            case MULTIPLY:
+                return LNeedParen(nodeOp, childOp);
+            default:
+                return true;
+        }
+    }
+
+
+
 }

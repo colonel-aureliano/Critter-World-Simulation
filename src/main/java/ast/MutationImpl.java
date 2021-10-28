@@ -83,25 +83,12 @@ public class MutationImpl implements Mutation {
 
     private Maybe<Program> mutate3(Program program, Node node) {
         Node root = ((AbstractNode) node).getRoot();
-        //Program has one Rule, and Condition of Rule is Relation
-        if (node instanceof Relation && root.getChildren().size() == 1
-                && root.getChildren().get(0).getChildren().get(0) == node) {
-            return Maybe.none();
-        }
-
         Node searchNode = root;
         while (searchNode == node | searchNode.getCategory() != node.getCategory()) {
             searchNode = root.nodeAt(rand.nextInt(root.size()));
         }
         Node copy = searchNode.clone();
-        try {
-            Node parent = ((AbstractNode) node).getParent().get();
-            int i = parent.getChildren().indexOf(node);
-            parent.getChildren().remove(i);
-            parent.getChildren().add(i, copy); // deep clone
-        } catch (NoMaybeValue e) {
-            e.printStackTrace(); // cannot happen
-        }
+        ((AbstractNode) node).replace(copy);
         return Maybe.some(program);
     }
 
@@ -158,13 +145,6 @@ public class MutationImpl implements Mutation {
         Node insert = null;
         Node root = ((AbstractNode) node).getRoot();
         Node searchNode = root;
-
-        //Program has one Rule, and Condition of Rule is Relation
-        if (node instanceof Relation && root.getChildren().size() == 1
-                && root.getChildren().get(0).getChildren().get(0) == node) {
-            return Maybe.none();
-        }
-
         if (node.getCategory() == NodeCategory.CONDITION) {
             while (searchNode == node | searchNode.getCategory() != NodeCategory.CONDITION) {
                 searchNode = root.nodeAt(rand.nextInt(root.size()));
@@ -191,16 +171,7 @@ public class MutationImpl implements Mutation {
                     break;
             }
         }
-
-        try {
-            Node parent = ((AbstractNode) node).getParent().get();
-            int i = parent.getChildren().indexOf(node);
-            parent.getChildren().remove(i);
-            parent.getChildren().add(i, insert);
-        } catch (NoMaybeValue noMaybeValue) {
-            return Maybe.none();
-        }
-
+        ((AbstractNode) node).replace(insert);
         return Maybe.some(program);
     }
 
@@ -281,6 +252,11 @@ public class MutationImpl implements Mutation {
                             return false; // case PROGRAM
                         }
                     case CONDITION:
+                        if (n instanceof Relation) {
+                            Node root = ((AbstractNode) n).getRoot();
+                            return root.getChildren().size() != 1
+                                    | root.getChildren().get(0).getChildren().get(0) != n;
+                        }
                     case EXPRESSION:
                         return true;
                 }
@@ -312,6 +288,11 @@ public class MutationImpl implements Mutation {
                     case ACTION:
                         return false;
                     case CONDITION:
+                        if (n instanceof Relation) {
+                            Node root = ((AbstractNode) n).getRoot();
+                            return root.getChildren().size() != 1
+                                    | root.getChildren().get(0).getChildren().get(0) != n;
+                        }
                     case EXPRESSION:
                         return true;
                 }

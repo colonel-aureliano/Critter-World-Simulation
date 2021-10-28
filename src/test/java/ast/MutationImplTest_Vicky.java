@@ -30,7 +30,7 @@ class MutationImplTest_Vicky {
 
     @Test
     void test_mutation1() throws SyntaxError, NoMaybeValue {
-        String s = "nearby[3] = 0 and ENERGY > 2500 --> ENERGY := 2500 bud;";
+        String s = "nearby[3] = 0 and ENERGY > 2500 --> mem[4] := 2500 bud;";
 
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Reader r = new BufferedReader(new InputStreamReader(in));

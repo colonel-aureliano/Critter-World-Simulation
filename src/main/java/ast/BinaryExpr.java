@@ -2,7 +2,8 @@ package ast;
 
 public class BinaryExpr extends Expr {
 
-    private Operator operator;
+    /** Only intended to be used by PrintVisitor to check whether parentheses are needed */
+    protected Operator operator;
 
     /**
      * Create an AST representation of l op r.
