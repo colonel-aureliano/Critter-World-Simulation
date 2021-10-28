@@ -1,5 +1,7 @@
 package ast;
 
+import cms.util.maybe.Maybe;
+import cms.util.maybe.NoMaybeValue;
 import exceptions.SyntaxError;
 import org.junit.jupiter.api.Test;
 import parse.Parser;
@@ -40,5 +42,34 @@ class ProgramImplTest {
         }
     }
 
+    public void testMutate() throws SyntaxError{
+        String s = "nearby[3] = 0 and ENERGY > 2500 --> bud;\nnearby[0] > 0 and nearby[8] = 0 --> backward;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
 
+        p=p.mutate();
+        System.out.println(p);
+    }
+
+    @Test
+    public void testFindNodeOfType() throws SyntaxError{
+        String s = "nearby[3] = 0 and ENERGY > 2500 --> bud;\nnearby[0] > 0 and nearby[8] = 0 --> backward;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+
+        try{
+            NodeCategory n = NodeCategory.CONDITION;
+            assert(p.findNodeOfType(n).get().toString().equals("nearby[3] = 0 and mem[4] > 2500"));
+            n = NodeCategory.ACTION;
+            assert(p.findNodeOfType(n).get().toString().equals("bud"));
+            n = NodeCategory.UPDATE;
+            assert(p.findNodeOfType(n).equals(Maybe.none()));
+        } catch (NoMaybeValue noMaybeValue) {
+            noMaybeValue.printStackTrace();
+        }
+    }
 }

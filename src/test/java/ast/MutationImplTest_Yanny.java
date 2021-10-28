@@ -46,7 +46,7 @@ class MutationImplTest_Yanny {
 
     @Test
     void test_mutation3() throws SyntaxError, NoMaybeValue{
-        String s = "nearby[3] = 0 and ENERGY > 2500 --> bud;\nnearby[0] > 0 and nearby[3] = 0 --> backward;";
+        String s = "nearby[3] = 0 and ENERGY > 2500 --> bud;\nnearby[0] > 0 and nearby[8] = 0 --> backward;";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
