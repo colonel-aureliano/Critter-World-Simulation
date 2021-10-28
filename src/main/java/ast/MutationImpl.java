@@ -206,7 +206,7 @@ public class MutationImpl implements Mutation {
 
     private Maybe<Program> mutate6(Program program, Node node) {
         int n = node.getChildren().size();
-        if (node instanceof ProgramImpl) {
+        if (node instanceof Program) {
             node.getChildren().add(node.getChildren().get((int) (Math.random() * n)));
         } else if (node instanceof Command) {
             Node d;

@@ -90,6 +90,7 @@ public abstract class AbstractNode implements Node {
      * Returns the parent of this {@code Node}, or {@Maybe.none} if this {@code Node} is the root.
      *
      * @return the parent of this {@code Node}, or {@Maybe.none} if this {@code Node} is the root.
+     * Requires: this must exist in the AST of root.
      *
      * This method does not need to be implemented and may be removed from the interface.
      */
