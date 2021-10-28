@@ -32,42 +32,36 @@ class ProgramImplTest {
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
-        System.out.println(((AbstractNode)p.nodeAt(3)).getParent().getClass());
+        System.out.println(((AbstractNode) p.nodeAt(3)).getParent().getClass());
     }
 
     @Test
-    public void test() {
-        for (int i = 0; i < 30; i ++) {
-            System.out.print((int) (Math.random() * 10) + ' ');
-        }
-    }
-
-    public void testMutate() throws SyntaxError{
-        String s = "nearby[3] = 0 and ENERGY > 2500 --> bud;\nnearby[0] > 0 and nearby[8] = 0 --> backward;";
+    public void testMutate() throws SyntaxError {
+        String s = "nearby[3] = 0 and ENERGY > 2500 --> bud;" +
+                "nearby[0] > 0 and nearby[8] = 0 --> backward;";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
-
-        p=p.mutate();
+        p = p.mutate();
         System.out.println(p);
     }
 
     @Test
-    public void testFindNodeOfType() throws SyntaxError{
+    public void testFindNodeOfType() throws SyntaxError {
         String s = "nearby[3] = 0 and ENERGY > 2500 --> bud;\nnearby[0] > 0 and nearby[8] = 0 --> backward;";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        try{
+        try {
             NodeCategory n = NodeCategory.CONDITION;
-            assert(p.findNodeOfType(n).get().toString().equals("nearby[3] = 0 and mem[4] > 2500"));
+            assert (p.findNodeOfType(n).get().toString().equals("nearby[3] = 0 and mem[4] > 2500"));
             n = NodeCategory.ACTION;
-            assert(p.findNodeOfType(n).get().toString().equals("bud"));
+            assert (p.findNodeOfType(n).get().toString().equals("bud"));
             n = NodeCategory.UPDATE;
-            assert(p.findNodeOfType(n).equals(Maybe.none()));
+            assert (p.findNodeOfType(n).equals(Maybe.none()));
         } catch (NoMaybeValue noMaybeValue) {
             noMaybeValue.printStackTrace();
         }

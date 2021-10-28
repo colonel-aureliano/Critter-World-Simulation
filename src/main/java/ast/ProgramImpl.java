@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/** A data structure representing a critter program. */
+/**
+ * A data structure representing a critter program.
+ */
 public class ProgramImpl extends AbstractNode implements Program {
 
-    public ProgramImpl(List<Node> lr){
+    public ProgramImpl(List<Node> lr) {
         super(lr); // a list of rules
         setRoot(this);
     }
@@ -18,38 +20,8 @@ public class ProgramImpl extends AbstractNode implements Program {
     @Override
     public Program mutate() {
         Random r = new Random();
-        int i = r.nextInt(6)+1;
-        Mutation m = null;
-        switch(i){
-            case 1:
-                m=MutationFactory.getRemove();
-                break;
-            case 2:
-                m=MutationFactory.getSwap();
-                break;
-            case 3:
-                m=MutationFactory.getReplace();
-                break;
-            case 4:
-                m=MutationFactory.getTransform();
-                break;
-            case 5:
-                m=MutationFactory.getInsert();
-                break;
-            case 6:
-                m=MutationFactory.getDuplicate();
-                break;
-        }
-
-        do{
-            i = r.nextInt(this.size());
-        }while (!m.canApply(this.nodeAt(i)));
-
-        try {
-            return m.apply(this, this.nodeAt(i)).get();
-        } catch (NoMaybeValue noMaybeValue) {
-            throw new IllegalArgumentException("Program.mutate() failed.");
-        }
+        int i = r.nextInt(6) + 1;
+        return mutateR(i);
     }
 
     /**
@@ -57,37 +29,37 @@ public class ProgramImpl extends AbstractNode implements Program {
      *
      * @return The root of the mutated AST
      */
-    public Program mutateR(int i){
+    public Program mutateR(int i) {
         Random r = new Random();
         Mutation m = null;
-        switch(i){
+        switch (i) {
             case 1:
-                m=MutationFactory.getRemove();
+                m = MutationFactory.getRemove();
                 break;
             case 2:
-                m=MutationFactory.getSwap();
+                m = MutationFactory.getSwap();
                 break;
             case 3:
-                m=MutationFactory.getReplace();
+                m = MutationFactory.getReplace();
                 break;
             case 4:
-                m=MutationFactory.getTransform();
+                m = MutationFactory.getTransform();
                 break;
             case 5:
-                m=MutationFactory.getInsert();
+                m = MutationFactory.getInsert();
                 break;
             case 6:
-                m=MutationFactory.getDuplicate();
+                m = MutationFactory.getDuplicate();
                 break;
         }
-        do{
-            i = r.nextInt(this.size());
-        }while (!m.canApply(this.nodeAt(i)));
-
+        int index;
+        do {
+            index = r.nextInt(this.size());
+        } while(!m.canApply(this.nodeAt(index)));
         try {
-            return m.apply(this, this.nodeAt(i)).get();
+            return m.apply(this, this.nodeAt(index)).get();
         } catch (NoMaybeValue noMaybeValue) {
-            throw new IllegalArgumentException("Program.mutateR() failed.");
+            throw new IllegalArgumentException("Program: mutation: " + i + " failed at Node position " + index);
         }
     }
 
@@ -98,8 +70,8 @@ public class ProgramImpl extends AbstractNode implements Program {
 
     @Override
     public Maybe<Node> findNodeOfType(NodeCategory type) {
-        for(int i = 0; i < this.size(); i++){
-            if(this.nodeAt(i).getCategory().equals(type)){
+        for (int i = 0; i < this.size(); i++) {
+            if (this.nodeAt(i).getCategory().equals(type)) {
                 return Maybe.some(this.nodeAt(i));
             }
         }
@@ -112,24 +84,24 @@ public class ProgramImpl extends AbstractNode implements Program {
     }
 
     @Override
-    public Node clone(){
+    public Node clone() {
         List<Node> ln = new ArrayList<>();
-        for (Node n: children){
+        for (Node n : children) {
             ln.add(n.clone());
         }
         return new ProgramImpl(ln);
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Node n: children){
+        for (Node n : children) {
             sb.append(n);
         }
         return sb.toString();
     }
 
     public boolean classInv() {
-        return children.size()!=0 && children.stream().allMatch(x -> x instanceof Rule);
+        return children.size() != 0 && children.stream().allMatch(x -> x instanceof Rule);
     }
 }

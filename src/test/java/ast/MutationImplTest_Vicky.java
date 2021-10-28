@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MutationImplTest {
+class MutationImplTest_Vicky {
     @Test
     void test_canApply() throws SyntaxError {
         String s = "1 = 0 --> forward;\n1 = 0 --> forward;";
