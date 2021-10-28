@@ -1,9 +1,11 @@
 package ast;
 
 import cms.util.maybe.Maybe;
+import cms.util.maybe.NoMaybeValue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /** A data structure representing a critter program. */
 public class ProgramImpl extends AbstractNode implements Program {
@@ -15,8 +17,39 @@ public class ProgramImpl extends AbstractNode implements Program {
 
     @Override
     public Program mutate() {
-        // TODO Auto-generated method stub
-        return null;
+        Random r = new Random();
+        int i = r.nextInt(6)+1;
+        Mutation m = null;
+        switch(i){
+            case 1:
+                m=MutationFactory.getRemove();
+                break;
+            case 2:
+                m=MutationFactory.getSwap();
+                break;
+            case 3:
+                m=MutationFactory.getReplace();
+                break;
+            case 4:
+                m=MutationFactory.getTransform();
+                break;
+            case 5:
+                m=MutationFactory.getInsert();
+                break;
+            case 6:
+                m=MutationFactory.getDuplicate();
+                break;
+        }
+
+        do{
+            i = r.nextInt(this.size());
+        }while (!m.canApply(this.nodeAt(i)));
+
+        try {
+            return m.apply(this, this.nodeAt(i)).get();
+        } catch (NoMaybeValue noMaybeValue) {
+            throw new IllegalArgumentException("Program.mutate() failed.");
+        }
     }
 
     @Override
@@ -26,7 +59,12 @@ public class ProgramImpl extends AbstractNode implements Program {
 
     @Override
     public Maybe<Node> findNodeOfType(NodeCategory type) {
-        return null;
+        for(int i = 0; i < this.size(); i++){
+            if(this.nodeAt(i).getCategory().equals(type)){
+                return Maybe.some(this.nodeAt(i));
+            }
+        }
+        return Maybe.none();
     }
 
     @Override

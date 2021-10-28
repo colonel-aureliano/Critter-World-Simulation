@@ -28,9 +28,7 @@ public class MutationImpl implements Mutation {
 
     @Override
     public boolean equals(Mutation m) {
-        // TODO
-        return false;
-
+        return ((MutationImpl) m).type==type;
     }
 
     @Override
@@ -386,7 +384,7 @@ public class MutationImpl implements Mutation {
             case 2:
                 try {
                     return n.getChildren().size() >= 2 && n.getCategory() != NodeCategory.RULE;
-                } catch (IllegalArgumentException e) {
+                } catch (Exception e) {
                     return false;
                 }
 
