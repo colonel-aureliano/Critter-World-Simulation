@@ -115,8 +115,7 @@ public abstract class AbstractNode implements Node {
     }
 
     /**
-     * Set the parent
-     * Only intended to be called by Mutation 3 and 5
+     * Replace this node by replacement in the AST by changing the children of this node's parent.
      * @param replacement
      * @return true of method is successful
      */

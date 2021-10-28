@@ -49,7 +49,7 @@ class ParserImplTest {
 
     @Test
     void testBinaryExprPrint() throws SyntaxError{
-        String s = "(1+2)*3 - 3 mod (4 * 5) - 1 = 0 --> bud;";
+        String s = "-(5+0) = 0 --> bud;";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
