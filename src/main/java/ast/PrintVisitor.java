@@ -109,7 +109,8 @@ public class PrintVisitor implements Visitor {
     @Override
     public String visit(Factor n, Factor.Operator operator, int value) {
         if (operator == null) return String.valueOf(value);
-        else return "-" + n.getChildren().get(0);
+        else if (operator== Factor.Operator.NEGATIVE) return "-" + n.getChildren().get(0);
+        else return "-(" + n.getChildren().get(0)+")";
     }
 
     @Override

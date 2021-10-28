@@ -284,7 +284,13 @@ class ParserImpl implements Parser {
                 break;
             case "-":
                 consume(t, TokenType.MINUS);
-                e = new Factor(Factor.Operator.NEGATIVE, (Factor) parseFactor(t));
+                Node n = null;
+                try {
+                    n = parseFactor(t);
+                    e = new Factor(Factor.Operator.NEGATIVE, (Factor) n);
+                }catch (ClassCastException ex){
+                    e = new Factor(Factor.Operator.NEGATIVE_PAREN, (BinaryExpr) n);
+                }
                 break;
             default:
                 System.out.println(t.peek().getType());

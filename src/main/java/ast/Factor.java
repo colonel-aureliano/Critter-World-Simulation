@@ -24,8 +24,21 @@ public class Factor extends Expr {
         operator = op;
     }
 
+    /**
+     * Create a factor for a negative (BinaryExpr)
+     * Requires: op must be NEGATIVE_PAREN
+     * @param op
+     * @param f
+     */
+    public Factor (Operator op, BinaryExpr f) {
+        super(f);
+        operator = op;
+    }
+
+
     public enum Operator {
-        NEGATIVE;
+        NEGATIVE,
+        NEGATIVE_PAREN
     }
 
     @Override

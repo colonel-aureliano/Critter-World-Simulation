@@ -44,17 +44,22 @@ class ParserImplTest {
         InputStream in = ClassLoader.getSystemResourceAsStream("files/draw_critter.txt");
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
-        parser.parse(r);
+        Program p = parser.parse(r);
+        System.out.println(p);
     }
 
     @Test
     void testBinaryExprPrint() throws SyntaxError{
-        String s = "-(5+0) = 0 --> bud;";
+        String s = "-(5+0) = 7 --> bud;";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
         System.out.println(p);
+
+        /*for(int i = 0 ; i < p.size(); i++){
+            System.out.println(p.nodeAt(i).getClass().getSimpleName()+": "+p.nodeAt(i));
+        }*/
     }
 
 }
