@@ -31,7 +31,7 @@ public class BinaryExpr extends Expr {
      * @param o
      * @return
      */
-    protected boolean resetOperator(BinaryExpr.Operator o){
+    protected boolean resetOperator(Operator o){
         if(operator.equals(o)){
             return false;
         }

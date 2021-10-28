@@ -32,6 +32,22 @@ public class Sensor extends Expr {
         SMELL
     }
 
+    /**
+     * Resets the operator of this node.
+     * Intended to be called only by MutationImpl.
+     * Cannot be reset as SMELL
+     * @param o
+     * @return
+     */
+    protected boolean resetOperator(Operator o) {
+        if (operator.equals(o) | o.equals(Operator.SMELL)) {
+            return false;
+        } else {
+            operator = o;
+            return true;
+        }
+    }
+
     @Override
     public Node clone() {
         if (operator == Operator.SMELL) {

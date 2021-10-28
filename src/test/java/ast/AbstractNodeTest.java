@@ -106,44 +106,6 @@ class AbstractNodeTest {
     }
 
     @Test
-    void test_setParent1() throws SyntaxError {
-        String s = "1 = 0 --> forward;";
-        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
-
-        Reader r = new BufferedReader(new InputStreamReader(in));
-        Parser parser = ParserFactory.getParser();
-        Program p = parser.parse(r);
-
-        Node n = p.getChildren().get(0).getChildren().get(0).getChildren().get(1);
-        // n is holding onto a Factor Node
-        assert(n instanceof Factor);
-        assert(n.toString().equals("0"));
-
-        Mem m = new Mem(new Factor(5));
-        assert(((Factor) n).setParent(m));
-        assert(p.toString().equals("1 = mem[0] --> forward;\n"));
-    }
-
-    @Test
-    void test_setParent2() throws SyntaxError {
-        String s = "1 = 0 --> forward;";
-        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
-
-        Reader r = new BufferedReader(new InputStreamReader(in));
-        Parser parser = ParserFactory.getParser();
-        Program p = parser.parse(r);
-
-        Node n = p.getChildren().get(0).getChildren().get(0);
-        // n is holding onto a Relation Node
-        assert(n instanceof Relation);
-        assert(n.toString().equals("1 = 0"));
-
-        BinaryCondition bc = new BinaryCondition(null,BinaryCondition.Operator.AND,null);
-        assert(((Relation) n).setParent(bc));
-        assert(p.toString().equals("1 = 0 and 1 = 0 --> forward;\n"));
-    }
-
-    @Test
     void testInvariant() throws SyntaxError {
         InputStream in = ClassLoader.getSystemResourceAsStream("files/draw_critter.txt");
         Reader r = new BufferedReader(new InputStreamReader(in));

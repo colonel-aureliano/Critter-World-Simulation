@@ -5,11 +5,14 @@ import cms.util.maybe.NoMaybeValue;
 import exceptions.SyntaxError;
 
 import java.security.spec.ECField;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 public class MutationImpl implements Mutation {
     int type;
+    Random rand;
 
     /**
      * Constructs a Mutation of type t, where
@@ -28,13 +31,13 @@ public class MutationImpl implements Mutation {
 
     @Override
     public boolean equals(Mutation m) {
-        return ((MutationImpl) m).type==type;
+        return ((MutationImpl) m).type == type;
     }
 
     @Override
     public Maybe<Program> apply(Program program, Node node) {
+        rand = new Random();
         if (!canApply(node)) return Maybe.none();
-        Random rand = new Random();
 
         switch (type) {
             case 1:
@@ -44,171 +47,13 @@ public class MutationImpl implements Mutation {
             case 3:
                 return mutate3(program, node);
             case 4:
-                // Mutation 4 if successful guarantees that the mutated node is different from the original node.
-
-                rand = new Random();
-                if (node instanceof Action) {
-                    Action.Operator operator;
-                    do {
-                        int i = rand.nextInt(10);
-                        operator = getActionOperator(i);
-                    } while (!((Action) node).resetOperator(operator));
-                }
-
-                if (node instanceof BinaryExpr) {
-                    BinaryExpr.Operator operator;
-                    do {
-                        int i = rand.nextInt(5);
-                        operator = getBinaryExprOperator(i);
-                    } while (!((BinaryExpr) node).resetOperator(operator));
-                }
-
-                if (node instanceof Relation) {
-                    Relation.Operator operator;
-                    do {
-                        int i = rand.nextInt(6);
-                        operator = getRelationOperator(i);
-                    } while (!((Relation) node).resetOperator(operator));
-                }
-
-                if (node instanceof BinaryCondition) {
-                    ((BinaryCondition) node).resetOperator();
-                }
-                Node replacement;
-                if (node instanceof Factor) {
-                    int i;
-                    try {
-                        do {
-                            i = Integer.parseInt(node.toString());
-                            i += java.lang.Integer.MAX_VALUE / rand.nextInt();
-                            replacement = new Factor(i);
-                        } while (node.toString().equals(replacement.toString()));
-                    } catch (Exception e) {
-                        System.err.println("canApply() didn't catch an invalid node attempting to undergo Mutation 4");
-                        return Maybe.none();
-                    }
-                    try {
-                        Node parent = ((AbstractNode) node).getParent().get();
-                        int in = parent.getChildren().indexOf(node);
-                        parent.getChildren().set(in, replacement);
-                    } catch (NoMaybeValue noMaybeValue) {
-                        return Maybe.none();
-                    }
-                }
-                break;
-
+                return mutate4(program, node);
             case 5:
-                if (node instanceof Factor) {
-                    // Parent of factor is either Mem(0) or Sensor(1) or BinaryExpr or Relation.
-                    int which = -1; // which tyep of node to insert
-                    try {
-                        Node p = ((Factor) node).getParent().get();
-                        if (p instanceof Relation || p instanceof Mem || p instanceof Sensor
-                                || p instanceof BinaryExpr) {
-                            which = rand.nextInt(2);
-                        }
-                        switch (which) {
-                            case 0:
-                                Mem m = new Mem(new Factor(0));
-                                ((Factor) node).setParent(m);
-                                break;
-                            case 1:
-                                int l = rand.nextInt(3);
-                                Sensor.Operator o = null;
-                                switch (l) {
-                                    case 0:
-                                        o = Sensor.Operator.NEARBY;
-                                        break;
-                                    case 1:
-                                        o = Sensor.Operator.AHEAD;
-                                        break;
-                                    case 2:
-                                        o = Sensor.Operator.RANDOM;
-                                        break;
-                                }
-                                Sensor s = new Sensor(o, null);
-                                ((Factor) node).setParent(s);
-                                break;
-                        }
-                    } catch (NoMaybeValue e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                if (node instanceof Relation | node instanceof BinaryCondition) {
-                    try {
-                        Node p = ((Condition) node).getParent().get();
-
-                        int i = rand.nextInt(2);
-                        BinaryCondition.Operator o = getBinaryConditionOperator(i);
-                        i = rand.nextInt(6);
-                        Relation.Operator operator = getRelationOperator(i);
-                        BinaryCondition b = new BinaryCondition((Condition) node, o,
-                                new Relation(new Factor((int) (100 * rand.nextDouble())), operator,
-                                        new Factor((int) (100 * rand.nextDouble()))));
-
-                        if (p instanceof BinaryCondition) {
-                            int in = p.getChildren().indexOf(node);
-                            p.getChildren().set(in, b);
-                        } else if (p instanceof Rule) {
-                            int in = p.getChildren().indexOf(node);
-                            p.getChildren().set(in, b);
-                        } else {
-                            System.err.println("canApply() didn't catch an invalid node attempting to undergo Mutation 5");
-                            return Maybe.none();
-                        }
-                    } catch (NoMaybeValue noMaybeValue) {
-                        noMaybeValue.printStackTrace();
-                    }
-
-                }
-
-                if (node instanceof Mem) {
-                    // Acceptable direct paretns of Mem are Relation, BinaryExpr, and Update.
-                    // The latter two do not allow Mutation 5.
-                    try {
-                        Node p = ((Condition) node).getParent().get();
-                        // Parent is Relation
-                        if (p instanceof Relation) {
-                            BinaryExpr.Operator operator = getBinaryExprOperator(rand.nextInt(5));
-                            BinaryExpr be = new BinaryExpr((Expr) node, operator, new Factor((int) (100 * rand.nextDouble())));
-                        } else {
-                            System.err.println("canApply() didn't catch an invalid node attempting to undergo Mutation 5");
-                            return Maybe.none();
-                        }
-
-                    } catch (NoMaybeValue noMaybeValue) {
-                        noMaybeValue.printStackTrace();
-                    }
-                }
-                break;
-
+                return mutate5(program, node);
             case 6:
-                if (node instanceof ProgramImpl) {
-                    // should append a randomly selected Rule
-                    int n = node.getChildren().size();
-                    int in = rand.nextInt(n);
-                    node.getChildren().add(node.getChildren().get(in));
-                } else if (node instanceof Command) {
-                    // should append a randomly selected Update
-                    int n = node.getChildren().size();
-                    int in = rand.nextInt(n);
-                    if (node.getChildren().get(n - 1) instanceof Action) {
-                        if (in == n - 1) {
-                            in--;
-                        }
-                        node.getChildren().add(in, node.getChildren().get(in));
-                    } else {
-                        node.getChildren().add(node.getChildren().get(in));
-                    }
-                } else {
-                    System.err.println("canApply() didn't catch an invalid node attempting to undergo Mutation 6");
-                    return Maybe.none();
-                }
-                break;
-
+                return mutate6(program, node);
         }
-        return Maybe.some(program);
+        return Maybe.none();
     }
 
     private Maybe<Program> mutate1(Program program, Node node) {
@@ -217,7 +62,7 @@ public class MutationImpl implements Mutation {
             int i = parent.getChildren().indexOf(node);
             parent.getChildren().remove(i);
             if (node instanceof BinaryCondition | node instanceof BinaryExpr) {
-                parent.getChildren().add(i, node.getChildren().get(Math.round((float) Math.random())));
+                parent.getChildren().add(i, node.getChildren().get(rand.nextInt(2)));
             } else if (node.getCategory() == NodeCategory.EXPRESSION) {
                 // Factor, Sensor, Mem
                 parent.getChildren().add(i, node.getChildren().get(0));
@@ -238,7 +83,6 @@ public class MutationImpl implements Mutation {
 
     private Maybe<Program> mutate3(Program program, Node node) {
         Node root = ((AbstractNode) node).getRoot();
-
         //Program has one Rule, and Condition of Rule is Relation
         if (node instanceof Relation && root.getChildren().size() == 1
                 && root.getChildren().get(0).getChildren().get(0) == node) {
@@ -247,7 +91,7 @@ public class MutationImpl implements Mutation {
 
         Node searchNode = root;
         while (searchNode == node | searchNode.getCategory() != node.getCategory()) {
-            searchNode = root.nodeAt((int)(Math.random() * root.size()));
+            searchNode = root.nodeAt(rand.nextInt(root.size()));
         }
         Node copy = searchNode.clone();
         try {
@@ -261,81 +105,129 @@ public class MutationImpl implements Mutation {
         return Maybe.some(program);
     }
 
-    private Action.Operator getActionOperator(int i) {
-        switch (i) {
-            case 0:
-                return Action.Operator.WAIT;
-            case 1:
-                return Action.Operator.FORWARD;
-            case 2:
-                return Action.Operator.BACKWARD;
-            case 3:
-                return Action.Operator.LEFT;
-            case 4:
-                return Action.Operator.RIGHT;
-            case 5:
-                return Action.Operator.EAT;
-            case 6:
-                return Action.Operator.ATTACK;
-            case 7:
-                return Action.Operator.GROW;
-            case 8:
-                return Action.Operator.BUD;
-            case 9:
-                return Action.Operator.MATE;
+    private Maybe<Program> mutate4(Program program, Node node) {
+        int i;
+
+        if (node instanceof Action) {
+            List<Action.Operator> ActionOps = Arrays.asList(Action.Operator.values());
+            do {
+                i = rand.nextInt(ActionOps.size());
+            } while (!((Action) node).resetOperator(ActionOps.get(i))); // cannot be SERVE
+        } else if (node instanceof BinaryCondition) ((BinaryCondition) node).resetOperator();
+
+        else if (node instanceof Relation) {
+            List<Relation.Operator> RelationOps = Arrays.asList(Relation.Operator.values());
+            do {
+                i = rand.nextInt(RelationOps.size());
+            } while (!((Relation) node).resetOperator(RelationOps.get(i)));
+        } else if (node instanceof BinaryExpr) {
+            List<BinaryExpr.Operator> BinExprOps = Arrays.asList(BinaryExpr.Operator.values());
+            do {
+                i = rand.nextInt(BinExprOps.size());
+            } while (!((BinaryExpr) node).resetOperator(BinExprOps.get(i)));
+        } else if (node instanceof Sensor) {
+            List<Sensor.Operator> SensorOps = Arrays.asList(Sensor.Operator.values());
+            do {
+                i = rand.nextInt(SensorOps.size());
+            } while (!((Sensor) node).resetOperator(SensorOps.get(i)));
+        } else if (node instanceof Factor) {
+            Node replacement;
+            try {
+                do {
+                    i = Integer.parseInt(node.toString());
+                    i += java.lang.Integer.MAX_VALUE / rand.nextInt();
+                    replacement = new Factor(i);
+                } while (node.toString().equals(replacement.toString()));
+            } catch (Exception e) {
+                System.err.println("canApply() didn't catch an invalid node attempting to undergo Mutation 4");
+                return Maybe.none();
+            }
+            try {
+                Node parent = ((AbstractNode) node).getParent().get();
+                int in = parent.getChildren().indexOf(node);
+                parent.getChildren().set(in, replacement);
+            } catch (NoMaybeValue noMaybeValue) {
+                return Maybe.none();
+            }
         }
-        throw new IllegalArgumentException("getActionOperator error.");
+
+        return Maybe.some(program);
     }
 
-    private BinaryCondition.Operator getBinaryConditionOperator(int i) {
-        switch (i) {
-            case 0:
-                return BinaryCondition.Operator.AND;
-            case 1:
-                return BinaryCondition.Operator.OR;
+    private Maybe<Program> mutate5(Program program, Node node) {
+        Node insert = null;
+        Node root = ((AbstractNode) node).getRoot();
+        Node searchNode = root;
+
+        //Program has one Rule, and Condition of Rule is Relation
+        if (node instanceof Relation && root.getChildren().size() == 1
+                && root.getChildren().get(0).getChildren().get(0) == node) {
+            return Maybe.none();
         }
-        throw new IllegalArgumentException("getBinaryConditionOperator error.");
+
+        if (node.getCategory() == NodeCategory.CONDITION) {
+            while (searchNode == node | searchNode.getCategory() != NodeCategory.CONDITION) {
+                searchNode = root.nodeAt(rand.nextInt(root.size()));
+            }
+            BinaryCondition.Operator[] ops = BinaryCondition.Operator.values();
+            Condition right = (Condition) searchNode.clone();
+            insert = new BinaryCondition((Condition) node, ops[rand.nextInt(2)], right);
+        } else if (node.getCategory() == NodeCategory.EXPRESSION) {
+            switch (rand.nextInt(3)) {
+                case 0: // Binary Expr
+                    while (searchNode == node | searchNode.getCategory() != NodeCategory.EXPRESSION) {
+                        searchNode = root.nodeAt(rand.nextInt(root.size()));
+                    }
+                    Expr right = (Expr) searchNode.clone();
+                    BinaryExpr.Operator[] Binops = BinaryExpr.Operator.values();
+                    insert = new BinaryExpr((Expr) node, Binops[rand.nextInt(5)], right);
+                    break;
+                case 1: // Sensor
+                    List<Sensor.Operator> Senops = Arrays.asList(Sensor.Operator.values());
+                    insert = new Sensor(Senops.get(rand.nextInt(3)), (Expr) node); // cannot be SMELL
+                    break;
+                case 2: // Mem
+                    insert = new Mem((Expr)node);
+                    break;
+            }
+        }
+
+        try {
+            Node parent = ((AbstractNode) node).getParent().get();
+            int i = parent.getChildren().indexOf(node);
+            parent.getChildren().remove(i);
+            parent.getChildren().add(i, insert);
+        } catch (NoMaybeValue noMaybeValue) {
+            return Maybe.none();
+        }
+
+        return Maybe.some(program);
     }
 
-    private Relation.Operator getRelationOperator(int i) {
-        switch (i) {
-            case 0:
-                return Relation.Operator.LESS_THAN;
-            case 1:
-                return Relation.Operator.LESS_THAN_OR_EQUAl;
-            case 2:
-                return Relation.Operator.GREATER_THAN;
-            case 3:
-                return Relation.Operator.GREATER_THAN_OR_EQUAL;
-            case 4:
-                return Relation.Operator.EQUAL;
-            case 5:
-                return Relation.Operator.NOT_EQUAL;
-        }
-        throw new IllegalArgumentException("getRelationOperator error.");
-    }
+    private Maybe<Program> mutate6(Program program, Node node) {
+        int n = node.getChildren().size();
+        if (node instanceof ProgramImpl) {
+            node.getChildren().add(node.getChildren().get((int) (Math.random() * n)));
+        } else if (node instanceof Command) {
+            Node d;
+            do {
+                d = node.getChildren().get((int) (Math.random() * n));
+            } while (d instanceof Action);
 
-    private BinaryExpr.Operator getBinaryExprOperator(int i) {
-        switch (i) {
-            case 0:
-                return BinaryExpr.Operator.PLUS;
-            case 1:
-                return BinaryExpr.Operator.MINUS;
-            case 2:
-                return BinaryExpr.Operator.MULTIPLY;
-            case 3:
-                return BinaryExpr.Operator.DIVIDE;
-            case 4:
-                return BinaryExpr.Operator.MOD;
+            if (node.getChildren().get(n - 1) instanceof Action) {
+                node.getChildren().add(n - 1, d);
+            } else {
+                node.getChildren().add(d);
+            }
         }
-        throw new IllegalArgumentException("getBinaryExprOperator error.");
+        return Maybe.some(program);
     }
 
     @Override
     public boolean canApply(Node n) {
         switch (type) {
             case 1:
-                switch(n.getCategory()){
+                switch (n.getCategory()) {
                     case PROGRAM:
                     case COMMAND:
                         return false;
@@ -365,7 +257,7 @@ public class MutationImpl implements Mutation {
                 }
 
             case 3:
-                switch(n.getCategory()) {
+                switch (n.getCategory()) {
                     case PROGRAM:
                     case COMMAND:
                     case ACTION:
@@ -378,9 +270,10 @@ public class MutationImpl implements Mutation {
                         }
                     case UPDATE:
                         try {
-                            Node parent =  ((AbstractNode) n).getParent().get();
+                            Node parent = ((AbstractNode) n).getParent().get();
                             int i = 1;
-                            if (parent.getChildren().get(parent.getChildren().size()-1).getCategory() == NodeCategory.ACTION) {
+                            if (parent.getChildren().get(parent.getChildren().size() - 1).getCategory()
+                                    == NodeCategory.ACTION) {
                                 i = 2; // last Node in Command is Action
                             }
                             return parent.getChildren().size() > i;
@@ -392,61 +285,52 @@ public class MutationImpl implements Mutation {
                         return true;
                 }
 
-
-
-
             case 4:
-                if (n instanceof Command || n instanceof Mem || n instanceof ProgramImpl
-                        || n instanceof Rule || n instanceof Update) {
-                    return false; // A Node cannot replace itself.
-                }
-                if (n instanceof Action && ((Action) n).hasChild) {
-                    // If node is SERVE, no replacement is allowed.
-                    // Because no replacement of SERVE can preserve its child.
-                    return false;
-                }
-                if (n instanceof Factor) {
-                    try {
-                        Integer.parseInt(n.toString());
-                    } catch (Exception e) {
-                        // n is a Factor that stores (Expr) or -((Expr))
+                switch (n.getCategory()) {
+                    case PROGRAM:
+                    case RULE:
+                    case COMMAND:
+                    case UPDATE:
                         return false;
-                    }
+                    case ACTION:
+                        if (((AbstractNode) n).hasChild) return false; // SERVE
+                        return true;
+                    case CONDITION:
+                        return true;
+                    case EXPRESSION:
+                        if (n instanceof Mem) return false;
+                        else if (n instanceof Sensor && !((AbstractNode) n).hasChild) return false; // SMELL
+                        return true;
                 }
-                return true;
+
             case 5:
-                // A: parent of Node B
-                // B
-                // C: the Node to be inserted
-                // A is a valid parent of C / C is a valid child of A
-                // B is a valid child of C / C is a valid parent of B
-                if (n instanceof Action || n instanceof Update) {
-                    // Command, only parent of Action and Update, can't be the parent of itself.
-                    return false;
-                }
-                if (n instanceof Command) {
-                    // Rule, only parent of Command, can't be the parent of itself.
-                    return false;
-                }
-                try {
-                    if (n instanceof Mem && (((Mem) n).getParent().get() instanceof Update
-                            || ((Mem) n).getParent().get() instanceof BinaryExpr)) {
-                        // Update, the parent of Mem, has to be the parent of Mem.
-                        // Mem can't be the parent of itself.
+                switch (n.getCategory()) {
+                    case PROGRAM:
+                    case RULE:
+                    case COMMAND:
+                    case UPDATE:
+                    case ACTION:
                         return false;
-                    }
-                } catch (NoMaybeValue noMaybeValue) {
-                    noMaybeValue.printStackTrace();
+                    case CONDITION:
+                    case EXPRESSION:
+                        return true;
                 }
-                return n.getCategory() != NodeCategory.PROGRAM;
+
             case 6:
-                if (n.getChildren().size() == 1 && n.getChildren().get(0).getCategory() == NodeCategory.ACTION) {
-                    return false;
+                switch (n.getCategory()) {
+                    case PROGRAM:
+                        return true;
+                    case COMMAND:
+                        return !(n.getChildren().get(0) instanceof Action);
+                    case RULE:
+                    case UPDATE:
+                    case ACTION:
+                    case CONDITION:
+                    case EXPRESSION:
+                        return false;
                 }
-                return n.getCategory() == NodeCategory.PROGRAM | n.getCategory() == NodeCategory.COMMAND;
             default:
                 throw new IllegalArgumentException("Unsupported Mutation");
-
         }
     }
 }

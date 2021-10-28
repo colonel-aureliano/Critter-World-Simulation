@@ -1,6 +1,8 @@
 package ast;
 
-/** A representation of a binary Boolean condition: 'and' or 'or' */
+/**
+ * A representation of a binary Boolean condition: 'and' or 'or'
+ */
 public class BinaryCondition extends Condition {
 
     private Operator operator;
@@ -13,25 +15,27 @@ public class BinaryCondition extends Condition {
      * @param r
      */
     public BinaryCondition(Condition l, Operator op, Condition r) {
-        super(l,r);
+        super(l, r);
         operator = op;
     }
 
     /**
      * Resets the operator of this node.
      * Intended to be called only by MutationImpl.
+     *
      * @return
      */
-    protected void resetOperator(){
-        if(operator.equals(Operator.OR)){
-            operator=Operator.AND;
-        }
-        else{
-            operator=Operator.OR;
+    protected void resetOperator() {
+        if (operator.equals(Operator.OR)) {
+            operator = Operator.AND;
+        } else {
+            operator = Operator.OR;
         }
     }
 
-    /** An enumeration of all possible binary condition operators. */
+    /**
+     * An enumeration of all possible binary condition operators.
+     */
     public enum Operator {
         OR,
         AND;
@@ -39,11 +43,11 @@ public class BinaryCondition extends Condition {
 
     @Override
     public Node clone() {
-        return new BinaryCondition((Condition) children.get(0).clone(),operator,(Condition) children.get(1).clone());
+        return new BinaryCondition((Condition) children.get(0).clone(), operator, (Condition) children.get(1).clone());
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return visit(new PrintVisitor());
     }
 
@@ -52,7 +56,7 @@ public class BinaryCondition extends Condition {
     }
 
     public boolean classInv() {
-        return children.size()==2 && children.get(0) instanceof Condition
+        return children.size() == 2 && children.get(0) instanceof Condition
                 && children.get(1) instanceof Condition;
     }
 }

@@ -24,7 +24,7 @@ public class Relation extends Condition {
      * @param o
      * @return
      */
-    protected boolean resetOperator(Relation.Operator o) {
+    protected boolean resetOperator(Operator o) {
         if (operator.equals(o)) {
             return false;
         } else {
