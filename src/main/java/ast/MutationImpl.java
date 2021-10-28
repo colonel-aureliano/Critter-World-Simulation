@@ -129,13 +129,7 @@ public class MutationImpl implements Mutation {
                 System.err.println("canApply() didn't catch an invalid node attempting to undergo Mutation 4");
                 return Maybe.none();
             }
-            try {
-                Node parent = ((AbstractNode) node).getParent().get();
-                int in = parent.getChildren().indexOf(node);
-                parent.getChildren().set(in, replacement);
-            } catch (NoMaybeValue noMaybeValue) {
-                return Maybe.none();
-            }
+            ((Factor) node).replace(replacement);
         }
 
         return Maybe.some(program);
@@ -169,6 +163,8 @@ public class MutationImpl implements Mutation {
                 case 2: // Mem
                     insert = new Mem((Expr)node);
                     break;
+                case 3: // NEGATIVE factor
+                    // TODO
             }
         }
         ((AbstractNode) node).replace(insert);
