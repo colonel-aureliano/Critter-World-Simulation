@@ -62,7 +62,18 @@ public class MutationImpl implements Mutation {
             int i = parent.getChildren().indexOf(node);
             parent.getChildren().remove(i);
             if (node instanceof BinaryCondition | node instanceof BinaryExpr) {
-                parent.getChildren().add(i, node.getChildren().get(rand.nextInt(2)));
+                int r = rand.nextInt(2);
+                parent.getChildren().add(i, node.getChildren().get(r));
+                if(parent instanceof Mem && !parent.classInv()){
+                    if(r == 1){ // to avoid e.g. mem[-1]
+                        r=0;
+                    }
+                    else{
+                        r=1;
+                    }
+                    parent.getChildren().remove(i);
+                    parent.getChildren().add(i, node.getChildren().get(r));
+                }
             } else if (node.getCategory() == NodeCategory.EXPRESSION) {
                 // Factor, Sensor, Mem
                 parent.getChildren().add(i, node.getChildren().get(0));
@@ -163,8 +174,8 @@ public class MutationImpl implements Mutation {
                 case 2: // Mem
                     insert = new Mem((Expr)node);
                     break;
-                case 3: // NEGATIVE factor
-                    // TODO
+                case 3: // NEGATIVE factor, uncompleted
+                    break;
             }
         }
         ((AbstractNode) node).replace(insert);

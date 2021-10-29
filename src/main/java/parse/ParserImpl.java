@@ -269,12 +269,7 @@ class ParserImpl implements Parser {
             case "mem":
                 consume(t, TokenType.MEM);
                 consume(t, TokenType.LBRACKET);
-                if(t.peek().getType().toString()=="<number>") {
-                    e = new Mem(new Factor(Integer.valueOf(t.next().toString())));
-                }
-                else{
-                    e = new Mem(parseExpression(t));
-                }
+                e = new Mem(parseExpression(t));
                 consume(t, TokenType.RBRACKET);
                 break;
             case "(":

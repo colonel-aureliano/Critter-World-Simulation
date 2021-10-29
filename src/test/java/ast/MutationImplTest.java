@@ -7,8 +7,10 @@ import org.junit.jupiter.api.Test;
 import parse.Parser;
 import parse.ParserFactory;
 
+import javax.management.relation.RelationNotFoundException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -305,5 +307,18 @@ class MutationImplTest {
 
         Node n = m.apply(p,p.nodeAt(6)).get(); // mutating Command "POSTURE := 17", inserting a random Update from AST
         assert(n.toString().equals("mem[6] != 17 --> mem[6] := 17\n\tmem[6] := 17;\n"));
+    }
+
+    @Test
+    public void testNegativeMem() throws SyntaxError, NoMaybeValue {
+        String s = "mem[-3-2] > 2500 --> POSTURE := -17;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+
+        Mutation m = new MutationImpl(3); // BUG: may yield mem[-17]
+        p=m.apply(p,p.nodeAt(4)).get();
+        System.out.println(p);
     }
 }

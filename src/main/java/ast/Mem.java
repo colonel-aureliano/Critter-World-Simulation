@@ -25,7 +25,15 @@ public class Mem extends Expr {
 
     @Override
     public boolean classInv() {
-        return children.size() == 1 && children.get(0) instanceof Expr;
+        if (!(children.size() == 1 && children.get(0) instanceof Expr)){
+            return false;
+        }
+        if(children.get(0) instanceof Factor){
+            if(Integer.valueOf(children.get(0).toString())<0){
+                return false;
+            }
+        }
+        return true;
     }
 
 }
