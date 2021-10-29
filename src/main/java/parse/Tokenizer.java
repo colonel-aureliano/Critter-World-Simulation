@@ -121,8 +121,12 @@ public class Tokenizer implements Iterator<Token> {
             // consume comment
             while (c=='/' && in.peek()=='/'){
                 while (in.next()!='\n'){}
-                c = in.next();
                 lineNumber++;
+                c = in.next();
+                while (Character.isWhitespace(c)) {
+                    if (c == '\n') lineNumber++;
+                    c = in.next();
+                }
             }
 
             switch (c) {

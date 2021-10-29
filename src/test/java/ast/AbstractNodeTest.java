@@ -2,7 +2,6 @@ package ast;
 
 import cms.util.maybe.NoMaybeValue;
 import exceptions.SyntaxError;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import parse.Parser;
 import parse.ParserFactory;
@@ -10,77 +9,57 @@ import parse.ParserFactory;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class AbstractNodeTest {
 
-    // Please add "-ea" to VM options field.
-
     @Test
-    void test_nodeAt() throws SyntaxError {
-
-        String s = "1 + 2 > 0 --> forward;";
+    public void test_nodeAt() throws SyntaxError {
+        String s = "1 + 3 = 0 --> bud;";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
-
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        StringBuilder sb = new StringBuilder();
-        //assert(p.prettyPrint(sb).toString().equals("1 = 0 --> forward;\n"));
+        assert (p.size() == 9);
+        assert (p.nodeAt(0).getClass().getSimpleName().equals("ProgramImpl"));
+        assert (p.nodeAt(1).getClass().getSimpleName().equals("Rule"));
+        assert (p.nodeAt(2).getClass().getSimpleName().equals("Relation"));
+        assert (p.nodeAt(3).getClass().getSimpleName().equals("BinaryExpr"));
+        assert (p.nodeAt(4).getClass().getSimpleName().equals("Factor"));
+        assert (p.nodeAt(5).getClass().getSimpleName().equals("Factor"));
+        assert (p.nodeAt(6).getClass().getSimpleName().equals("Factor"));
+        assert (p.nodeAt(7).getClass().getSimpleName().equals("Command"));
+        assert (p.nodeAt(8).getClass().getSimpleName().equals("Action"));
 
-        for (int i = 0; i < p.size(); i++) {
-            System.out.println(p.nodeAt(i).getCategory());
-            assert(p.nodeAt(i).classInv());
-        }
         try {
-            p.nodeAt(p.size());
+            p.nodeAt(9);
+            assert false;
         } catch (IndexOutOfBoundsException e) {
-            assert(true);
         }
-
-
     }
 
     @Test
-    void test_nodeAt_2() throws SyntaxError{
-
-        String s = "POSTURE != 17 --> mem[6] := 51/3;";
+    void test_size() throws SyntaxError {
+        String s = "1 + 3 = 0 --> bud;";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
-
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
-        assert(p.size()==11);
-        assert(p.nodeAt(1) instanceof Rule);
-        assert(p.nodeAt(3) instanceof Mem);
-        assert(p.nodeAt(6) instanceof Update);
-        assert(p.nodeAt(8) instanceof BinaryExpr);
-        assert(p.nodeAt(8).toString().equals("51 / 3"));
-        assert(p.nodeAt(10) instanceof Factor);
 
-    }
-
-    @Test
-    void test_clone() throws SyntaxError {
-        String s = "POSTURE != 17 --> mem[6] := 51/3;\n1 = 0 --> forward;";
-        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
-
-        Reader r = new BufferedReader(new InputStreamReader(in));
-        Parser parser = ParserFactory.getParser();
-        Program p = parser.parse(r);
-        String original = p.toString();
-
-        Program clone = (Program) p.clone();
-        String cloned = clone.toString();
-        assert(cloned.equals(original));
+        assert(p.nodeAt(0).size()==9);
+        assert(p.nodeAt(1).size()==8);
+        assert(p.nodeAt(2).size()==5);
+        assert(p.nodeAt(3).size()==3);
+        assert(p.nodeAt(4).size()==1);
+        assert(p.nodeAt(5).size()==1);
+        assert(p.nodeAt(6).size()==1);
+        assert(p.nodeAt(7).size()==2);
+        assert(p.nodeAt(8).size()==1);
     }
 
     @Test
     void test_getChildren() throws SyntaxError {
         String s = "1 = 0 --> forward;";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
-
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
@@ -94,27 +73,27 @@ class AbstractNodeTest {
 
     @Test
     void test_getParent() throws SyntaxError, NoMaybeValue {
-        String s = "POSTURE != 17 --> mem[6] := 51/3;";
+        String s = "1 + 3 = 0 --> bud;";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
-
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        AbstractNode n = (AbstractNode) p.nodeAt(10);
-        assert(n.getParent().get() instanceof BinaryExpr);
+        assert(((AbstractNode)p.nodeAt(4)).getParent().get() instanceof BinaryExpr);
     }
 
     @Test
-    void testInvariant() throws SyntaxError {
-        InputStream in = ClassLoader.getSystemResourceAsStream("files/draw_critter.txt");
+    void test_replace() throws SyntaxError{
+        String s = "1 + 3 = 0 --> bud;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
-        for (int i = 0; i < p.size(); i++) {
-            assert(p.nodeAt(i).classInv());
-        }
-        System.out.println(p);
+
+        Update u = new Update(new Factor(5),new Factor(3));
+        assert(((AbstractNode)p.nodeAt(8)).replace(u));
+        String n = "1 + 3 = 0 --> mem[5] := 3;\n";
+        assert(p.toString().equals(n));
     }
 
 }

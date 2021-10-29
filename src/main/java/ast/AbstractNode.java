@@ -4,18 +4,16 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import cms.util.maybe.Maybe;
 import cms.util.maybe.NoMaybeValue;
 
-import javax.management.relation.RelationNotFoundException;
 
 public abstract class AbstractNode implements Node {
 
     protected static Node root;
     protected List<Node> children;
-    protected boolean hasChild = true; // indicates whether the Node has child
+    protected boolean hasChild = true;
 
     public static Node getRoot(){
         return root;
@@ -117,7 +115,7 @@ public abstract class AbstractNode implements Node {
     /**
      * Replace this node by replacement in the AST by changing the children of this node's parent.
      * @param replacement
-     * @return true of method is successful
+     * @return true if method is successful
      */
     protected boolean replace(Node replacement) {
         Node parent;
@@ -130,7 +128,6 @@ public abstract class AbstractNode implements Node {
         parent.getChildren().set(i, replacement); // deep clone
         return true;
     }
-
 
     /**
      * @return the String representation of the tree rooted at this {@code Node}.

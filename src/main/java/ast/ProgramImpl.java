@@ -13,7 +13,7 @@ import java.util.Random;
 public class ProgramImpl extends AbstractNode implements Program {
 
     public ProgramImpl(List<Node> lr) {
-        super(lr); // a list of rules
+        super(lr); // a list of Rules
         setRoot(this);
     }
 
@@ -71,8 +71,8 @@ public class ProgramImpl extends AbstractNode implements Program {
     @Override
     public Maybe<Node> findNodeOfType(NodeCategory type) {
         for (int i = 0; i < this.size(); i++) {
-            if (this.nodeAt(i).getCategory().equals(type)) {
-                return Maybe.some(this.nodeAt(i));
+            if (nodeAt(i).getCategory().equals(type)) {
+                return Maybe.some(nodeAt(i));
             }
         }
         return Maybe.none();

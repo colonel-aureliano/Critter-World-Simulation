@@ -59,6 +59,8 @@ public class Factor extends Expr {
     @Override
     public boolean classInv() {
         if (operator == null) return value >= 0 && children == null;
-        else return children.get(0) instanceof Factor;
+        else return ((children.get(0) instanceof Factor && operator==Operator.NEGATIVE)
+                || (children.get(0) instanceof BinaryExpr && operator==Operator.NEGATIVE_PAREN))
+                && children.size()==1;
     }
 }
