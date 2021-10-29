@@ -29,7 +29,7 @@ public class ParserTest {
     /** Checks that a valid critter program is not {@code null} when parsed. */
     @Test
     void testExample(){
-        InputStream in = ClassLoader.getSystemResourceAsStream("files/example-rules.txt");
+        InputStream in = ClassLoader.getSystemResourceAsStream("files/example-critter.txt");
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
         try{Program prog = parser.parse(r);
