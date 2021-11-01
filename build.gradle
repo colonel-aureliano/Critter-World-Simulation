@@ -2,12 +2,6 @@ plugins {
     id 'java'
     id 'eclipse'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.8' apply false
-}
-
-if (JavaVersion.current() == JavaVersion.VERSION_11
-    || JavaVersion.current() == JavaVersion.VERSION_12){
-    apply plugin: 'org.openjfx.javafxplugin'
 }
 
 apply plugin: 'java'
@@ -32,13 +26,9 @@ dependencies {
     // GSON, for parsing and generating JSON
     implementation 'com.google.code.gson:gson:2.8.5'
     // run tests with JUnit 5
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-}
-
-javafx {
-    modules = [ 'javafx.controls', 'javafx.web', 'javafx.fxml' ]
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.5.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
 }
 
 test {
@@ -49,7 +39,18 @@ test {
     }
 }
 
-mainClassName = 'main.ParseAndMutateApp'
+mainClassName = 'console.Console'
+
+// console jar for A5
+jar {
+    archiveBaseName.set('Console')
+    manifest {
+        attributes 'Main-Class': 'console.Console'
+    }
+    from(sourceSets.main.output) {
+        include '**'
+    }
+}
 
 // parse and mutate jar for A4
 task parseAndMutateJar(type: Jar) {
@@ -62,3 +63,5 @@ task parseAndMutateJar(type: Jar) {
     }
 }
 
+// make jar task assemble both jars
+jar.dependsOn parseAndMutateJar
