@@ -38,6 +38,7 @@ public class Mem extends Expr {
 
     @Override
     public int value() {
-        return 0; //TODO
+        int i = ((Expr) children.get(0)).value();
+        return co.getMem(i); // co must be initialized
     }
 }

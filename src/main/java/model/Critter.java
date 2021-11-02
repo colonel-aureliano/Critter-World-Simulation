@@ -2,6 +2,7 @@ package model;
 
 import ast.Node;
 import ast.Program;
+import ast.ProgramImpl;
 import ast.Rule;
 import cms.util.maybe.Maybe;
 
@@ -28,6 +29,7 @@ public class Critter implements ReadOnlyCritter {
             System.out.println("WARNING: critter created with invalid values, will reset invalid values to default.");
             setDefault();
         }
+        //((ProgramImpl) p).provideCritter(this);
     }
 
     private void setDefault(){

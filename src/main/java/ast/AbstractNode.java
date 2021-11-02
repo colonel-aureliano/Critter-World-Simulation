@@ -1,6 +1,5 @@
 package ast;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,16 +10,29 @@ import cms.util.maybe.NoMaybeValue;
 
 public abstract class AbstractNode implements Node {
 
-    protected static Node root;
+    protected Node root;
+    protected CritterObserver co;
     protected List<Node> children;
     protected boolean hasChild = true;
 
-    public static Node getRoot(){
+    public void setCritterObserver(CritterObserver co){
+        this.co=co;
+        if(!hasChild) return;
+        for(Node node: children){
+            ((AbstractNode) node).setCritterObserver(co);
+        }
+    }
+
+    public Node getRoot(){
         return root;
     }
 
     protected void setRoot(Node n){
         root = n;
+        if(!hasChild) return;
+        for(Node node: children){
+            ((AbstractNode) node).setRoot(n);
+        }
     }
 
     public AbstractNode(){

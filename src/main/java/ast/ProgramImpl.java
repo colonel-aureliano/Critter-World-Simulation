@@ -2,6 +2,7 @@ package ast;
 
 import cms.util.maybe.Maybe;
 import cms.util.maybe.NoMaybeValue;
+import model.Critter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,10 @@ public class ProgramImpl extends AbstractNode implements Program {
     public ProgramImpl(List<Node> lr) {
         super(lr); // a list of Rules
         setRoot(this);
+    }
+
+    public void provideCritter(Critter c){
+        setCritterObserver(new CritterObserver(c));
     }
 
     @Override

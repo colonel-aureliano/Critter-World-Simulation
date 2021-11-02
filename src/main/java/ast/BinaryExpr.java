@@ -63,7 +63,20 @@ public class BinaryExpr extends Expr {
 
     @Override
     public int value() {
-        return 0; //TODO
+        switch(operator){
+            case PLUS:
+                return ((Expr) children.get(0)).value()+((Expr) children.get(1)).value();
+            case MINUS:
+                return ((Expr) children.get(0)).value()-((Expr) children.get(1)).value();
+            case MULTIPLY:
+                return ((Expr) children.get(0)).value()*((Expr) children.get(1)).value();
+            case DIVIDE:
+                return ((Expr) children.get(0)).value()/((Expr) children.get(1)).value();
+            case MOD:
+                return ((Expr) children.get(0)).value()%((Expr) children.get(1)).value();
+        }
+        System.out.println("BinaryExpr evaluator error.");
+        return -1;
     }
 
 }
