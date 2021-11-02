@@ -61,4 +61,9 @@ public class BinaryExpr extends Expr {
                 && children.get(1) instanceof Expr;
     }
 
+    @Override
+    public int value() {
+        return 0; //TODO
+    }
+
 }

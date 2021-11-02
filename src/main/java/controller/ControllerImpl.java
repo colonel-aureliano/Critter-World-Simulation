@@ -1,9 +1,14 @@
 package controller;
 
+import ast.Program;
 import easyIO.EOF;
 import easyIO.Scanner;
 import easyIO.UnexpectedInput;
+import exceptions.SyntaxError;
+import model.Critter;
 import model.ReadOnlyWorld;
+import parse.Parser;
+import parse.ParserFactory;
 
 import java.io.*;
 import java.util.Arrays;
@@ -27,22 +32,34 @@ public class ControllerImpl implements Controller{
 
     @Override
     public boolean loadCritters(String filename, int n) {
+        Critter c = readCritter(filename);
+        if (c==null) return false;
+
+        return true;
+    }
+
+    private Critter readCritter(String filename){
         InputStream in = ClassLoader.getSystemResourceAsStream(filename);
         Reader r = new BufferedReader(new InputStreamReader(in));
-        Scanner s = new Scanner(r,"");
+        easyIO.Scanner s = new Scanner(r,"");
 
         String name = null;
         int[] arr = new int[7];
         int i = 0;
 
         while(s.hasNext()){
-            s.trailingWhitespace();
             try{
-                s.consume("//");
-                s.nextLine();
+                s.newline();
             } catch (UnexpectedInput unexpectedInput) {
             }
-            s.trailingWhitespace();
+            if(i>=arr.length) break;
+            try {
+                s.trailingWhitespace();
+                s.consume("//");
+                s.nextLine();
+                continue;
+            } catch (UnexpectedInput unexpectedInput) {
+            }
 
             // Reading species name.
             if(name==null) {
@@ -54,10 +71,15 @@ public class ControllerImpl implements Controller{
                     s.consume(":");
                     s.trailingWhitespace();
                     name = s.nextLine();
-                    name = name.substring(0, name.length() - 1);
+                    if(name.contains("//")){
+                        int t = name.indexOf("//");
+                        name=name.substring(0,t);
+                    }
+                    name=name.trim();
                     continue;
-                } catch (UnexpectedInput unexpectedInput) {
-                    throw new IllegalArgumentException("Illegal critter file.");
+                } catch (UnexpectedInput e) {
+                    System.out.println("Illegal critter file: invalid species name.");
+                    return null;
                 }
             }
 
@@ -69,27 +91,29 @@ public class ControllerImpl implements Controller{
                         i++;
                         continue;
                     }
-                    arr[i] = CritterReadHelper(s);
+                    arr[i] = readCritterHelper(s);
                     i++;
                 } catch (UnexpectedInput e) {
-                    e.printStackTrace();
+                    System.out.println("Illegal critter file: invalid mem values.");
+                    return null;
                 }
-            }
-
-            // TODO Reading critter program.
-
-            try {
-                s.nextLine();
-            } catch (UnexpectedInput e) {
             }
         }
 
-        System.out.println(name);
-        System.out.println(Arrays.toString(arr));
-        return false;
+        Parser p = ParserFactory.getParser();
+        Program m = null;
+        try {
+            m = p.parse(r);
+        } catch (SyntaxError syntaxError) {
+            System.out.println("Illegal critter file: invalid program rules.");
+            return null;
+        }
+
+        Critter c = new Critter(name,arr,m);
+        return c;
     }
 
-    private int CritterReadHelper(Scanner s) throws UnexpectedInput {
+    private int readCritterHelper(Scanner s) throws UnexpectedInput {
         switch(s.nextIdentifier()){
             case "memsize":
             case "defense":

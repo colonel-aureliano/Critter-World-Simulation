@@ -36,4 +36,8 @@ public class Mem extends Expr {
         return true;
     }
 
+    @Override
+    public int value() {
+        return 0; //TODO
+    }
 }

@@ -11,4 +11,6 @@ public abstract class Condition extends AbstractNode {
     public NodeCategory getCategory() {
         return NodeCategory.CONDITION;
     }
+
+    abstract public boolean value();
 }

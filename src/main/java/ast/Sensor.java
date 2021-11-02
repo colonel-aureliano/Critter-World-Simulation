@@ -71,4 +71,9 @@ public class Sensor extends Expr {
         return (children.size() == 1 && children.get(0) instanceof Expr) ||
                 (operator == Operator.SMELL && children == null);
     }
+
+    @Override
+    public int value() {
+        return 0; //TODO
+    }
 }

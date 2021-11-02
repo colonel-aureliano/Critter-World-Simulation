@@ -59,4 +59,18 @@ public class BinaryCondition extends Condition {
         return children.size() == 2 && children.get(0) instanceof Condition
                 && children.get(1) instanceof Condition;
     }
+
+    @Override
+    public boolean value() {
+        switch(operator){
+            case OR:
+                return ((Condition)children.get(0)).value()
+                        || ((Condition)children.get(1)).value();
+            case AND:
+                return ((Condition)children.get(0)).value()
+                        && ((Condition)children.get(1)).value();
+        }
+        System.out.println("Binary Condition evaluator error.");
+        return false;
+    }
 }

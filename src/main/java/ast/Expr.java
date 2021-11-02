@@ -15,6 +15,7 @@ public abstract class Expr extends AbstractNode {
         super(s);
     }
 
+    abstract public int value();
 
     @Override
     public NodeCategory getCategory() {

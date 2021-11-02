@@ -63,4 +63,10 @@ public class Factor extends Expr {
                 || (children.get(0) instanceof BinaryExpr && operator==Operator.NEGATIVE_PAREN))
                 && children.size()==1;
     }
+
+    @Override
+    public int value(){
+        if (operator == null) return value;
+        return -(((Expr)children.get(0)).value());
+    }
 }

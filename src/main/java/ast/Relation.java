@@ -65,4 +65,9 @@ public class Relation extends Condition {
         return children.size() == 2 && children.get(0) instanceof Expr
                 && children.get(1) instanceof Expr;
     }
+
+    @Override
+    public boolean value(){
+        return false; //TODO
+    }
 }

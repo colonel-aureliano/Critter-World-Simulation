@@ -16,7 +16,8 @@ class CritterTest {
     @Test
     void testConstructor(){
         int[] m = {1,2,3,4,5,6};
-        Critter Bob = new Critter("Bob",m);
+        //Critter Bob = new Critter("Bob",m);
+        ////
     }
 
     @Test

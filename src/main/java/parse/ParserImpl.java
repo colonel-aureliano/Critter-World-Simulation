@@ -288,7 +288,6 @@ class ParserImpl implements Parser {
                 }
                 break;
             default:
-                System.out.println(t.peek().getType());
                 throw new SyntaxError(t.peek().lineNumber(), "Factor Syntax Error");
         }
 
