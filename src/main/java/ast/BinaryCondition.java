@@ -70,7 +70,7 @@ public class BinaryCondition extends Condition {
                 return ((Condition)children.get(0)).value()
                         && ((Condition)children.get(1)).value();
         }
-        System.out.println("Binary Condition evaluator error.");
+        System.out.println("Binary Condition value() error.");
         return false;
     }
 }

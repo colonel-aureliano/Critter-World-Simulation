@@ -39,4 +39,11 @@ public class Rule extends AbstractNode {
         return children.size() == 2 && children.get(0) instanceof Condition
                 && children.get(1) instanceof Command;
     }
+
+    /**
+     * @return whether its Condition is true
+     */
+    public boolean value(){
+        return ((Condition)getChildren().get(0)).value();
+    }
 }

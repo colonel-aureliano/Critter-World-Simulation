@@ -1,11 +1,9 @@
 package model;
 
-import ast.Node;
-import ast.Program;
-import ast.ProgramImpl;
-import ast.Rule;
+import ast.*;
 import cms.util.maybe.Maybe;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -29,7 +27,7 @@ public class Critter implements ReadOnlyCritter {
             System.out.println("WARNING: critter created with invalid values, will reset invalid values to default.");
             setDefault();
         }
-        //((ProgramImpl) p).provideCritter(this);
+        ((ProgramImpl) p).critterToObserve(this);
     }
 
     private void setDefault(){
@@ -67,15 +65,23 @@ public class Critter implements ReadOnlyCritter {
         List<Node> l = program.getChildren();
         for(Node i: l){
             Rule r = (Rule) i;
-            if(evaluate(r)){
-
+            if(r.value()){
+                // Condition for rule is true. Should perform update/action.
+                Node c = r.getChildren().get(1); // Command node
+                for(Node n: c.getChildren()){
+                    if(n.getCategory()== NodeCategory.ACTION){
+                        //TODO perform action
+                        return;
+                    }
+                    // n is an instance of Update, with children l,r, represents mem[l] := r
+                    try{
+                        mem[((Expr)n.getChildren().get(0)).value()]=((Expr)n.getChildren().get(1)).value();
+                    } catch (IndexOutOfBoundsException e){
+                        // do not perform update
+                    }
+                }
             }
-        }
-    }
-
-    private boolean evaluate(Rule r){
-        // evaluates a rule
-        return false; //TODO
+        } //TODO perform the process for up to 999 times if no ACTION is found
     }
 
     @Override

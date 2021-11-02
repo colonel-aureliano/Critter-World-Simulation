@@ -18,7 +18,7 @@ public class ProgramImpl extends AbstractNode implements Program {
         setRoot(this);
     }
 
-    public void provideCritter(Critter c){
+    public void critterToObserve(Critter c){
         setCritterObserver(new CritterObserver(c));
     }
 

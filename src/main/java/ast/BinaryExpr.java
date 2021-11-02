@@ -75,7 +75,7 @@ public class BinaryExpr extends Expr {
             case MOD:
                 return ((Expr) children.get(0)).value()%((Expr) children.get(1)).value();
         }
-        System.out.println("BinaryExpr evaluator error.");
+        System.out.println("BinaryExpr value() error.");
         return -1;
     }
 

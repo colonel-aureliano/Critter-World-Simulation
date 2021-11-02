@@ -38,7 +38,8 @@ public class ControllerImpl implements Controller{
         return true;
     }
 
-    private Critter readCritter(String filename){
+    // readCritter is declared protected for testing purposes only
+    protected Critter readCritter(String filename){
         InputStream in = ClassLoader.getSystemResourceAsStream(filename);
         Reader r = new BufferedReader(new InputStreamReader(in));
         easyIO.Scanner s = new Scanner(r,"");

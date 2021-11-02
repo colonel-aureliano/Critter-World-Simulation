@@ -68,6 +68,21 @@ public class Relation extends Condition {
 
     @Override
     public boolean value(){
-        return false; //TODO
+        switch(operator){
+            case LESS_THAN:
+                return ((Expr)children.get(0)).value()<((Expr)children.get(1)).value();
+            case LESS_THAN_OR_EQUAl:
+                return ((Expr)children.get(0)).value()<=((Expr)children.get(1)).value();
+            case GREATER_THAN:
+                return ((Expr)children.get(0)).value()>((Expr)children.get(1)).value();
+            case GREATER_THAN_OR_EQUAL:
+                return ((Expr)children.get(0)).value()>=((Expr)children.get(1)).value();
+            case EQUAL:
+                return ((Expr)children.get(0)).value()==((Expr)children.get(1)).value();
+            case NOT_EQUAL:
+                return ((Expr)children.get(0)).value()!=((Expr)children.get(1)).value();
+        }
+        System.out.println("Relation value() error.");
+        return false;
     }
 }
