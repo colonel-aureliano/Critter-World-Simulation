@@ -1,9 +1,15 @@
 package model;
 
+import ast.Program;
+import cms.util.maybe.Maybe;
+import cms.util.maybe.NoMaybeValue;
 import easyIO.EOF;
 import easyIO.Scanner;
 import easyIO.UnexpectedInput;
+import exceptions.SyntaxError;
 import org.junit.jupiter.api.Test;
+import parse.Parser;
+import parse.ParserFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -14,23 +20,53 @@ import static org.junit.jupiter.api.Assertions.*;
 class CritterTest {
 
     @Test
-    void testConstructor(){
-        int[] m = {1,2,3,4,5,6};
-        //Critter Bob = new Critter("Bob",m);
-        ////
+    void testConstructor() throws SyntaxError {
+        String name = "forest critter";
+        int[] arr = {5,0,0,0,0,5,89};
+        String s = "1 = 1 --> mem[3] := 3;\n mem[3] = 3 --> bud;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+
+        Critter c = new Critter(name,arr,p);
+        int[] arr2 = {7,1,1,1,1,5,89};
+        assert(Arrays.equals(c.getMemory(), arr2));
     }
 
     @Test
-    void t() throws UnexpectedInput, EOF {
-        //InputStream in = ClassLoader.getSystemResourceAsStream("A5files/space_critter.txt");
-        String str = "species: space critter\nmemsize: 7";
-        InputStream in = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8));
+    void testRepExposure() throws SyntaxError {
+        String name = "forest critter";
+        int[] arr = {7,1,1,1,1,1,13};
+        String s = "1 = 1 --> mem[3] := 3;\n mem[3] = 3 --> bud;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Reader r = new BufferedReader(new InputStreamReader(in));
-        Scanner s = new Scanner(r,"");
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
 
-        System.out.println(s.nextIdentifier());
-        s.consume(": ");
-        System.out.println(s.peek());
+        Critter c = new Critter(name,arr,p);
+        c.getMemory()[0]=10;
+        assert(Arrays.equals(c.getMemory(),arr));
+    }
+
+    @Test
+    void testStep() throws SyntaxError, NoMaybeValue {
+        String name = "forest critter";
+        int[] arr = {5,0,0,0,0,5,89};
+        String s = "1 = 1 --> mem[3] := 3;\n mem[3] = 3 --> bud;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+
+        Critter c = new Critter(name,arr,p);
+        assert(c.getLastRuleString().equals(Maybe.none()));
+
+        c.step();
+        int[] arr2 = {7,1,1,3,1,1,89};
+        assert(Arrays.equals(c.getMemory(), arr2));
+
+        assert(c.getLastRuleString().get().equals("mem[3] = 3 --> bud;\n"));
     }
 
 }
