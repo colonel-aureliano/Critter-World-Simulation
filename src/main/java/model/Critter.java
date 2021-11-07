@@ -66,7 +66,7 @@ public class Critter implements ReadOnlyCritter {
         List<Node> l = program.getChildren();
 
         mem[5]=0;
-        while(mem[5]<=999) {
+        while(mem[5]<999) {
             mem[5]++;
             for (Node i : l) {
                 if (((Rule) i).value()) {

@@ -69,4 +69,20 @@ class CritterTest {
         assert(c.getLastRuleString().get().equals("mem[3] = 3 --> bud;\n"));
     }
 
+    @Test
+    void testStep999() throws SyntaxError {
+        String name = "forest critter";
+        int[] arr = {7,8,1,1,1,1,13};
+        String s = "mem[1] = 8 --> mem[1] := 3;\n mem[1] = 3 --> mem[1] := 8;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+
+        Critter c = new Critter(name,arr,p);
+        System.out.println(Arrays.toString(c.getMemory()));
+        c.step();
+        System.out.println(Arrays.toString(c.getMemory()));
+    }
+
 }
