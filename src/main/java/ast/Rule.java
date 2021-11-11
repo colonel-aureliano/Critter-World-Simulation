@@ -4,7 +4,7 @@ package ast;
  * A representation of a critter rule.
  */
 public class Rule extends AbstractNode {
-    private String operator = "-->";
+    protected String operator = "-->";
 
     /**
      * A AST representation of Condition --> Command.
@@ -32,7 +32,7 @@ public class Rule extends AbstractNode {
     }
 
     private String visit(Visitor v) {
-        return v.visit(this, operator);
+        return v.visit(this);
     }
 
     public boolean classInv() {

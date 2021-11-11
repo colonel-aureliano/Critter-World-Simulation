@@ -5,7 +5,7 @@ package ast;
  */
 public class BinaryCondition extends Condition {
 
-    private Operator operator;
+    protected Operator operator;
 
     /**
      * Create an AST representation of l op r.
@@ -52,7 +52,7 @@ public class BinaryCondition extends Condition {
     }
 
     public String visit(Visitor v) {
-        return v.visit(this, operator);
+        return v.visit(this);
     }
 
     public boolean classInv() {

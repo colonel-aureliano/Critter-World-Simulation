@@ -53,7 +53,7 @@ public class BinaryExpr extends Expr {
     }
 
     private String visit(Visitor v) {
-        return v.visit(this, operator);
+        return v.visit(this);
     }
 
     public boolean classInv() {

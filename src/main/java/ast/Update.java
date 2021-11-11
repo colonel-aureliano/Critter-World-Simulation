@@ -2,7 +2,7 @@ package ast;
 
 public class Update extends AbstractNode {
 
-    private final String operator = ":=";
+    protected final String operator = ":=";
 
     /**
      * A AST representation of mem[l] := r
@@ -30,7 +30,7 @@ public class Update extends AbstractNode {
     }
 
     private String visit(Visitor v) {
-        return v.visit(this, operator);
+        return v.visit(this);
     }
 
     // assert that children.get(0) is mem[expr]

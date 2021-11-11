@@ -3,7 +3,7 @@ package ast;
 
 public class Relation extends Condition {
 
-    private Operator operator;
+    protected Operator operator;
 
     /**
      * An AST representation of a relation with l and r.
@@ -56,7 +56,7 @@ public class Relation extends Condition {
     }
 
     private String visit(Visitor v) {
-        return v.visit(this, operator);
+        return v.visit(this);
     }
 
 

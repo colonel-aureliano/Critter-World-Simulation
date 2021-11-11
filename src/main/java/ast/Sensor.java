@@ -1,7 +1,7 @@
 package ast;
 
 public class Sensor extends Expr {
-    private Operator operator;
+    protected Operator operator;
 
     /**
      * Create an AST representation of sensor.
@@ -63,7 +63,7 @@ public class Sensor extends Expr {
     }
 
     private String visit(Visitor v) {
-        return v.visit(this, operator);
+        return v.visit(this);
     }
 
     @Override

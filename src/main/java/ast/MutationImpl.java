@@ -112,7 +112,6 @@ public class MutationImpl implements Mutation {
                 i = rand.nextInt(ActionOps.size());
             } while (!((Action) node).resetOperator(ActionOps.get(i))); // cannot be SERVE
         } else if (node instanceof BinaryCondition) ((BinaryCondition) node).resetOperator();
-
         else if (node instanceof Relation) {
             List<Relation.Operator> RelationOps = Arrays.asList(Relation.Operator.values());
             do {

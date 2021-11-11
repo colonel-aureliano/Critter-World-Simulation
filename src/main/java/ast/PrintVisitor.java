@@ -5,8 +5,8 @@ import java.util.List;
 public class PrintVisitor implements Visitor {
 
     @Override
-    public String visit(Rule n, String operator) {
-        return n.getChildren().get(0) + " " + operator + " " + n.getChildren().get(1) + ";\n";
+    public String visit(Rule n) {
+        return n.getChildren().get(0) + " " + n.operator + " " + n.getChildren().get(1) + ";\n";
     }
 
     @Override
@@ -21,37 +21,37 @@ public class PrintVisitor implements Visitor {
     }
 
     @Override
-    public String visit(Update n, String operator) {
+    public String visit(Update n) {
         return "mem[" + n.getChildren().get(0) + "] "
-                + operator + " " + n.getChildren().get(1);
+                + n.operator + " " + n.getChildren().get(1);
     }
 
     @Override
-    public String visit(Action n, Action.Operator operator) {
-        if (operator == Action.Operator.SERVE) {
-            return operator.toString().toLowerCase() + "[" + n.getChildren().get(0) + "]";
+    public String visit(Action n) {
+        if (n.operator == Action.Operator.SERVE) {
+            return n.operator.toString().toLowerCase() + "[" + n.getChildren().get(0) + "]";
         }
-        return operator.toString().toLowerCase();
+        return n.operator.toString().toLowerCase();
     }
 
     @Override
-    public String visit(BinaryCondition n, BinaryCondition.Operator operator) {
+    public String visit(BinaryCondition n) {
         Condition left = (Condition) n.getChildren().get(0);
         Condition right = (Condition) n.getChildren().get(1);
         StringBuilder sb = new StringBuilder();
         if (left instanceof BinaryCondition) sb.append("{" + left + "}");
         else sb.append(left);
-        sb.append(" " + operator.toString().toLowerCase() + " ");
+        sb.append(" " + n.operator.toString().toLowerCase() + " ");
         if (right instanceof BinaryCondition) sb.append("{" + right + "}");
         else sb.append(right);
         return sb.toString();
     }
 
     @Override
-    public String visit(Relation n, Relation.Operator operator) {
+    public String visit(Relation n) {
         StringBuilder sb = new StringBuilder();
         sb.append(n.getChildren().get(0));
-        switch (operator) {
+        switch (n.operator) {
             case EQUAL:
                 sb.append(" = ");
                 break;
@@ -76,13 +76,13 @@ public class PrintVisitor implements Visitor {
     }
 
     @Override
-    public String visit(BinaryExpr n, BinaryExpr.Operator operator) {
+    public String visit(BinaryExpr n) {
         StringBuilder sb = new StringBuilder();
         Node left = n.getChildren().get((0));
         if (left instanceof BinaryExpr &&
-                LNeedParen(operator, ((BinaryExpr)left).operator)) sb.append("(" + left + ")");
+                LNeedParen(n.operator, ((BinaryExpr)left).operator)) sb.append("(" + left + ")");
         else sb.append(left);
-        switch (operator) {
+        switch (n.operator) {
             case PLUS:
                 sb.append(" + ");
                 break;
@@ -101,23 +101,23 @@ public class PrintVisitor implements Visitor {
         }
         Node right = n.getChildren().get((1));
         if (right instanceof BinaryExpr &&
-                RNeedParen(operator, ((BinaryExpr)right).operator)) sb.append("(" + right + ")");
+                RNeedParen(n.operator, ((BinaryExpr)right).operator)) sb.append("(" + right + ")");
         else sb.append(right);
         return sb.toString();
     }
 
     @Override
-    public String visit(Factor n, Factor.Operator operator, int value) {
-        if (operator == null) return String.valueOf(value);
-        else if (operator== Factor.Operator.NEGATIVE) return "-" + n.getChildren().get(0);
+    public String visit(Factor n) {
+        if (n.operator == null) return String.valueOf(n.value);
+        else if (n.operator== Factor.Operator.NEGATIVE) return "-" + n.getChildren().get(0);
         else return "-(" + n.getChildren().get(0)+")";
     }
 
     @Override
-    public String visit(Sensor n, Sensor.Operator operator) {
+    public String visit(Sensor n) {
         StringBuilder sb = new StringBuilder();
-        sb.append(operator.toString().toLowerCase());
-        switch (operator) {
+        sb.append(n.operator.toString().toLowerCase());
+        switch (n.operator) {
             case SMELL:
                 break;
             default:

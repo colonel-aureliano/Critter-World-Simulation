@@ -1,8 +1,8 @@
 package ast;
 
 public class Factor extends Expr {
-    private int value;
-    private Operator operator;
+    protected int value;
+    protected Operator operator;
 
     /**
      * Create a factor for a number.
@@ -53,7 +53,7 @@ public class Factor extends Expr {
     }
 
     private String visit(Visitor v){
-        return v.visit(this, operator, value);
+        return v.visit(this);
     }
 
     @Override

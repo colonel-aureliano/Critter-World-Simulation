@@ -2,7 +2,7 @@ package ast;
 
 public class Action extends AbstractNode {
 
-    private Operator operator;
+    protected Operator operator;
 
     /**
      * Create an Action node
@@ -71,7 +71,7 @@ public class Action extends AbstractNode {
     }
 
     private String visit(Visitor v) {
-        return v.visit(this, operator);
+        return v.visit(this);
     }
 
     @Override
