@@ -2,12 +2,12 @@ package ast;
 
 import model.ReadOnlyCritter;
 
-public class CritterObserver {
+public class CritterO {
     // Observes a critter, meant to be called by Mem.
     // TODO Sensor needs to observe the world as well.
 
     ReadOnlyCritter c;
-    public CritterObserver(ReadOnlyCritter c){
+    public CritterO(ReadOnlyCritter c){
         this.c=c;
     }
 

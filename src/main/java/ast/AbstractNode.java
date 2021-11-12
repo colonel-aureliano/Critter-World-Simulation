@@ -11,15 +11,15 @@ import cms.util.maybe.NoMaybeValue;
 public abstract class AbstractNode implements Node {
 
     protected Node root;
-    protected CritterObserver co;
+    protected CritterO co;
     protected List<Node> children;
     protected boolean hasChild = true;
 
-    public void setCritterObserver(CritterObserver co){
+    public void setCritterO(CritterO co){
         this.co=co;
         if(!hasChild) return;
         for(Node node: children){
-            ((AbstractNode) node).setCritterObserver(co);
+            ((AbstractNode) node).setCritterO(co);
         }
     }
 
@@ -93,7 +93,7 @@ public abstract class AbstractNode implements Node {
         if(hasChild) {
             return children;
         }
-        throw new IllegalArgumentException("getChildren() called on a leaf node.");
+        return new ArrayList<Node>(); // returning an empty list when called on a leaf node
     }
 
     /**

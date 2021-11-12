@@ -19,7 +19,7 @@ public class ProgramImpl extends AbstractNode implements Program {
     }
 
     public void critterToObserve(Critter c){
-        setCritterObserver(new CritterObserver(c));
+        setCritterO(new CritterO(c));
     }
 
     @Override
