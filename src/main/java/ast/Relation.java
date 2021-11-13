@@ -18,22 +18,6 @@ public class Relation extends Condition {
     }
 
     /**
-     * Resets the operator of this node.
-     * Intended to be called only by MutationImpl.
-     *
-     * @param o
-     * @return
-     */
-    protected boolean resetOperator(Operator o) {
-        if (operator.equals(o)) {
-            return false;
-        } else {
-            operator = o;
-            return true;
-        }
-    }
-
-    /**
      * An enumeration of all possible relation operators.
      */
     public enum Operator {

@@ -40,22 +40,6 @@ public class Action extends AbstractNode {
         SERVE
     }
 
-    /**
-     * Resets the operator of this node.
-     * Intended to be called only by MutationImpl.
-     * cannot be reset as SERVE
-     * @param o
-     * @return
-     */
-    protected boolean resetOperator(Operator o) {
-        if (operator.equals(o) | o.equals(Operator.SERVE)) {
-            return false;
-        } else {
-            operator = o;
-            return true;
-        }
-    }
-
     @Override
     public Node clone() {
         if (operator == Operator.SERVE) {
@@ -83,5 +67,9 @@ public class Action extends AbstractNode {
     public boolean classInv() {
         return (operator != null && children == null) ||
                 (operator == Operator.SERVE && children.size() == 1 && children.get(0) instanceof Expr);
+    }
+
+    public Operator getOperator() {
+        return operator;
     }
 }

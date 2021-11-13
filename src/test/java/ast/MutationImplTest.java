@@ -7,10 +7,8 @@ import org.junit.jupiter.api.Test;
 import parse.Parser;
 import parse.ParserFactory;
 
-import javax.management.relation.RelationNotFoundException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,7 +31,7 @@ class MutationImplTest {
 
     @Test
     void test_mutation1() throws SyntaxError, NoMaybeValue {
-        String s = "nearby[3] = 0 and ENERGY > 2500 --> mem[4] := 2500 bud;";
+        String s = "nearby[3] = 0 and ENERGY > 2500 --> mem[-4+4] := 2500 bud;";
 
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Reader r = new BufferedReader(new InputStreamReader(in));
@@ -44,9 +42,10 @@ class MutationImplTest {
         int index = 0;
         while (index < p.size()) {
             Program c = (Program) p.clone();
+            if(m.canApply(c.nodeAt(index)))System.out.println("Mutating "+c.nodeAt(index).getClass().getSimpleName()+":");
             Maybe<Program> maybe = m.apply(c, c.nodeAt(index));
             if (maybe.isPresent()) System.out.print(maybe.get());
-            else System.out.println("Mutation at index " + index + " is unsuccessful");
+            else System.out.println("Mutation at index " + index + " is illegal.");
             index++;
         }
     }
@@ -77,9 +76,10 @@ class MutationImplTest {
         int index = 0;
         while (index < p.size()) {
             Program c = (Program) p.clone();
+            if(m.canApply(c.nodeAt(index)))System.out.println("Mutating "+c.nodeAt(index).getClass().getSimpleName()+":");
             Maybe<Program> maybe = m.apply(c, c.nodeAt(index));
             if (maybe.isPresent()) System.out.print(maybe.get());
-            else System.out.println("Mutation at index " + index + " is unsuccessful");
+            else System.out.println("Mutation at index " + index + " is illegal.");
             index++;
         }
     }
@@ -96,9 +96,10 @@ class MutationImplTest {
         int index = 0;
         while (index < p.size()) {
             Program c = (Program) p.clone();
+            if(m.canApply(c.nodeAt(index)))System.out.println("Mutating "+c.nodeAt(index).getClass().getSimpleName()+":");
             Maybe<Program> maybe = m.apply(c, c.nodeAt(index));
             if (maybe.isPresent()) System.out.print(maybe.get());
-            else System.out.println("Mutation at index " + index + " is unsuccessful");
+            else System.out.println("Mutation at index " + index + " is illegal.");
             index++;
         }
     }
@@ -111,9 +112,19 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(3);
+        /*Mutation m = new MutationImpl(3);
         Node n = m.apply(p,p.nodeAt(3)).get(); // p.nodeAt(3) is a Relation, expressing "nearby[3] = 0"
-        System.out.println(n);
+        System.out.println(n);*/
+        Mutation m = new MutationImpl(3);
+        int index = 0;
+        while (index < p.size()) {
+            Program c = (Program) p.clone();
+            if(m.canApply(c.nodeAt(index)))System.out.println("Mutating "+c.nodeAt(index).getClass().getSimpleName()+":");
+            Maybe<Program> maybe = m.apply(c, c.nodeAt(index));
+            if (maybe.isPresent()) System.out.print(maybe.get());
+            else System.out.println("Mutation at index " + index + " is illegal.");
+            index++;
+        }
     }
 
     @Test
@@ -143,9 +154,10 @@ class MutationImplTest {
         int index = 0;
         while (index < p.size()) {
             Program c = (Program) p.clone();
+            if(m.canApply(c.nodeAt(index)))System.out.println("Mutating "+c.nodeAt(index).getClass().getSimpleName()+":");
             Maybe<Program> maybe = m.apply(c, c.nodeAt(index));
             if (maybe.isPresent()) System.out.print(maybe.get());
-            else System.out.println("Mutation at index " + index + " is unsuccessful");
+            else System.out.println("Mutation at index " + index + " is illegal.");
             index++;
         }
     }
@@ -217,9 +229,10 @@ class MutationImplTest {
         int index = 0;
         while (index < p.size()) {
             Program c = (Program) p.clone();
+            if(m.canApply(c.nodeAt(index)))System.out.println("Mutating "+c.nodeAt(index).getClass().getSimpleName()+":");
             Maybe<Program> maybe = m.apply(c, c.nodeAt(index));
             if (maybe.isPresent()) System.out.print(maybe.get());
-            else System.out.println("Mutation at index " + index + " is unsuccessful");
+            else System.out.println("Mutation at index " + index + " is illegal.");
             index++;
         }
     }
@@ -260,10 +273,7 @@ class MutationImplTest {
 
     @Test
     void test_mutation6() throws SyntaxError, NoMaybeValue {
-        String s = "mem[5] = 1 --> mem[6] := mem[4] " +
-                "mem[5] := 2" +
-                "ENERGY := 2500" +
-                "bud;";
+        String s = "mem[5] = 1 --> mem[6] := mem[4] mem[5] := 2 ENERGY := 2500 bud;";
 
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Reader r = new BufferedReader(new InputStreamReader(in));
@@ -275,8 +285,9 @@ class MutationImplTest {
         while (index < p.size()) {
             Program c = (Program) p.clone();
             Maybe<Program> maybe = m.apply(c, c.nodeAt(index));
+            if(m.canApply(c.nodeAt(index)))System.out.println("Mutating "+c.nodeAt(index).getClass().getSimpleName()+":");
             if (maybe.isPresent()) System.out.print(maybe.get());
-            else System.out.println("Mutation at index " + index + " is unsuccessful");
+            else System.out.println("Mutation at index " + index + " is illegal.");
             index++;
         }
     }

@@ -10,7 +10,7 @@ import cms.util.maybe.NoMaybeValue;
 
 public abstract class AbstractNode implements Node {
 
-    protected Node root;
+    protected Node root; // of type ProgramImpl
     protected CritterO co;
     protected List<Node> children;
     protected boolean hasChild = true;

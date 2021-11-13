@@ -61,25 +61,15 @@ public class MutationImpl implements Mutation {
             Node parent = ((AbstractNode) node).getParent().get();
             int i = parent.getChildren().indexOf(node);
             parent.getChildren().remove(i);
-            if (node instanceof BinaryCondition | node instanceof BinaryExpr) {
+            if (node instanceof BinaryCondition || node instanceof BinaryExpr) {
                 int r = rand.nextInt(2);
                 parent.getChildren().add(i, node.getChildren().get(r));
-                if(parent instanceof Mem && !parent.classInv()){
-                    if(r == 1){ // to avoid e.g. mem[-1]
-                        r=0;
-                    }
-                    else{
-                        r=1;
-                    }
-                    parent.getChildren().remove(i);
-                    parent.getChildren().add(i, node.getChildren().get(r));
-                }
             } else if (node.getCategory() == NodeCategory.EXPRESSION) {
                 // Factor, Sensor, Mem
                 parent.getChildren().add(i, node.getChildren().get(0));
             }
         } catch (NoMaybeValue e) {
-            e.printStackTrace(); // cannot happen
+            // cannot occur
         }
         return Maybe.some(program);
     }
@@ -95,7 +85,7 @@ public class MutationImpl implements Mutation {
     private Maybe<Program> mutate3(Program program, Node node) {
         Node root = ((AbstractNode) node).getRoot();
         Node searchNode = root;
-        while (searchNode == node | searchNode.getCategory() != node.getCategory()) {
+        while (searchNode == node || searchNode.getCategory() != node.getCategory()) {
             searchNode = root.nodeAt(rand.nextInt(root.size()));
         }
         Node copy = searchNode.clone();
@@ -105,30 +95,35 @@ public class MutationImpl implements Mutation {
 
     private Maybe<Program> mutate4(Program program, Node node) {
         int i;
-
         if (node instanceof Action) {
             List<Action.Operator> ActionOps = Arrays.asList(Action.Operator.values());
             Action.Operator o = ((Action) node).operator;
             do {
                 i = rand.nextInt(ActionOps.size());
                 ((Action) node).operator = ActionOps.get(i);
-            } while (o == ((Action) node).operator); // cannot be SERVE
+            } while (o == ((Action) node).operator || ((Action) node).operator == Action.Operator.SERVE);
         } else if (node instanceof BinaryCondition) ((BinaryCondition) node).resetOperator();
         else if (node instanceof Relation) {
             List<Relation.Operator> RelationOps = Arrays.asList(Relation.Operator.values());
+            Relation.Operator o = ((Relation) node).operator;
             do {
                 i = rand.nextInt(RelationOps.size());
-            } while (!((Relation) node).resetOperator(RelationOps.get(i)));
+                ((Relation) node).operator = RelationOps.get(i);
+            } while (o == ((Relation) node).operator);
         } else if (node instanceof BinaryExpr) {
             List<BinaryExpr.Operator> BinExprOps = Arrays.asList(BinaryExpr.Operator.values());
+            BinaryExpr.Operator o = ((BinaryExpr) node).operator;
             do {
                 i = rand.nextInt(BinExprOps.size());
-            } while (!((BinaryExpr) node).resetOperator(BinExprOps.get(i)));
+                ((BinaryExpr) node).operator = BinExprOps.get(i);
+            } while (o == ((BinaryExpr) node).operator);
         } else if (node instanceof Sensor) {
             List<Sensor.Operator> SensorOps = Arrays.asList(Sensor.Operator.values());
+            Sensor.Operator o = ((Sensor) node).operator;
             do {
                 i = rand.nextInt(SensorOps.size());
-            } while (!((Sensor) node).resetOperator(SensorOps.get(i)));
+                ((Sensor) node).operator = SensorOps.get(i);
+            } while (o==((Sensor) node).operator || ((Sensor) node).operator == Sensor.Operator.SMELL);
         } else if (node instanceof Factor) {
             Node replacement;
             try {
@@ -138,7 +133,7 @@ public class MutationImpl implements Mutation {
                     replacement = new Factor(i);
                 } while (node.toString().equals(replacement.toString()));
             } catch (Exception e) {
-                System.err.println("canApply() didn't catch an invalid node attempting to undergo Mutation 4");
+                //canApply() didn't catch an invalid node attempting to undergo Mutation 4
                 return Maybe.none();
             }
             ((Factor) node).replace(replacement);
@@ -152,7 +147,7 @@ public class MutationImpl implements Mutation {
         Node root = ((AbstractNode) node).getRoot();
         Node searchNode = root;
         if (node.getCategory() == NodeCategory.CONDITION) {
-            while (searchNode == node | searchNode.getCategory() != NodeCategory.CONDITION) {
+            while (searchNode == node || searchNode.getCategory() != NodeCategory.CONDITION) {
                 searchNode = root.nodeAt(rand.nextInt(root.size()));
             }
             BinaryCondition.Operator[] ops = BinaryCondition.Operator.values();
@@ -161,7 +156,7 @@ public class MutationImpl implements Mutation {
         } else if (node.getCategory() == NodeCategory.EXPRESSION) {
             switch (rand.nextInt(3)) {
                 case 0: // Binary Expr
-                    while (searchNode == node | searchNode.getCategory() != NodeCategory.EXPRESSION) {
+                    while (searchNode == node || searchNode.getCategory() != NodeCategory.EXPRESSION) {
                         searchNode = root.nodeAt(rand.nextInt(root.size()));
                     }
                     Expr right = (Expr) searchNode.clone();
@@ -222,7 +217,7 @@ public class MutationImpl implements Mutation {
                         if (n instanceof Relation) return false;
                         return true; // n instance of BinaryCondition
                     case EXPRESSION:
-                        if (n instanceof Factor | n instanceof Sensor) {
+                        if (n instanceof Factor || n instanceof Sensor) {
                             if (!((Expr) n).hasChild) return false;
                         }
                         return true;
@@ -238,9 +233,11 @@ public class MutationImpl implements Mutation {
             case 3:
                 switch (n.getCategory()) {
                     case PROGRAM:
+                        return false;
                     case COMMAND:
                     case ACTION:
-                        return false;
+                        if(((AbstractNode) n).getRoot().getChildren().size()==1) return false;
+                        return true;
                     case RULE:
                         try {
                             return ((AbstractNode) n).getParent().get().getChildren().size() > 1;
@@ -263,7 +260,7 @@ public class MutationImpl implements Mutation {
                         if (n instanceof Relation) {
                             Node root = ((AbstractNode) n).getRoot();
                             return root.getChildren().size() != 1
-                                    | root.getChildren().get(0).getChildren().get(0) != n;
+                                    || root.getChildren().get(0).getChildren().get(0) != n;
                         }
                     case EXPRESSION:
                         return true;
@@ -299,7 +296,7 @@ public class MutationImpl implements Mutation {
                         if (n instanceof Relation) {
                             Node root = ((AbstractNode) n).getRoot();
                             return root.getChildren().size() != 1
-                                    | root.getChildren().get(0).getChildren().get(0) != n;
+                                    || root.getChildren().get(0).getChildren().get(0) != n;
                         }
                     case EXPRESSION:
                         return true;
