@@ -23,7 +23,7 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(1);
+        Mutation m = MutationFactory.getRemove();;
         assert(!m.canApply(p.nodeAt(0)));
         assert(m.canApply(p.nodeAt(1)));
         assert(!m.canApply(p.nodeAt(2)));
@@ -38,7 +38,7 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(1);
+        Mutation m = MutationFactory.getRemove();;
         int index = 0;
         while (index < p.size()) {
             Program c = (Program) p.clone();
@@ -58,7 +58,7 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(1);
+        Mutation m = MutationFactory.getRemove();;
         Node n = m.apply(p,p.nodeAt(5)).get(); // p.nodeAt(5) is a BinaryExpr, expressing "SIZE * 400".
         System.out.println(n);
 
@@ -72,7 +72,7 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(2);
+        Mutation m = MutationFactory.getSwap();;
         int index = 0;
         while (index < p.size()) {
             Program c = (Program) p.clone();
@@ -92,7 +92,7 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(3);
+        Mutation m = MutationFactory.getReplace();;
         int index = 0;
         while (index < p.size()) {
             Program c = (Program) p.clone();
@@ -112,10 +112,10 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        /*Mutation m = new MutationImpl(3);
+        /*Mutation m = MutationFactory.getReplace();;
         Node n = m.apply(p,p.nodeAt(3)).get(); // p.nodeAt(3) is a Relation, expressing "nearby[3] = 0"
         System.out.println(n);*/
-        Mutation m = new MutationImpl(3);
+        Mutation m = MutationFactory.getReplace();;
         int index = 0;
         while (index < p.size()) {
             Program c = (Program) p.clone();
@@ -135,7 +135,7 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(3);
+        Mutation m = MutationFactory.getReplace();;
         assert(!m.canApply(p.nodeAt(6))); // p.nodeAt(6) is a Command, expressing "bud".
         assert(!m.canApply(p.nodeAt(7))); // p.nodeAt(7) is an Action, expressing "bud".
         assert(!m.canApply(p.nodeAt(2)));
@@ -150,7 +150,7 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(4);
+        Mutation m = MutationFactory.getTransform();;
         int index = 0;
         while (index < p.size()) {
             Program c = (Program) p.clone();
@@ -170,7 +170,7 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(4);
+        Mutation m = MutationFactory.getTransform();;
         Node n = m.apply(p,p.nodeAt(24)).get(); // p.nodeAt(24) is an Action, representing "backward"
         System.out.println(n);
     }
@@ -183,7 +183,7 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(4);
+        Mutation m = MutationFactory.getTransform();;
         // p.nodeAt(4) is a BinaryExpr, expressing "1 + 3"
         Node n = m.apply(p,p.nodeAt(4)).get(); // mutating "+"
         System.out.println(n);
@@ -198,9 +198,9 @@ class MutationImplTest {
         Program p = parser.parse(r);
 
         // p.nodeAt(2)) is a BinaryCondition, representing "1 + 3 = 0 and mem[4] > 2500"
-        Mutation m = new MutationImpl(4);
-        Node n = m.apply(p,p.nodeAt(2)).get(); // mutating "and"
-        assert(n.toString().equals("1 + 3 = 0 or mem[4] > 2500 --> bud;\n"));
+        Mutation m = MutationFactory.getTransform();;
+        m.apply(p,p.nodeAt(2)).get(); // mutating "and"
+        assert(p.toString().equals("1 + 3 = 0 or mem[4] > 2500 --> bud;\n"));
     }
 
     @Test
@@ -211,9 +211,9 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(4);
-        Node n = m.apply(p,p.nodeAt(4)).get(); // p.nodeAt(4) is a Factor, representing "1"
-        System.out.println(n);
+        Mutation m = MutationFactory.getTransform();;
+        m.apply(p,p.nodeAt(4)).get(); // p.nodeAt(4) is a Factor, representing "1"
+        System.out.println(p);
     }
 
     @Test
@@ -225,7 +225,7 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(5);
+        Mutation m = MutationFactory.getInsert();;
         int index = 0;
         while (index < p.size()) {
             Program c = (Program) p.clone();
@@ -245,7 +245,7 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(5);
+        Mutation m = MutationFactory.getInsert();;
 
         assert(!m.canApply(p.nodeAt(0))); // ProgramImpl
         assert(!m.canApply(p.nodeAt(1))); // Rule
@@ -253,8 +253,8 @@ class MutationImplTest {
         assert(!m.canApply(p.nodeAt(8))); // Action "bud"
         assert(!m.canApply(p.nodeAt(7))); // Command "bud"
 
-        Node n = m.apply(p,p.nodeAt(3)).get(); // mutating "1+3", inserting a random Node at this Node
-        System.out.println(n);
+        m.apply(p,p.nodeAt(3)).get(); // mutating "1+3", inserting a random Node at this Node
+        System.out.println(p);
     }
 
     @Test
@@ -265,10 +265,10 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(5);
+        Mutation m = MutationFactory.getInsert();;
 
-        Node n = m.apply(p,p.nodeAt(4)).get(); // mutating "1", inserting a random Node at this Node
-        System.out.println(n);
+        m.apply(p,p.nodeAt(4)).get(); // mutating "1", inserting a random Node at this Node
+        System.out.println(p);
     }
 
     @Test
@@ -280,7 +280,7 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(6);
+        Mutation m = MutationFactory.getDuplicate();;
         int index = 0;
         while (index < p.size()) {
             Program c = (Program) p.clone();
@@ -300,10 +300,10 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(6);
+        Mutation m = MutationFactory.getDuplicate();;
 
-        Node n = m.apply(p,p.nodeAt(0)).get(); // mutating ProgramImpl, inserting a random rule from AST
-        System.out.println(n);
+        m.apply(p,p.nodeAt(0)).get(); // mutating ProgramImpl, inserting a random rule from AST
+        System.out.println(p);
     }
 
     @Test
@@ -314,10 +314,10 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(6);
+        Mutation m = MutationFactory.getDuplicate();;
 
-        Node n = m.apply(p,p.nodeAt(6)).get(); // mutating Command "POSTURE := 17", inserting a random Update from AST
-        assert(n.toString().equals("mem[6] != 17 --> mem[6] := 17\n\tmem[6] := 17;\n"));
+        m.apply(p,p.nodeAt(6)).get(); // mutating Command "POSTURE := 17", inserting a random Update from AST
+        assert(p.toString().equals("mem[6] != 17 --> mem[6] := 17\n\tmem[6] := 17;\n"));
     }
 
     @Test
@@ -328,8 +328,29 @@ class MutationImplTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Mutation m = new MutationImpl(3); // BUG: may yield mem[-17]
-        p=m.apply(p,p.nodeAt(4)).get();
+        Mutation m = MutationFactory.getReplace();; // may yield mem[-17]
+        m.apply(p,p.nodeAt(4)).get();
+        System.out.println(p);
+    }
+
+    @Test
+    public void testEqual(){
+        Mutation m1 = MutationFactory.getReplace();;
+        Mutation m2 = MutationFactory.getReplace();;
+        assert(m1.equals(m2));
+        Mutation m3 = MutationFactory.getSwap();;
+        assert(!m1.equals(m3));
+    }
+
+    @Test
+    public void testMutate() throws SyntaxError {
+        String s = "1 = 2 --> eat;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+
+        p.mutate();
         System.out.println(p);
     }
 }

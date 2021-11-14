@@ -26,16 +26,6 @@ public class ProgramImpl extends AbstractNode implements Program {
     public Program mutate() {
         Random r = new Random();
         int i = r.nextInt(6) + 1;
-        return mutateR(i);
-    }
-
-    /**
-     * Mutates this program with mutation rule i on a random node.
-     *
-     * @return The root of the mutated AST
-     */
-    public Program mutateR(int i) {
-        Random r = new Random();
         Mutation m = null;
         switch (i) {
             case 1:
@@ -57,10 +47,18 @@ public class ProgramImpl extends AbstractNode implements Program {
                 m = MutationFactory.getDuplicate();
                 break;
         }
+        boolean b = false;
+        for(int in = 0; in < size(); in++){
+            if(m.canApply(nodeAt(in))){
+                b = true;
+                break;
+            }
+        }
+        if(!b) return mutate();
         int index;
         do {
-            index = r.nextInt(this.size());
-        } while(!m.canApply(this.nodeAt(index)));
+            index = r.nextInt(size());
+        } while(!m.canApply(nodeAt(index)));
         try {
             return m.apply(this, this.nodeAt(index)).get();
         } catch (NoMaybeValue noMaybeValue) {

@@ -1,5 +1,7 @@
 package ast;
 
+import java.util.Random;
+
 public class Sensor extends Expr {
     protected Operator operator;
 
@@ -58,6 +60,17 @@ public class Sensor extends Expr {
 
     @Override
     public int value() {
+        switch(operator){
+            case NEARBY:
+                break;
+            case AHEAD:
+                break;
+            case RANDOM:
+                Random r = new Random();
+                return r.nextInt(((Expr)children.get(0)).value());
+            case SMELL:
+                break;
+        }
         return 0; //TODO
     }
 }

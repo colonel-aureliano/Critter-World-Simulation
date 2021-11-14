@@ -35,12 +35,12 @@ public class ParseAndMutateApp {
             System.out.println("Printing program:");
             System.out.println(p);
 
-            if(n!=0){
+            /*if(n!=0){ //TODO
                 n++;
                 p = ((ProgramImpl)p).mutateR(n);
                 System.out.println("Printing mutation with Rule "+n+" on random Node:");
                 System.out.println(p);
-            }
+            }*/
 
         } catch (IllegalArgumentException | SyntaxError e) {
             System.out.println("Usage:\n  <input_file>\n  --mutate <n> <input_file>");

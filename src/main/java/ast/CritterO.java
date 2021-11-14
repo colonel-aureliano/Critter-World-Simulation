@@ -14,11 +14,11 @@ public class CritterO {
     /**
      * Returns the mem value of c at index i.
      * @param i 0<=i<=c.getMemory().length
-     * @return -1 if i is invalid
+     * @return 0 if i is invalid
      */
     public int getMem(int i){
         if(!(0<=i && i<c.getMemory().length)){
-            return -1;
+            return 0;
         }
         return c.getMemory()[i];
     }

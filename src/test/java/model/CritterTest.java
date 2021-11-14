@@ -56,7 +56,7 @@ class CritterTest {
     void testStep() throws SyntaxError, NoMaybeValue {
         String name = "forest critter";
         int[] arr = {5,0,0,0,0,5,89};
-        String s = "1 = 1 --> mem[3] := 3;\n mem[3] = 3 --> bud;";
+        String s = "mem[3] != 3 --> mem[3] := 3;\n mem[3] = 3 --> wait;";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
@@ -64,11 +64,13 @@ class CritterTest {
 
         Critter c = new Critter(name,arr,p);
         assert(c.getLastRuleString().equals(Maybe.none()));
-
-        c.step();
-        int[] arr2 = {7,1,1,3,1,1,89};
+        int[] arr2 = {7,1,1,1,250,1,89};
         assert(Arrays.equals(c.getMemory(), arr2));
-        assert(c.getLastRuleString().get().equals("mem[3] = 3 --> bud;\n"));
+
+        c.step(); // mem[3] set to 3, performs wait
+        int[] arr3 = {7,1,1,3,253,2,89};
+        assert(Arrays.equals(c.getMemory(), arr3));
+        assert(c.getLastRuleString().get().equals("mem[3] = 3 --> wait;\n"));
     }
 
     @Test
