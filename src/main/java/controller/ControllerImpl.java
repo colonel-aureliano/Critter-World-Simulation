@@ -34,7 +34,7 @@ public class ControllerImpl implements Controller{
     public boolean loadCritters(String filename, int n) {
         Critter c = readCritter(filename);
         if (c==null) return false;
-
+        //TODO load n number of critters into world
         return true;
     }
 

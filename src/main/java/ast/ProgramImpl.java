@@ -22,10 +22,23 @@ public class ProgramImpl extends AbstractNode implements Program {
         setCritterO(new CritterO(c));
     }
 
+    private int random6(){
+        Random r = new Random();
+        return r.nextInt(6) + 1;
+    }
+
     @Override
     public Program mutate() {
-        Random r = new Random();
-        int i = r.nextInt(6) + 1;
+        mutateWithType(random6());
+        return this;
+    }
+
+    /**
+     * Mutates this program with mutation type i.
+     * If mutation type i is not applicable, a random applicable mutation type is used.
+     * @return mutation type applied
+     */
+    public int mutateWithType(int i){
         Mutation m = null;
         switch (i) {
             case 1:
@@ -54,15 +67,17 @@ public class ProgramImpl extends AbstractNode implements Program {
                 break;
             }
         }
-        if(!b) return mutate();
+        if(!b) return mutateWithType(random6());
         int index;
+        Random r = new Random();
         do {
             index = r.nextInt(size());
         } while(!m.canApply(nodeAt(index)));
         try {
-            return m.apply(this, this.nodeAt(index)).get();
+            m.apply(this, this.nodeAt(index)).get();
+            return i;
         } catch (NoMaybeValue noMaybeValue) {
-            throw new IllegalArgumentException("Program: mutation: " + i + " failed at Node position " + index);
+            throw new IllegalArgumentException("Program: mutation " + i + " failed at Node position " + index);
         }
     }
 

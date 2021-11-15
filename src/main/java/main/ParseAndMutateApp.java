@@ -6,16 +6,15 @@ import exceptions.SyntaxError;
 import parse.Parser;
 import parse.ParserFactory;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
+import java.util.Arrays;
+import java.util.Random;
 
 public class ParseAndMutateApp {
 
     public static void main(String[] args) {
         int n = 0;
-        String file = null;
+        String file;
         try {
             if (args.length == 1) {
                 file = args[0];
@@ -27,23 +26,32 @@ public class ParseAndMutateApp {
                 throw new IllegalArgumentException();
             }
 
-            InputStream in = ClassLoader.getSystemResourceAsStream(file);
+            InputStream in = new FileInputStream(file);
             Reader r = new BufferedReader(new InputStreamReader(in));
             Parser parser = ParserFactory.getParser();
             Program p = parser.parse(r);
 
-            System.out.println("Printing program:");
+            System.out.println("Program is vaild, printing program:");
             System.out.println(p);
 
-            /*if(n!=0){ //TODO
-                n++;
-                p = ((ProgramImpl)p).mutateR(n);
-                System.out.println("Printing mutation with Rule "+n+" on random Node:");
+            Random rand = new Random();
+            while(n!=0){
+                int t = ((ProgramImpl)p).mutateWithType(rand.nextInt(6)+1);
+                System.out.println("Mutating program with mutation type "+t+":");
                 System.out.println(p);
-            }*/
+                n--;
+            }
 
-        } catch (IllegalArgumentException | SyntaxError e) {
-            System.out.println("Usage:\n  <input_file>\n  --mutate <n> <input_file>");
+        } catch (IllegalArgumentException | SyntaxError | FileNotFoundException e) {
+            if(!(e instanceof SyntaxError)) System.out.println(e.getMessage());
+            else {
+                System.out.println("Syntax error.");
+                if (args.length == 1) {
+                    System.out.println("Usage:\n  " + args[0] + "\n");
+                } else {
+                    System.out.println("Usage:\n  --mutate " + args[1] + " " + args[2]);
+                }
+            }
         }
     }
 }

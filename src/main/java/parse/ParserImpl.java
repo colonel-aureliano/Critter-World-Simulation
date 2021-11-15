@@ -337,6 +337,6 @@ class ParserImpl implements Parser {
     public static void consume(Tokenizer t, TokenType tt) throws SyntaxError {
         if (t.peek().getType() == tt) t.next();
         else throw new SyntaxError(t.lineNumber(),
-                String.format("Expected Type: %c. Provided Type: %c.", tt, t.peek().getType()));
+                String.format("Expected Type: TokenType. Provided Type: TokenType.", tt, t.peek().getType()));
     }
 }
