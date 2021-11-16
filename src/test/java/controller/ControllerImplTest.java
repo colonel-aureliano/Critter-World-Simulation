@@ -25,9 +25,9 @@ class ControllerImplTest {
         //assert(c.getReadOnlyWorld().getNumberOfAliveCritters()==3); //TODO assertion error
         PrintStream o = new PrintStream(System.out);
         c.printWorld(o);
-        for(int i = 0; i < 1; i++){
+        for(int i = 0; i < 10; i++){
             c.advanceTime(1);
-            c.printWorld(o);
+            //c.printWorld(o);
             //System.out.println(c.getReadOnlyWorld().getNumberOfAliveCritters());
         }
     }

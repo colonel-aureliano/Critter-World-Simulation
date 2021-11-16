@@ -92,6 +92,14 @@ public class Critter implements ReadOnlyCritter {
     }
 
     /**
+     * Mutates the program of this critter with a random mutation.
+     */
+    public void mutate(){
+        program.mutate();
+        return;
+    }
+
+    /**
      * Advances the critter by one time step.
      */
     public void step() {

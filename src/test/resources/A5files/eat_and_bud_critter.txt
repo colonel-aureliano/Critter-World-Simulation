@@ -1,8 +1,8 @@
 species: eat-and-bud critter
-memsize: 7
+memsize: 8
 defense: 1
 offense: 1
-size: 1
+size: 2
 energy: 800
 posture: 10
 mem[7] - 1 = 0 --> mem[7] := 0

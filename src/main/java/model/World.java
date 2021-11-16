@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 public class World extends ROnlyWorld implements CritterObserver {
 
@@ -17,7 +18,8 @@ public class World extends ROnlyWorld implements CritterObserver {
 
     public boolean step() {
         puberty.clear();
-        for (ReadOnlyCritter c: critters) {
+        List<ReadOnlyCritter> temp = List.copyOf(critters);
+        for (ReadOnlyCritter c: temp) {
             ((Critter) c).step();
         }
         steps++;
