@@ -38,7 +38,7 @@ public class ROnlyWorld implements ReadOnlyWorld{
      * @param r row
      * Requires: (c,r) must be valid position
      */
-    protected boolean addRock(int c, int r) {
+    public boolean addRock(int c, int r) {
         map[c][r] = -1;
         return true;
     }
@@ -50,7 +50,7 @@ public class ROnlyWorld implements ReadOnlyWorld{
      * @param amount total energy value
      * Requires: (c,r) must be valid position
      */
-    protected boolean addFood(int c, int r, int amount) {
+    public boolean addFood(int c, int r, int amount) {
         map[c][r] = - amount - 1;
         return true;
     }
@@ -64,7 +64,7 @@ public class ROnlyWorld implements ReadOnlyWorld{
      * @return index of critter
      * Requires: (c, r) must be valid position
      */
-    protected boolean addCritter(int c, int r, ReadOnlyCritter critter, int direction) {
+    public boolean addCritter(int c, int r, ReadOnlyCritter critter, int direction) {
         critters.add(critter);
         directions.add(direction);
         map[c][r] = critters.size();

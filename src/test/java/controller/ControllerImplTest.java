@@ -1,6 +1,7 @@
 package controller;
 
 import model.Critter;
+import model.World;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +17,8 @@ class ControllerImplTest {
 
     @Test
     void testLoadWorld() {
-
+        ControllerImpl c = new ControllerImpl();
+        World space = c.readWorld("A5files/small_world.txt");
     }
 
 }

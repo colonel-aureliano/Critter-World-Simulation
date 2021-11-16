@@ -5,9 +5,7 @@ import easyIO.EOF;
 import easyIO.Scanner;
 import easyIO.UnexpectedInput;
 import exceptions.SyntaxError;
-import model.Critter;
-import model.ReadOnlyWorld;
-import model.World;
+import model.*;
 import parse.Parser;
 import parse.ParserFactory;
 
@@ -16,50 +14,152 @@ import java.util.Arrays;
 
 public class ControllerImpl implements Controller {
 
+    World w;
+
     @Override
     public ReadOnlyWorld getReadOnlyWorld() {
-        return null;
+        return w;
     }
 
     @Override
     public void newWorld() {
-
+        w= new World(Constants.WIDTH,Constants.HEIGHT,"Default World");
     }
 
     @Override
     public boolean loadWorld(String filename, boolean enableManna, boolean enableForcedMutation) {
-        return false;
+        World world = readWorld(filename);
+        if(world==null) return false;
+        w=world;
+        return true;
     }
 
-    // load World file
-    protected boolean readWorld(String filename) {
+    // readWorld is declared protected for testing purposes only
+    protected World readWorld(String filename) {
         InputStream in = ClassLoader.getSystemResourceAsStream(filename);
         Reader r = new BufferedReader(new InputStreamReader(in));
         easyIO.Scanner s = new Scanner(r, "");
 
-        try {
-            s.consume("name");
-            s.trailingWhitespace();
-            String name = s.nextLine();
-            s.consume("size");
-            s.trailingWhitespace();
-            int width = s.nextInt();
-            s.trailingWhitespace();
-            int height = s.nextInt();
-            ReadOnlyWorld world = new World(width, height, name);
-        } catch (UnexpectedInput e) {
-            System.out.println("Unexpected world format");
+        String name = null;
+        int w = -1 ;
+        int h = -1;
+
+        World world;
+
+        while(s.hasNext()) {
+            try {
+                s.newline();
+            } catch (UnexpectedInput unexpectedInput) {
+            }
+            try {
+                s.trailingWhitespace();
+                s.consume("//");
+                s.nextLine();
+                continue;
+            } catch (UnexpectedInput unexpectedInput) {
+            }
+
+            // Reading world name.
+            if (name == null) {
+                try {
+                    if (!s.nextIdentifier().equals("name")) {
+                        // First command word in world file must be "name".
+                        throw new UnexpectedInput();
+                    }
+                    s.trailingWhitespace();
+                    name = s.nextLine();
+                    if (name.contains("//")) {
+                        int t = name.indexOf("//");
+                        name = name.substring(0, t);
+                    }
+                    name = name.trim();
+                    continue;
+                } catch (UnexpectedInput e) {
+                    System.out.println("Illegal world file: invalid world name.");
+                    return null;
+                }
+            }
+
+            // Reading size of world.
+            if (w == -1 && h == -1) {
+                try {
+                    if (!s.nextIdentifier().equals("size")) {
+                        throw new UnexpectedInput();
+                    }
+                    s.trailingWhitespace();
+                    w = s.nextInt();
+                    s.trailingWhitespace();
+                    h = s.nextInt();
+                    break;
+                } catch (UnexpectedInput e) {
+                    System.out.println("Illegal world file: invalid size values.");
+                    return null;
+                }
+            }
+        }
+        world = new World(w,h,name);
+
+        // Reading objects to put into world.
+        while(s.hasNext()) {
+            try {
+                s.newline();
+            } catch (UnexpectedInput unexpectedInput) {
+            }
+            try {
+                s.trailingWhitespace();
+                s.consume("//");
+                s.nextLine();
+                continue;
+            } catch (UnexpectedInput unexpectedInput) {
+            }
+
+            if(!s.hasNext()) break;
+
+            try {
+                String t = s.nextIdentifier();
+                s.trailingWhitespace();
+                if (t.equals("rock")){
+                    int col = s.nextInt();
+                    s.trailingWhitespace();
+                    int row = s.nextInt();
+                    world.addRock(col,row);
+                }
+                else if (t.equals("food")){
+                    int col = s.nextInt();
+                    s.trailingWhitespace();
+                    int row = s.nextInt();
+                    s.trailingWhitespace();
+                    int amount = s.nextInt();
+                    world.addFood(col,row,amount);
+                }
+                else if (t.equals("critter")){
+                    s.trailingWhitespace();
+                    String path = s.nextIdentifier();
+                    s.trailingWhitespace();
+                    int col = s.nextInt();
+                    s.trailingWhitespace();
+                    int row = s.nextInt();
+                    s.trailingWhitespace();
+                    int direction = s.nextInt();
+                    Critter c=readCritter(path);
+                    world.addCritter(col,row,c,direction);
+                }
+                continue;
+            } catch (UnexpectedInput e) {
+                System.out.println("Illegal world file: invalid objects in world.");
+                return null;
+            }
         }
 
-        return true;
-
+        return world;
     }
 
     @Override
     public boolean loadCritters(String filename, int n) {
         Critter c = readCritter(filename);
         if (c == null) return false;
-        //TODO load n number of critters into world
+        //TODO randomly put n critter(s) into world
+        // w.addCritter(...)
         return true;
     }
 
@@ -127,7 +227,7 @@ public class ControllerImpl implements Controller {
         }
 
         Parser p = ParserFactory.getParser();
-        Program m = null;
+        Program m;
         try {
             m = p.parse(r);
         } catch (SyntaxError syntaxError) {
@@ -157,11 +257,11 @@ public class ControllerImpl implements Controller {
 
     @Override
     public boolean advanceTime(int n) {
-        return false;
+        return false; //TODO
     }
 
     @Override
     public void printWorld(PrintStream out) {
-
+        //TODO
     }
 }
