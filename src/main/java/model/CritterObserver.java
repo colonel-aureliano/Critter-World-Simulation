@@ -8,16 +8,21 @@ public interface CritterObserver {
      * n > 0: critter with appearance n
      * n = -1: rock
      * n < -1: food with energy value (-n) -1
+     * if sensing a space that is outside of the world,
      */
     int onNearby(ReadOnlyCritter c, int dir);
 
     /**
-     * report content of hex directly in front of critter with distance dist
-     * @param c
-     * @param dist
-     * @return
+     * report content of hex directly in front of critter with distance dist in the same format as onNearby
+     * negative distance treated as zero distance
      */
     int onAhead(ReadOnlyCritter c, int dist);
+
+    /**
+     * report 1000 * distance + direction to the nearest food, up to MAX_SMELL_DISTANCE = 10
+     * if no food, return 1,000,000
+     */
+    int onSmell(ReadOnlyCritter c);
 
     /**
      * Return the amount of food consumed by c
@@ -26,6 +31,7 @@ public interface CritterObserver {
 
     /**
      * Return true if serve success
+     * Requires: n > 0
      */
     boolean onServeFood(ReadOnlyCritter c, int n);
 
@@ -50,10 +56,10 @@ public interface CritterObserver {
     boolean canAttack(ReadOnlyCritter c);
 
     /**
-     * return the critter that is attacked by c
-     * Requires: canAttack is true
+     * return the critter that in front of c
+     * Requires: c.ahead[1] is a critter
      */
-    ReadOnlyCritter onAttack(ReadOnlyCritter c);
+    ReadOnlyCritter getCritterAhead(ReadOnlyCritter c);
 
     /**
      * mark a critter in world as dead
@@ -61,21 +67,15 @@ public interface CritterObserver {
     boolean onDeath(ReadOnlyCritter c);
 
     /**
-     * return true if a critter in front of c want to mate
+     * return true if a critter in front of c want to mate and is also facing toward c
      * return false otherwise, mark c as attempting to mate
      */
     boolean wantToMate(ReadOnlyCritter c);
 
     /**
-     * return the critter in front of c
-     * Requires: wantToMate is true, so that both critters are attempting to mate
-     */
-    ReadOnlyCritter matePartner(ReadOnlyCritter c);
-
-    /**
      * put baby behind a randomly chosen parent with direction as the parent in front of it
      */
-    boolean onMate(ReadOnlyCritter parent, ReadOnlyCritter baby);
+    boolean onMate(ReadOnlyCritter parent1, ReadOnlyCritter parent2, ReadOnlyCritter baby);
 
 
 }

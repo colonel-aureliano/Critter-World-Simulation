@@ -22,12 +22,12 @@ public class ROnlyWorld implements ReadOnlyWorld{
     protected List<Integer> directions;
 
     /**
-     * Create a world with width w and height h
+     * Create a world with width w, height h, and name n
      */
     public ROnlyWorld(int w, int h, String n) {
         steps = 0;
         name = n;
-        map = new int[w][h];
+        map = new int[w+1][h+1];
         critters = new ArrayList<>();
         directions = new ArrayList<>();
     }
@@ -103,4 +103,26 @@ public class ROnlyWorld implements ReadOnlyWorld{
             return -1;
         }
     }
+
+    /**
+     * - empty space
+     * # rock
+     * d critter facing d
+     * F food
+     */
+    public String print() {
+        StringBuilder sb = new StringBuilder();
+        for (int j = map[0].length - 1; j >= 0; j--) {
+            for (int i = 0; i < map.length; i++) {
+                if ((i + j)% 2 == 1) sb.append(" ");
+                else if (map[i][j] < -1) sb.append("F");
+                else if (map[i][j] == -1) sb.append("#");
+                else if (map[i][j] == 0) sb.append("-");
+                else sb.append(directions.get(map[i][j]-1));
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
 }
