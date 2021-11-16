@@ -26,8 +26,7 @@ public class ParseAndMutateApp {
                 throw new IllegalArgumentException();
             }
 
-            InputStream in = new FileInputStream(file);
-            Reader r = new BufferedReader(new InputStreamReader(in));
+            Reader r = new BufferedReader(new FileReader(file));
             Parser parser = ParserFactory.getParser();
             Program p = parser.parse(r);
 

@@ -1,0 +1,24 @@
+species: eat-and-bud critter
+memsize: 7
+defense: 1
+offense: 1
+size: 1
+energy: 500
+posture: 10
+mem[7] - 1 = 0 --> mem[7] := 0
+	forward;
+mem[7] - 1 > 0 --> mem[7] := mem[7] - 1
+	right;
+nearby[0] < -1 --> mem[7] := 1
+	eat;
+nearby[1] < -1 --> mem[7] := 2
+	eat;
+nearby[2] < -1 --> mem[7] := 3
+	eat;
+nearby[3] < -1 --> mem[7] := 4
+	eat;
+nearby[4] < -1 --> mem[7] := 5
+	eat;
+nearby[5] < -1 --> mem[7] := 6
+	eat;
+mem[4] >= 500*mem[3]-100 --> bud;

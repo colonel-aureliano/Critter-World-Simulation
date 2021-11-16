@@ -1,0 +1,23 @@
+species: spiral critter
+memsize: 7
+defense: 1
+offense: 1
+size: 1
+energy: 500
+posture: 20
+nearby[0] < -1 --> eat;
+mem[8] = mem[7]*6 and mem[7] > 0 and mem[10] = 0 --> mem[10] := 1
+	right;
+mem[8] > 0 and mem[9] = mem[7] and mem[10] = 1 --> mem[10] := 2
+	right;
+mem[8] > 0 and mem[9] > 0 --> mem[9] := mem[9] - 1
+	mem[8] := mem[8] - 1
+	forward;
+mem[8] > 0 and mem[9] = 0 --> mem[9] := mem[7]
+	mem[10] := 3
+	right;
+mem[8] = 0 --> mem[7] := mem[7] + 1
+	mem[8] := mem[7]*6
+	mem[9] := mem[7]
+	mem[10] := 0
+	forward;

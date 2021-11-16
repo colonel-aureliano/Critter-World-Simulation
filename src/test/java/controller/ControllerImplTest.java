@@ -1,7 +1,5 @@
 package controller;
 
-import model.Critter;
-import model.World;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -9,16 +7,15 @@ import static org.junit.jupiter.api.Assertions.*;
 class ControllerImplTest {
 
     @Test
-    void testSpaceCritter(){
+    void testCritter(){
         ControllerImpl c = new ControllerImpl();
-        Critter space = c.readCritter("A5files/space_critter.txt");
-        space.step();
+        assert(c.loadCritters("src/test/resources/A5files/eat-and-bud-critter.txt",3));
     }
 
     @Test
-    void testLoadWorld() {
+    void testWorld(){
         ControllerImpl c = new ControllerImpl();
-        World space = c.readWorld("A5files/small_world.txt");
+        assert(c.loadWorld("src/test/resources/A5files/test_world.txt",false,false));
     }
 
 }

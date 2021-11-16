@@ -39,6 +39,6 @@ public class Mem extends Expr {
     @Override
     public int value() {
         int i = ((Expr) children.get(0)).value();
-        return co.getMem(i); // co must be initialized
+        return interpreter.getMem(i); // co must be initialized
     }
 }

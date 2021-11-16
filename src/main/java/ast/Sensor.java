@@ -62,15 +62,15 @@ public class Sensor extends Expr {
     public int value() {
         switch(operator){
             case NEARBY:
-                break;
+                return interpreter.nearby(((Expr)children.get(0)).value());
             case AHEAD:
-                break;
+                return interpreter.ahead(((Expr)children.get(0)).value());
             case RANDOM:
                 Random r = new Random();
                 return r.nextInt(((Expr)children.get(0)).value());
             case SMELL:
-                break;
+                return interpreter.smell();
         }
-        return 0; //TODO
+        return 0;
     }
 }

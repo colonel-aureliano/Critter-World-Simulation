@@ -14,6 +14,7 @@ public class Critter implements ReadOnlyCritter {
     private Program program;
     private Node lastRuleExecuted;
     private CritterObserver co;
+    private boolean dead = false;
 
     // maxmium energy of critter = 500*mem[3]
 
@@ -23,19 +24,24 @@ public class Critter implements ReadOnlyCritter {
      * @param n   species name
      * @param arr mem values
      * @param p   program rules
+     * @param w   critter observer
      */
-    public Critter(String n, int[] arr, Program p) {
+    public Critter(String n, int[] arr, Program p, CritterObserver w) {
         name = n;
         mem = arr;
         program = p;
+        co=w;
         if (!classInv()) {
-            System.out.println("WARNING: critter created with invalid values, will reset invalid values to default.");
             setDefault();
         }
-        ((ProgramImpl) p).critterToObserve(this);
     }
 
     private void setDefault() {
+        if(co==null){
+            System.out.println("WARNING: Critter "+name+" does not have a CritterObserver object, cannot perform step().");
+            if(memInv()) return;
+        }
+        System.out.println("WARNING: critter created with invalid values, will reset invalid values to default.");
         if (mem.length < 7) {
             mem = new int[]{Constants.MIN_MEMORY, 1, 1, 1, Constants.INITIAL_ENERGY, 1, 0};
             System.out.println("Resetting mem array to default array.");
@@ -71,11 +77,14 @@ public class Critter implements ReadOnlyCritter {
     }
 
     private boolean classInv() {
+        if (memInv() && name != null && program != null && co != null) return true;
+        return false;
+    }
+
+    private boolean memInv(){
         if (mem.length >= Constants.MIN_MEMORY && (mem[0] >= 7 && mem[0] == mem.length) && mem[1] >= 1 && mem[2] >= 1
                 && mem[3] >= 1 && mem[4] >= 1 && mem[5] >= 1 && (mem[6] >= 0 && mem[6] <= 99)) {
-            if (name != null && program != null) {
-                return true;
-            }
+            return true;
         }
         return false;
     }
@@ -84,6 +93,7 @@ public class Critter implements ReadOnlyCritter {
      * Advances the critter by one time step.
      */
     public void step() {
+        if(dead) return;
         List<Node> l = program.getChildren();
 
         mem[5] = 0;
@@ -212,7 +222,7 @@ public class Critter implements ReadOnlyCritter {
                     }
                     ran = rand.nextInt(8);
                 }
-                Critter baby = new Critter(name + "'s baby", arr, p);
+                Critter baby = new Critter(name + "'s baby", arr, p,co);
                 co.onBud(this, baby);
                 isDead();
                 break;
@@ -270,7 +280,7 @@ public class Critter implements ReadOnlyCritter {
                         }
                     }
                     Program pro = new ProgramImpl(ln);
-                    Critter b = new Critter(name + "&" + partner.name + "'s baby", a, pro);
+                    Critter b = new Critter(name + "&" + partner.name + "'s baby", a, pro, co);
                     co.onMate(this, partner, b);
 
                     isDead();
@@ -283,6 +293,7 @@ public class Critter implements ReadOnlyCritter {
     private boolean isDead() {
         if (mem[4] <= 0) {
             co.onDeath(this);
+            dead=true;
             return true;
         }
         return false;

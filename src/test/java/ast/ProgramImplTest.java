@@ -79,9 +79,9 @@ class ProgramImplTest {
     }
 
     @Test
-    void testClassInv2() throws SyntaxError {
-        InputStream in = ClassLoader.getSystemResourceAsStream("files/draw_critter.txt");
-        Reader r = new BufferedReader(new InputStreamReader(in));
+    void testClassInv2() throws SyntaxError, FileNotFoundException {
+        String path = "src/test/resources/files/draw_critter.txt";
+        Reader r = new BufferedReader(new FileReader(path));
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
         for (int i = 0; i < p.size(); i++) {

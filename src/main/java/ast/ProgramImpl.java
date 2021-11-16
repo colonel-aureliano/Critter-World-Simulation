@@ -3,6 +3,7 @@ package ast;
 import cms.util.maybe.Maybe;
 import cms.util.maybe.NoMaybeValue;
 import model.Critter;
+import model.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +19,8 @@ public class ProgramImpl extends AbstractNode implements Program {
         setRoot(this);
     }
 
-    public void critterToObserve(Critter c){
-        setCritterO(new CritterO(c));
+    public void critterWorldSetUp(Critter c, World w){
+        setInterpreter(new Interpreter(c,w));
     }
 
     private int random6(){

@@ -11,15 +11,15 @@ import cms.util.maybe.NoMaybeValue;
 public abstract class AbstractNode implements Node {
 
     protected Node root; // of type ProgramImpl
-    protected CritterO co;
+    protected Interpreter interpreter;
     protected List<Node> children;
     protected boolean hasChild = true;
 
-    public void setCritterO(CritterO co){
-        this.co=co;
+    public void setInterpreter(Interpreter in){
+        this.interpreter=in;
         if(!hasChild) return;
         for(Node node: children){
-            ((AbstractNode) node).setCritterO(co);
+            ((AbstractNode) node).setInterpreter(in);
         }
     }
 

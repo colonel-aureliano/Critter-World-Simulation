@@ -1,6 +1,7 @@
 package controller;
 
 import ast.Program;
+import ast.ProgramImpl;
 import easyIO.EOF;
 import easyIO.Scanner;
 import easyIO.UnexpectedInput;
@@ -28,16 +29,19 @@ public class ControllerImpl implements Controller {
 
     @Override
     public boolean loadWorld(String filename, boolean enableManna, boolean enableForcedMutation) {
-        World world = readWorld(filename);
+        World world;
+        try {
+            world = readWorld(filename);
+        } catch (FileNotFoundException e) {
+            return false;
+        }
         if(world==null) return false;
         w=world;
         return true;
     }
 
-    // readWorld is declared protected for testing purposes only
-    protected World readWorld(String filename) {
-        InputStream in = ClassLoader.getSystemResourceAsStream(filename);
-        Reader r = new BufferedReader(new InputStreamReader(in));
+    private World readWorld(String filename) throws FileNotFoundException {
+        Reader r = new BufferedReader(new FileReader(filename));
         easyIO.Scanner s = new Scanner(r, "");
 
         String name = null;
@@ -103,6 +107,7 @@ public class ControllerImpl implements Controller {
         while(s.hasNext()) {
             try {
                 s.newline();
+                continue;
             } catch (UnexpectedInput unexpectedInput) {
             }
             try {
@@ -112,8 +117,6 @@ public class ControllerImpl implements Controller {
                 continue;
             } catch (UnexpectedInput unexpectedInput) {
             }
-
-            if(!s.hasNext()) break;
 
             try {
                 String t = s.nextIdentifier();
@@ -134,18 +137,23 @@ public class ControllerImpl implements Controller {
                 }
                 else if (t.equals("critter")){
                     s.trailingWhitespace();
-                    String path = s.nextIdentifier();
+                    StringBuilder path = new StringBuilder();
+                    File f = new File(filename);
+                    path.append(f.getParent()+'/');
+
+                    while(s.peek()!=32) path.append(s.next());
+
                     s.trailingWhitespace();
                     int col = s.nextInt();
                     s.trailingWhitespace();
                     int row = s.nextInt();
                     s.trailingWhitespace();
                     int direction = s.nextInt();
-                    Critter c=readCritter(path);
+                    Critter c=readCritter(path.toString());
                     world.addCritter(col,row,c,direction);
                 }
                 continue;
-            } catch (UnexpectedInput e) {
+            } catch (UnexpectedInput | EOF e) {
                 System.out.println("Illegal world file: invalid objects in world.");
                 return null;
             }
@@ -156,7 +164,13 @@ public class ControllerImpl implements Controller {
 
     @Override
     public boolean loadCritters(String filename, int n) {
-        Critter c = readCritter(filename);
+        if(w==null) return false; // cannot load critter before world is initialized
+        Critter c;
+        try {
+            c = readCritter(filename);
+        } catch (FileNotFoundException e) {
+            return false;
+        }
         if (c == null) return false;
         //TODO randomly put n critter(s) into world
         // w.addCritter(...)
@@ -164,9 +178,8 @@ public class ControllerImpl implements Controller {
     }
 
     // readCritter is declared protected for testing purposes only
-    protected Critter readCritter(String filename) {
-        InputStream in = ClassLoader.getSystemResourceAsStream(filename);
-        Reader r = new BufferedReader(new InputStreamReader(in));
+    private Critter readCritter(String filename) throws FileNotFoundException {
+        Reader r = new BufferedReader(new FileReader(filename));
         easyIO.Scanner s = new Scanner(r, "");
 
         String name = null;
@@ -235,7 +248,8 @@ public class ControllerImpl implements Controller {
             return null;
         }
 
-        Critter c = new Critter(name, arr, m);
+        Critter c = new Critter(name, arr, m, w);
+        ((ProgramImpl) m).critterWorldSetUp(c,w);
         return c;
     }
 

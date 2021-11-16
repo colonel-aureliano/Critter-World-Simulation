@@ -19,6 +19,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CritterTest {
 
+    World dummy(){
+        return new World(15,10,"dummy");
+    }
+
     @Test
     void testConstructorDefault() throws SyntaxError {
         String name = "forest critter";
@@ -29,11 +33,11 @@ class CritterTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Critter c = new Critter(name,arr,p);
+        Critter c = new Critter(name,arr,p,dummy());
         int[] arr2 = {7,1,1,1,250,1,89};
         assert(Arrays.equals(c.getMemory(), arr2));
         int[] arr3 = {7,10,10,100,250,1,89};
-        c = new Critter(name,arr3,p);
+        c = new Critter(name,arr3,p,dummy());
         assert(Arrays.equals(c.getMemory(), arr3));
     }
 
@@ -47,7 +51,7 @@ class CritterTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Critter c = new Critter(name,arr,p);
+        Critter c = new Critter(name,arr,p,dummy());
         c.getMemory()[0]=10;
         assert(Arrays.equals(c.getMemory(),arr));
     }
@@ -62,7 +66,7 @@ class CritterTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Critter c = new Critter(name,arr,p);
+        Critter c = new Critter(name,arr,p,dummy());
         assert(c.getLastRuleString().equals(Maybe.none()));
         int[] arr2 = {7,1,1,1,250,1,89};
         assert(Arrays.equals(c.getMemory(), arr2));
@@ -83,7 +87,7 @@ class CritterTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Critter c = new Critter(name,arr,p);
+        Critter c = new Critter(name,arr,p,dummy());
         assert(Arrays.equals(c.getMemory(), arr));
         c.step();
         // mem[2] is set to 3, wait is performed at the end (i.e. mem[4] is set to 2)
@@ -104,7 +108,7 @@ class CritterTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Critter c = new Critter(name,arr,p);
+        Critter c = new Critter(name,arr,p,dummy());
         c.step(); // performs wait, energy (mem[4]) set to 251
         int[] arr2 = {7,2,2,1,251,1,67};
         assert(Arrays.equals(c.getMemory(), arr2));
@@ -122,7 +126,7 @@ class CritterTest {
         Parser parser = ParserFactory.getParser();
         Program p = parser.parse(r);
 
-        Critter c = new Critter(name,arr,p);
+        Critter c = new Critter(name,arr,p,dummy());
         c.step(); // performs grow, size (mem[3]) set to 2, energy decreases
         // complexity of critter = 102
         int[] arr2 = {7,2,2,2,148,1,67};
