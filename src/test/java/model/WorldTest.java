@@ -116,18 +116,11 @@ class WorldTest {
     public void testMana() {
         World w = Figure1();
         w.loadParams(true, false);
-        w.step();
-        w.step();
-        w.step();
-        w.step();
-        w.step();
-        w.step();
-        w.step();
-        w.step();
-        w.step();
-        w.step();
-        w.step();
-        w.step();
+        int n = 40;
+        for (int i = 0; i < n; i ++) {
+            w.step();
+        }
+        assert(w.getSteps() == n);
         System.out.println(w.print());
     }
 

@@ -98,7 +98,7 @@ public class ROnlyWorld implements ReadOnlyWorld{
      */
     public boolean hasEmptySpace() {
         for (int i = 0; i < map.length; i++) {
-            for (int j = 0; i < map[0].length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
                 if (map[i][j] == 0) return true;
             }
         }
@@ -124,7 +124,7 @@ public class ROnlyWorld implements ReadOnlyWorld{
      */
     public boolean hasFoodSpace() {
         for (int i = 0; i < map.length; i++) {
-            for (int j = 0; i < map[0].length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
                 if (map[i][j] == 0 | map[i][j] < -1) return true;
             }
         }

@@ -14,6 +14,9 @@ public class World extends ROnlyWorld implements CritterObserver {
         super(w, h, n);
     }
 
+    /**
+     * step the world one time
+     */
     public boolean step() {
         puberty.clear();
         List<ReadOnlyCritter> temp = List.copyOf(critters);
