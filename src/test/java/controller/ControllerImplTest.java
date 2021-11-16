@@ -14,4 +14,9 @@ class ControllerImplTest {
         space.step();
     }
 
+    @Test
+    void testLoadWorld() {
+
+    }
+
 }

@@ -7,13 +7,14 @@ import easyIO.UnexpectedInput;
 import exceptions.SyntaxError;
 import model.Critter;
 import model.ReadOnlyWorld;
+import model.World;
 import parse.Parser;
 import parse.ParserFactory;
 
 import java.io.*;
 import java.util.Arrays;
 
-public class ControllerImpl implements Controller{
+public class ControllerImpl implements Controller {
 
     @Override
     public ReadOnlyWorld getReadOnlyWorld() {
@@ -30,30 +31,54 @@ public class ControllerImpl implements Controller{
         return false;
     }
 
+    // load World file
+    protected boolean readWorld(String filename) {
+        InputStream in = ClassLoader.getSystemResourceAsStream(filename);
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        easyIO.Scanner s = new Scanner(r, "");
+
+        try {
+            s.consume("name");
+            s.trailingWhitespace();
+            String name = s.nextLine();
+            s.consume("size");
+            s.trailingWhitespace();
+            int width = s.nextInt();
+            s.trailingWhitespace();
+            int height = s.nextInt();
+            ReadOnlyWorld world = new World(width, height, name);
+        } catch (UnexpectedInput e) {
+            System.out.println("Unexpected world format");
+        }
+
+        return true;
+
+    }
+
     @Override
     public boolean loadCritters(String filename, int n) {
         Critter c = readCritter(filename);
-        if (c==null) return false;
+        if (c == null) return false;
         //TODO load n number of critters into world
         return true;
     }
 
     // readCritter is declared protected for testing purposes only
-    protected Critter readCritter(String filename){
+    protected Critter readCritter(String filename) {
         InputStream in = ClassLoader.getSystemResourceAsStream(filename);
         Reader r = new BufferedReader(new InputStreamReader(in));
-        easyIO.Scanner s = new Scanner(r,"");
+        easyIO.Scanner s = new Scanner(r, "");
 
         String name = null;
         int[] arr = new int[7];
         int i = 0;
 
-        while(s.hasNext()){
-            try{
+        while (s.hasNext()) {
+            try {
                 s.newline();
             } catch (UnexpectedInput unexpectedInput) {
             }
-            if(i>=arr.length) break;
+            if (i >= arr.length) break;
             try {
                 s.trailingWhitespace();
                 s.consume("//");
@@ -63,7 +88,7 @@ public class ControllerImpl implements Controller{
             }
 
             // Reading species name.
-            if(name==null) {
+            if (name == null) {
                 try {
                     if (!s.nextIdentifier().equals("species")) {
                         // First command word in critter file must be "species".
@@ -72,11 +97,11 @@ public class ControllerImpl implements Controller{
                     s.consume(":");
                     s.trailingWhitespace();
                     name = s.nextLine();
-                    if(name.contains("//")){
+                    if (name.contains("//")) {
                         int t = name.indexOf("//");
-                        name=name.substring(0,t);
+                        name = name.substring(0, t);
                     }
-                    name=name.trim();
+                    name = name.trim();
                     continue;
                 } catch (UnexpectedInput e) {
                     System.out.println("Illegal critter file: invalid species name.");
@@ -85,7 +110,7 @@ public class ControllerImpl implements Controller{
             }
 
             // Reading critter mem values.
-            if(i < arr.length) {
+            if (i < arr.length) {
                 try {
                     if (i == 5) {
                         arr[i] = 1;
@@ -110,12 +135,12 @@ public class ControllerImpl implements Controller{
             return null;
         }
 
-        Critter c = new Critter(name,arr,m);
+        Critter c = new Critter(name, arr, m);
         return c;
     }
 
     private int readCritterHelper(Scanner s) throws UnexpectedInput {
-        switch(s.nextIdentifier()){
+        switch (s.nextIdentifier()) {
             case "memsize":
             case "defense":
             case "offense":

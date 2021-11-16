@@ -3,6 +3,23 @@ package model;
 public interface CritterObserver {
 
     /**
+     * report content of hex in direction dir.
+     * 0: empty
+     * n > 0: critter with appearance n
+     * n = -1: rock
+     * n < -1: food with energy value (-n) -1
+     */
+    int onNearby(ReadOnlyCritter c, int dir);
+
+    /**
+     * report content of hex directly in front of critter with distance dist
+     * @param c
+     * @param dist
+     * @return
+     */
+    int onAhead(ReadOnlyCritter c, int dist);
+
+    /**
      * Return the amount of food consumed by c
      */
     int onEatFood(ReadOnlyCritter c, int n);

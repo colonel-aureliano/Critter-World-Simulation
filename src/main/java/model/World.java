@@ -1,94 +1,82 @@
 package model;
 
-import cms.util.maybe.Maybe;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class World implements ReadOnlyWorld{
-
-    protected int steps;
-
-    /**
-     * 0: the hex is empty
-     * n > 0: critter with index n
-     * n = -1: rock
-     * n < -1: food with energy level (-n)-1
-     */
-    protected int[][] map;
-
-    /**
-     * start from 1
-     */
-    protected List<ReadOnlyCritter> critters;
-    protected List<Integer> directions;
-
+public class World extends ROnlyWorld implements CritterObserver {
     /**
      * Create a world with width w and height h
+     *
+     * @param w
+     * @param h
      */
-    public World(int w, int h) {
-        steps = 0;
-        map = new int[w][h];
-        critters = new ArrayList<>();
-        directions = new ArrayList<>();
+    public World(int w, int h, String n) {
+        super(w, h, n);
     }
 
     /**
-     * Add a rock to world
-     * @param c column
-     * @param r row
-     * Requires: (c,r) must be valid position
+     * Return the location of Critter in form [c, w, direction]
+     * Requires: critter exists in World, otherwise return null
      */
-    protected void addRock(int c, int r) {
-        map[c][r] = -1;
-    }
-
-    /**
-     * Add food to world
-     * @param c column
-     * @param r row
-     * @param amount total energy value
-     * Requires: (c,r) must be valid position
-     */
-    protected void addFood(int c, int r, int amount) {
-        map[c][r] = - amount - 1;
-    }
-
-    /**
-     * Add critter to world
-     * @param c column
-     * @param r row
-     * @param c
-     * @param direction
-     * @return index of critter
-     * Requires: (c, r) must be valid position
-     */
-    protected int addCritter(int c, int r, ReadOnlyCritter critter, int direction) {
-        critters.add(critter);
-        directions.add(direction);
-        return critters.size()-1;
-    }
-
-
-
-
-    @Override
-    public int getSteps() {
-        return steps;
-    }
-
-    @Override
-    public int getNumberOfAliveCritters() {
-        return 0;
-    }
-
-    @Override
-    public Maybe<ReadOnlyCritter> getReadOnlyCritter(int c, int r) {
+    private int[] findCritter(ReadOnlyCritter c) {
+        int index = critters.indexOf(c) + 1;
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; i < map[0].length; j++) {
+                if (map[i][j] == index) return new int[]{i,j, directions.get(index)};
+            }
+        }
         return null;
     }
 
     @Override
-    public int getTerrainInfo(int c, int r) {
+    public int onEatFood(ReadOnlyCritter c, int n) {
         return 0;
+    }
+
+    @Override
+    public boolean onServeFood(ReadOnlyCritter c, int n) {
+        return false;
+    }
+
+    @Override
+    public boolean onTurn(ReadOnlyCritter c, boolean left) {
+        return false;
+    }
+
+    @Override
+    public boolean onMove(ReadOnlyCritter c, boolean forward) {
+        return false;
+    }
+
+    @Override
+    public boolean onBud(ReadOnlyCritter parent, ReadOnlyCritter baby) {
+        return false;
+    }
+
+    @Override
+    public boolean canAttack(ReadOnlyCritter c) {
+        return false;
+    }
+
+    @Override
+    public ReadOnlyCritter onAttack(ReadOnlyCritter c) {
+        return null;
+    }
+
+    @Override
+    public boolean onDeath(ReadOnlyCritter c) {
+        return false;
+    }
+
+    @Override
+    public boolean wantToMate(ReadOnlyCritter c) {
+        return false;
+    }
+
+    @Override
+    public ReadOnlyCritter matePartner(ReadOnlyCritter c) {
+        return null;
+    }
+
+    @Override
+    public boolean onMate(ReadOnlyCritter parent, ReadOnlyCritter baby) {
+        return false;
     }
 }
