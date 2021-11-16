@@ -3,7 +3,7 @@ memsize: 7
 defense: 1
 offense: 1
 size: 1
-energy: 500
+energy: 800
 posture: 10
 mem[7] - 1 = 0 --> mem[7] := 0
 	forward;

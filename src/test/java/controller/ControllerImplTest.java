@@ -3,6 +3,8 @@ package controller;
 import cms.util.maybe.NoMaybeValue;
 import org.junit.jupiter.api.Test;
 
+import java.io.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ControllerImplTest {
@@ -17,13 +19,16 @@ class ControllerImplTest {
     }
 
     @Test
-    void testExampleWorld() throws NoMaybeValue {
+    void testExampleWorld() {
         ControllerImpl c = new ControllerImpl();
-        assert(c.loadWorld("src/test/resources/A5files/empty_world.txt",false,false));
+        assert(c.loadWorld("src/test/resources/A5files/test_world.txt",false,false));
+        //assert(c.getReadOnlyWorld().getNumberOfAliveCritters()==3); //TODO assertion error
+        PrintStream o = new PrintStream(System.out);
+        c.printWorld(o);
         for(int i = 0; i < 1; i++){
-            //c.advanceTime(1);
-            //c.printWorld(null);
-            //System.out.println(c.getReadOnlyWorld().getReadOnlyCritter(25,9).get().getLastRuleString());
+            c.advanceTime(1);
+            c.printWorld(o);
+            //System.out.println(c.getReadOnlyWorld().getNumberOfAliveCritters());
         }
     }
 

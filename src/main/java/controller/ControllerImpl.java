@@ -11,6 +11,8 @@ import parse.ParserFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Random;
 
 public class ControllerImpl implements Controller {
 
@@ -24,7 +26,13 @@ public class ControllerImpl implements Controller {
     @Override
     public void newWorld() {
         w = new World(Constants.WIDTH, Constants.HEIGHT, "Default World");
-        //TODO randomly place rocks into world
+        int n = 20; // putting 20 rocks into world
+
+        while(n>0){
+            int[] t = w.getEmptySpace();
+            w.addRock(t[0],t[1]);
+            n--;
+        }
     }
 
     @Override
@@ -146,6 +154,7 @@ public class ControllerImpl implements Controller {
                     Critter c = readCritter(path.toString());
                     w.addCritter(col, row, c, direction);
                 }
+                s.trailingWhitespace();
                 continue;
             } catch (UnexpectedInput | EOF e) {
                 System.out.println("Illegal world file: invalid objects in world.");
@@ -166,8 +175,17 @@ public class ControllerImpl implements Controller {
             return false;
         }
         if (c == null) return false;
-        //TODO randomly put n critter(s) into world
-        // w.addCritter(...)
+
+        Random r = new Random();
+
+        while(n>0){
+            int[] t = w.getEmptySpace();
+            if(t[0]==-1 && t[1]==-1) return false; // not enough empty space in world to put critters
+            int col = t[0];
+            int row = t[1];
+            if(w.addCritter(col,row,c,r.nextInt(6))) n--;
+        }
+
         return true;
     }
 

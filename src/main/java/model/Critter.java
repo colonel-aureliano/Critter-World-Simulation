@@ -294,7 +294,7 @@ public class Critter implements ReadOnlyCritter {
 
     private boolean isDead() {
         if (mem[4] <= 0) {
-            co.onDeath(this);
+            co.onDeath(this,mem[3]*Constants.FOOD_PER_SIZE);
             dead = true;
             return true;
         }
