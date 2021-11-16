@@ -4,6 +4,7 @@ import cms.util.maybe.Maybe;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class ROnlyWorld implements ReadOnlyWorld{
 
@@ -17,12 +18,12 @@ public class ROnlyWorld implements ReadOnlyWorld{
      * n < -1: food with energy level (-n)-1
      */
     protected int[][] map;
-
     protected List<ReadOnlyCritter> critters;
     protected List<Integer> directions;
 
     /**
      * Create a world with width w, height h, and name n
+     * Requires: w, h > 0
      */
     public ROnlyWorld(int w, int h, String n) {
         steps = 0;
@@ -33,44 +34,78 @@ public class ROnlyWorld implements ReadOnlyWorld{
     }
 
     /**
-     * Add a rock to world
-     * @param c column
-     * @param r row
-     * Requires: (c,r) must be valid position
+     * Add a rock to world.
+     * Requires: (c, r) is a hex inside the world
+     * Checks: (c, r) is empty
      */
     public boolean addRock(int c, int r) {
+        if (map[c][r] != 0) return false;
         map[c][r] = -1;
         return true;
     }
 
     /**
-     * Add food to world
-     * @param c column
-     * @param r row
-     * @param amount total energy value
-     * Requires: (c,r) must be valid position
+     * Add food to world. Can only add
+     * Requires: (c, r) is a hex inside the world
+     * Checks: (c, r) is empty of contain food
      */
     public boolean addFood(int c, int r, int amount) {
-        map[c][r] = - amount - 1;
+        if (map[c][r] > 0 | map[c][r] == -1) return false;
+        if (map[c][r] == 0) map[c][r] = - amount - 1;
+        else map[c][r] -= amount;
         return true;
     }
 
     /**
      * Add critter to world
-     * @param c column
-     * @param r row
-     * @param c
-     * @param direction
-     * @return index of critter
-     * Requires: (c, r) must be valid position
+     * Requires: (c, r) is a hex inside the world
+     * Checks: (c, r) is empty
      */
     public boolean addCritter(int c, int r, ReadOnlyCritter critter, int direction) {
+        if (map[c][r] != 0) return false;
         critters.add(critter);
         directions.add(direction);
         map[c][r] = critters.size();
         return true;
     }
 
+    /**
+     * return number of columns (c);
+     */
+    public int getColumns() {return map.length;}
+
+    /**
+     * return number of rows (w);
+     */
+    public int getRows() {return map[0].length;}
+
+    /**
+     * return true if there exists empty space in this world
+     */
+    public boolean hasEmptySpace() {
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; i < map[0].length; i++) {
+                if (map[i][j] == 0) return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * return an empty space in format (c, r)
+     * if no empty space present, return (-1, -1)
+     */
+    public int[] getEmptySpace() {
+        if (!hasEmptySpace()) return new int[]{-1, -1};
+        int c, r;
+        Random random = new Random();
+        while (true) {
+            c = random.nextInt(map.length);
+            r = random.nextInt(map[0].length);
+            if (map[c][r] == 0) return new int[]{c, r};
+        }
+    }
+    
     @Override
     public int getSteps() {
         return steps;
@@ -81,7 +116,7 @@ public class ROnlyWorld implements ReadOnlyWorld{
         int count = 0;
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; i < map[0].length; i++) {
-                if (map[i][j] > 0) count ++;
+                if (map[i][j] > 0) count++;
             }
         }
         return count;

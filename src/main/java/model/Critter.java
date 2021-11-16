@@ -30,7 +30,7 @@ public class Critter implements ReadOnlyCritter {
         name = n;
         mem = arr;
         program = p;
-        co=w;
+        co = w;
         ((ProgramImpl) p).critterWorldSetUp(this, (World) w);
         if (!classInv()) {
             setDefault();
@@ -38,10 +38,10 @@ public class Critter implements ReadOnlyCritter {
     }
 
     private void setDefault() {
-        if(co==null){
-            System.out.println("WARNING: Critter "+name+" does not have a CritterObserver object, " +
+        if (co == null) {
+            System.out.println("WARNING: Critter " + name + " does not have a CritterObserver object, " +
                     "cannot perform step().");
-            if(memInv()) return;
+            if (memInv()) return;
         }
         System.out.println("WARNING: critter created with invalid values, will reset invalid values to default.");
         if (mem.length < 7) {
@@ -83,7 +83,7 @@ public class Critter implements ReadOnlyCritter {
         return false;
     }
 
-    private boolean memInv(){
+    private boolean memInv() {
         if (mem.length >= Constants.MIN_MEMORY && (mem[0] >= 7 && mem[0] == mem.length) && mem[1] >= 1 && mem[2] >= 1
                 && mem[3] >= 1 && mem[4] >= 1 && mem[5] >= 1 && (mem[6] >= 0 && mem[6] <= 99)) {
             return true;
@@ -95,7 +95,7 @@ public class Critter implements ReadOnlyCritter {
      * Advances the critter by one time step.
      */
     public void step() {
-        if(dead) return;
+        if (dead) return;
         List<Node> l = program.getChildren();
 
         mem[5] = 0;
@@ -224,7 +224,7 @@ public class Critter implements ReadOnlyCritter {
                     }
                     ran = rand.nextInt(8);
                 }
-                Critter baby = new Critter(name + "'s baby", arr, p,co);
+                Critter baby = new Critter(name + "'s baby", arr, p, co);
                 co.onBud(this, baby);
                 isDead();
                 break;
@@ -295,7 +295,7 @@ public class Critter implements ReadOnlyCritter {
     private boolean isDead() {
         if (mem[4] <= 0) {
             co.onDeath(this);
-            dead=true;
+            dead = true;
             return true;
         }
         return false;

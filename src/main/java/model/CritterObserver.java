@@ -64,7 +64,7 @@ public interface CritterObserver {
     /**
      * mark a critter in world as dead
      */
-    boolean onDeath(ReadOnlyCritter c);
+    boolean onDeath(ReadOnlyCritter c, int energy);
 
     /**
      * return true if a critter in front of c want to mate and is also facing toward c

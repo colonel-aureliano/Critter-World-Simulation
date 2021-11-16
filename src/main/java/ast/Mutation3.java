@@ -5,7 +5,7 @@ import cms.util.maybe.NoMaybeValue;
 
 import java.util.Random;
 
-public class Mutation3 implements Mutation{
+public class Mutation3 implements Mutation {
 
     @Override
     public boolean equals(Mutation m) {
@@ -33,7 +33,7 @@ public class Mutation3 implements Mutation{
                 return false;
             case COMMAND:
             case ACTION:
-                if(((AbstractNode) n).getRoot().getChildren().size()==1) return false;
+                if (((AbstractNode) n).getRoot().getChildren().size() == 1) return false;
                 return true;
             case RULE:
                 try {

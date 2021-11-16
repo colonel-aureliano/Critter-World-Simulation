@@ -26,7 +26,7 @@ class WorldTest {
         } catch (SyntaxError e) {
             e.printStackTrace();
         }
-        Critter c = new Critter(name,arr,p);
+        Critter c = new Critter(name,arr,p,null);
         return c;
     }
 

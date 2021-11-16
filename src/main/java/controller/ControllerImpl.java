@@ -1,7 +1,6 @@
 package controller;
 
 import ast.Program;
-import ast.ProgramImpl;
 import easyIO.EOF;
 import easyIO.Scanner;
 import easyIO.UnexpectedInput;
@@ -11,7 +10,7 @@ import parse.Parser;
 import parse.ParserFactory;
 
 import java.io.*;
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
 
 public class ControllerImpl implements Controller {
 
@@ -24,7 +23,7 @@ public class ControllerImpl implements Controller {
 
     @Override
     public void newWorld() {
-        w= new World(Constants.WIDTH,Constants.HEIGHT,"Default World");
+        w = new World(Constants.WIDTH, Constants.HEIGHT, "Default World");
         //TODO randomly place rocks into world
     }
 
@@ -35,7 +34,7 @@ public class ControllerImpl implements Controller {
         } catch (FileNotFoundException e) {
             return false;
         }
-        if(w==null) return false;
+        if (w == null) return false;
         return true;
     }
 
@@ -44,10 +43,10 @@ public class ControllerImpl implements Controller {
         easyIO.Scanner s = new Scanner(r, "");
 
         String name = null;
-        int wi = -1 ;
+        int wi = -1;
         int h = -1;
 
-        while(s.hasNext()) {
+        while (s.hasNext()) {
             try {
                 s.newline();
             } catch (UnexpectedInput unexpectedInput) {
@@ -98,10 +97,10 @@ public class ControllerImpl implements Controller {
                 }
             }
         }
-        w = new World(wi,h,name);
+        w = new World(wi, h, name);
 
         // Reading objects to put into world.
-        while(s.hasNext()) {
+        while (s.hasNext()) {
             try {
                 s.newline();
                 continue;
@@ -118,27 +117,25 @@ public class ControllerImpl implements Controller {
             try {
                 String t = s.nextIdentifier();
                 s.trailingWhitespace();
-                if (t.equals("rock")){
+                if (t.equals("rock")) {
                     int col = s.nextInt();
                     s.trailingWhitespace();
                     int row = s.nextInt();
-                    w.addRock(col,row);
-                }
-                else if (t.equals("food")){
+                    w.addRock(col, row);
+                } else if (t.equals("food")) {
                     int col = s.nextInt();
                     s.trailingWhitespace();
                     int row = s.nextInt();
                     s.trailingWhitespace();
                     int amount = s.nextInt();
-                    w.addFood(col,row,amount);
-                }
-                else if (t.equals("critter")){
+                    w.addFood(col, row, amount);
+                } else if (t.equals("critter")) {
                     s.trailingWhitespace();
                     StringBuilder path = new StringBuilder();
                     File f = new File(filename);
-                    path.append(f.getParent()+'/');
+                    path.append(f.getParent() + '/');
 
-                    while(s.peek()!=32) path.append(s.next());
+                    while (s.peek() != 32) path.append(s.next());
 
                     s.trailingWhitespace();
                     int col = s.nextInt();
@@ -146,8 +143,8 @@ public class ControllerImpl implements Controller {
                     int row = s.nextInt();
                     s.trailingWhitespace();
                     int direction = s.nextInt();
-                    Critter c=readCritter(path.toString());
-                    w.addCritter(col,row,c,direction);
+                    Critter c = readCritter(path.toString());
+                    w.addCritter(col, row, c, direction);
                 }
                 continue;
             } catch (UnexpectedInput | EOF e) {
@@ -161,7 +158,7 @@ public class ControllerImpl implements Controller {
 
     @Override
     public boolean loadCritters(String filename, int n) {
-        if(w==null) return false; // cannot load critter before world is initialized
+        if (w == null) return false; // cannot load critter before world is initialized
         Critter c;
         try {
             c = readCritter(filename);
@@ -267,16 +264,19 @@ public class ControllerImpl implements Controller {
 
     @Override
     public boolean advanceTime(int n) {
-        while(n>0){
-            if(!w.step()) return false;
+        while (n > 0) {
+            if (!w.step()) return false;
             n--;
         }
-        return true; //TODO
+        return true;
     }
 
     @Override
     public void printWorld(PrintStream out) {
-        //TODO
-        System.out.println(w.print());
+        try {
+            out.write(w.print().getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
