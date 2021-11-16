@@ -11,7 +11,6 @@ import parse.ParserFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Random;
 
 public class ControllerImpl implements Controller {
@@ -27,10 +26,9 @@ public class ControllerImpl implements Controller {
     public void newWorld() {
         w = new World(Constants.WIDTH, Constants.HEIGHT, "Default World");
         int n = 20; // putting 20 rocks into world
-
-        while(n>0){
+        while (n > 0) {
             int[] t = w.getEmptySpace();
-            w.addRock(t[0],t[1]);
+            w.addRock(t[0], t[1]);
             n--;
         }
     }
@@ -43,6 +41,7 @@ public class ControllerImpl implements Controller {
             return false;
         }
         if (w == null) return false;
+        w.loadParams(enableManna, enableForcedMutation);
         return true;
     }
 
@@ -178,12 +177,12 @@ public class ControllerImpl implements Controller {
 
         Random r = new Random();
 
-        while(n>0){
+        while (n > 0) {
             int[] t = w.getEmptySpace();
-            if(t[0]==-1 && t[1]==-1) return false; // not enough empty space in world to put critters
+            if (t[0] == -1 && t[1] == -1) return false; // not enough empty space in world to put critters
             int col = t[0];
             int row = t[1];
-            if(w.addCritter(col,row,c,r.nextInt(6))) n--;
+            if (w.addCritter(col, row, c, r.nextInt(6))) n--;
         }
 
         return true;

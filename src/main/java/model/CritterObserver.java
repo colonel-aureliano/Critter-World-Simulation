@@ -2,6 +2,8 @@ package model;
 
 public interface CritterObserver {
 
+    // Requires: c must be alive
+
     /**
      * report content of hex in direction dir.
      * 0: empty
@@ -47,6 +49,7 @@ public interface CritterObserver {
 
     /**
      * put baby behind with same direction as parent
+     * Requires: baby must be a new critter
      */
     boolean onBud(ReadOnlyCritter parent, ReadOnlyCritter baby);
 
@@ -74,6 +77,7 @@ public interface CritterObserver {
 
     /**
      * put baby behind a randomly chosen parent with direction as the parent in front of it
+     * Requires: baby must be a new critter
      */
     boolean onMate(ReadOnlyCritter parent1, ReadOnlyCritter parent2, ReadOnlyCritter baby);
 

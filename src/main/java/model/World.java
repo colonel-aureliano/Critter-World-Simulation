@@ -1,16 +1,14 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class World extends ROnlyWorld implements CritterObserver {
 
     HashSet<ReadOnlyCritter> puberty = new HashSet<>();
 
     /**
-     * Create a world with width w, height h, and name n
+     * Create a world whose upper right corner is (w, h), and name n
+     * the width is w+1 and height is h+1
      */
     public World(int w, int h, String n) {
         super(w, h, n);
@@ -21,8 +19,24 @@ public class World extends ROnlyWorld implements CritterObserver {
         List<ReadOnlyCritter> temp = List.copyOf(critters);
         for (ReadOnlyCritter c: temp) {
             ((Critter) c).step();
+            if (ForcedMutation) ((Critter) c).mutate();
+            if (Manna) addManna();
         }
         steps++;
+        return true;
+    }
+
+    /**
+     * return true is Manna is added to World.
+     */
+    private boolean addManna() {
+        Random r = new Random();
+        if (r.nextInt(getNumberOfAliveCritters()) > 0) return false;
+        for (int i = 0; i <= Constants.MANNA_COUNT * getSize() / 1000; i++) {
+            if (!hasFoodSpace()) return false;
+            int[] loc = getFoodSpace();
+            addFood(loc[0], loc[1], Constants.MANNA_AMOUNT);
+        }
         return true;
     }
 
@@ -82,7 +96,6 @@ public class World extends ROnlyWorld implements CritterObserver {
             if (i > 0) return critters.get(i - 1).getMemory()[6];
             return i;
         } catch (IndexOutOfBoundsException e) {
-            System.out.println("Nearby at direction " + dir + " is out of World boundary.");
             return 0;
         }
     }
@@ -97,7 +110,6 @@ public class World extends ROnlyWorld implements CritterObserver {
             if (i > 0) return critters.get(i - 1).getMemory()[6];
             return i;
         } catch (IndexOutOfBoundsException e) {
-            System.out.println("Ahead at distance" + dist + " is out of World boundary.");
             return 0;
         }
     }
@@ -146,20 +158,21 @@ public class World extends ROnlyWorld implements CritterObserver {
     public int onEatFood(ReadOnlyCritter c, int n) {
         int[] info = findCritter(c);
         int[] loc = sense(info[0], info[1], info[2], 1);
-        int food = Math.min(n, -(1 + map[loc[0]][loc[1]]));
-        map[loc[0]][loc[1]] += food;
-        if (map[loc[0]][loc[1]] == -1) map[loc[0]][loc[1]] = 0; // consume all food
-        return food;
+        try {
+            int food = Math.min(n, -(1 + map[loc[0]][loc[1]]));
+            map[loc[0]][loc[1]] += food;
+            if (map[loc[0]][loc[1]] == -1) map[loc[0]][loc[1]] = 0; // consume all food
+            return food;
+        } catch (IndexOutOfBoundsException e){
+            return 0;
+        }
     }
 
     @Override
     public boolean onServeFood(ReadOnlyCritter c, int n) {
         int[] info = findCritter(c);
         int[] loc = sense(info[0], info[1], info[2], 1);
-        if (map[loc[0]][loc[1]] == -1 |map[loc[0]][loc[1]] > 0) return false;
-        if (map[loc[0]][loc[1]] == 0) map[loc[0]][loc[1]] = -1;
-        map[loc[0]][loc[1]] -= n;
-        return true;
+        return addFood(loc[0], loc[1], n);
     }
 
     @Override
@@ -224,7 +237,7 @@ public class World extends ROnlyWorld implements CritterObserver {
     @Override
     public boolean onDeath(ReadOnlyCritter c, int energy) {
         int[] info = findCritter(c);
-        map[info[0]][info[1]] = -energy - 1; // add energy
+        map[info[0]][info[1]] = - energy - 1; // add energy
         return true;
     }
 

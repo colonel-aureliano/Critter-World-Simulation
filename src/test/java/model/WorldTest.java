@@ -53,7 +53,10 @@ class WorldTest {
     public void testActions() {
         World w = Figure1();
         Critter c = createCritter("New Critter1");
+        assert(w.getNumberOfAliveCritters() == 2);
         w.addCritter( 1, 7, c,5);
+        assert(w.getNumberOfAliveCritters() == 3);
+        assert(w.getSize() == 32);
 
         // sensing
         assert(w.onNearby(c, 0) == -1);
@@ -101,6 +104,9 @@ class WorldTest {
         assert(w.onSmell(baby) == 1000000);
 
         // death
+        w.onDeath(w.critters.get(0), 10);
+        assert(w.map[2][4] == -11);
+        assert(w.getNumberOfAliveCritters() == 3);
 
         System.out.println(w.print());
 

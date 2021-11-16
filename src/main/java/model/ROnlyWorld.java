@@ -10,6 +10,8 @@ public class ROnlyWorld implements ReadOnlyWorld{
 
     String name;
     protected int steps;
+    protected boolean Manna;
+    protected boolean ForcedMutation;
 
     /**
      * 0: the hex is empty
@@ -22,8 +24,8 @@ public class ROnlyWorld implements ReadOnlyWorld{
     protected List<Integer> directions;
 
     /**
-     * Create a world with width w, height h, and name n
-     * Requires: w, h > 0
+     * Create a world with Create a world whose upper right corner is (w, h), and name n
+     * the width is w+1 and height is h+1
      */
     public ROnlyWorld(int w, int h, String n) {
         steps = 0;
@@ -33,24 +35,37 @@ public class ROnlyWorld implements ReadOnlyWorld{
         directions = new ArrayList<>();
     }
 
+    public void loadParams(boolean enableManna, boolean enableForcedMutation) {
+        Manna = enableManna;
+        ForcedMutation = enableForcedMutation;
+    }
+
     /**
      * Add a rock to world.
-     * Requires: (c, r) is a hex inside the world
-     * Checks: (c, r) is empty
+     * Checks: (c, r) is empty, inside the world, and valid position
      */
     public boolean addRock(int c, int r) {
-        if (map[c][r] != 0) return false;
+        if ((c + r) % 2 == 1) return false;
+        try {
+            if (map[c][r] != 0) return false;
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
         map[c][r] = -1;
         return true;
     }
 
     /**
-     * Add food to world. Can only add
-     * Requires: (c, r) is a hex inside the world
-     * Checks: (c, r) is empty of contain food
+     * Add food to world.
+     * Checks: (c, r) is empty or contains food, inside the world, and valid position
      */
     public boolean addFood(int c, int r, int amount) {
-        if (map[c][r] > 0 | map[c][r] == -1) return false;
+        if ((c + r) % 2 == 1) return false;
+        try {
+            if (map[c][r] > 0 | map[c][r] == -1) return false;
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
         if (map[c][r] == 0) map[c][r] = - amount - 1;
         else map[c][r] -= amount;
         return true;
@@ -58,11 +73,15 @@ public class ROnlyWorld implements ReadOnlyWorld{
 
     /**
      * Add critter to world
-     * Requires: (c, r) is a hex inside the world
-     * Checks: (c, r) is empty
+     * Checks: (c, r) is empty, inside the world, and valid position
      */
     public boolean addCritter(int c, int r, ReadOnlyCritter critter, int direction) {
-        if (map[c][r] != 0) return false;
+        if ((c + r) % 2 == 1) return false;
+        try {
+            if (map[c][r] != 0) return false;
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
         critters.add(critter);
         directions.add(direction);
         map[c][r] = critters.size();
@@ -70,14 +89,9 @@ public class ROnlyWorld implements ReadOnlyWorld{
     }
 
     /**
-     * return number of columns (c);
+     * return size of the world
      */
-    public int getColumns() {return map.length;}
-
-    /**
-     * return number of rows (w);
-     */
-    public int getRows() {return map[0].length;}
+    public int getSize() {return (int) Math.ceil(map.length * map[0].length / 2.0);}
 
     /**
      * return true if there exists empty space in this world
@@ -93,10 +107,9 @@ public class ROnlyWorld implements ReadOnlyWorld{
 
     /**
      * return an empty space in format (c, r)
-     * if no empty space present, return (-1, -1)
+     * Requires: has empty space
      */
     public int[] getEmptySpace() {
-        if (!hasEmptySpace()) return new int[]{-1, -1};
         int c, r;
         Random random = new Random();
         while (true) {
@@ -105,7 +118,34 @@ public class ROnlyWorld implements ReadOnlyWorld{
             if (map[c][r] == 0) return new int[]{c, r};
         }
     }
-    
+
+    /**
+     * return true if there exists food space in this world
+     */
+    public boolean hasFoodSpace() {
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; i < map[0].length; i++) {
+                if (map[i][j] == 0 | map[i][j] < -1) return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * return a space for food in format (c, r)
+     * Requires: has space for food
+     */
+    public int[] getFoodSpace() {
+        if (!hasEmptySpace()) return new int[]{-1, -1};
+        int c, r;
+        Random random = new Random();
+        while (true) {
+            c = random.nextInt(map.length);
+            r = random.nextInt(map[0].length);
+            if (map[c][r] == 0 | map[c][r] < -1) return new int[]{c, r};
+        }
+    }
+
     @Override
     public int getSteps() {
         return steps;
@@ -115,7 +155,7 @@ public class ROnlyWorld implements ReadOnlyWorld{
     public int getNumberOfAliveCritters() {
         int count = 0;
         for (int i = 0; i < map.length; i++) {
-            for (int j = 0; i < map[0].length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
                 if (map[i][j] > 0) count++;
             }
         }
