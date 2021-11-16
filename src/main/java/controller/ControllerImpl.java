@@ -25,30 +25,27 @@ public class ControllerImpl implements Controller {
     @Override
     public void newWorld() {
         w= new World(Constants.WIDTH,Constants.HEIGHT,"Default World");
+        //TODO randomly place rocks into world
     }
 
     @Override
     public boolean loadWorld(String filename, boolean enableManna, boolean enableForcedMutation) {
-        World world;
         try {
-            world = readWorld(filename);
+            readWorld(filename);
         } catch (FileNotFoundException e) {
             return false;
         }
-        if(world==null) return false;
-        w=world;
+        if(w==null) return false;
         return true;
     }
 
-    private World readWorld(String filename) throws FileNotFoundException {
+    private void readWorld(String filename) throws FileNotFoundException {
         Reader r = new BufferedReader(new FileReader(filename));
         easyIO.Scanner s = new Scanner(r, "");
 
         String name = null;
-        int w = -1 ;
+        int wi = -1 ;
         int h = -1;
-
-        World world;
 
         while(s.hasNext()) {
             try {
@@ -80,28 +77,28 @@ public class ControllerImpl implements Controller {
                     continue;
                 } catch (UnexpectedInput e) {
                     System.out.println("Illegal world file: invalid world name.");
-                    return null;
+                    return;
                 }
             }
 
             // Reading size of world.
-            if (w == -1 && h == -1) {
+            if (wi == -1 && h == -1) {
                 try {
                     if (!s.nextIdentifier().equals("size")) {
                         throw new UnexpectedInput();
                     }
                     s.trailingWhitespace();
-                    w = s.nextInt();
+                    wi = s.nextInt();
                     s.trailingWhitespace();
                     h = s.nextInt();
                     break;
                 } catch (UnexpectedInput e) {
                     System.out.println("Illegal world file: invalid size values.");
-                    return null;
+                    return;
                 }
             }
         }
-        world = new World(w,h,name);
+        w = new World(wi,h,name);
 
         // Reading objects to put into world.
         while(s.hasNext()) {
@@ -125,7 +122,7 @@ public class ControllerImpl implements Controller {
                     int col = s.nextInt();
                     s.trailingWhitespace();
                     int row = s.nextInt();
-                    world.addRock(col,row);
+                    w.addRock(col,row);
                 }
                 else if (t.equals("food")){
                     int col = s.nextInt();
@@ -133,7 +130,7 @@ public class ControllerImpl implements Controller {
                     int row = s.nextInt();
                     s.trailingWhitespace();
                     int amount = s.nextInt();
-                    world.addFood(col,row,amount);
+                    w.addFood(col,row,amount);
                 }
                 else if (t.equals("critter")){
                     s.trailingWhitespace();
@@ -150,16 +147,16 @@ public class ControllerImpl implements Controller {
                     s.trailingWhitespace();
                     int direction = s.nextInt();
                     Critter c=readCritter(path.toString());
-                    world.addCritter(col,row,c,direction);
+                    w.addCritter(col,row,c,direction);
                 }
                 continue;
             } catch (UnexpectedInput | EOF e) {
                 System.out.println("Illegal world file: invalid objects in world.");
-                return null;
+                return;
             }
         }
 
-        return world;
+        return;
     }
 
     @Override
@@ -249,7 +246,6 @@ public class ControllerImpl implements Controller {
         }
 
         Critter c = new Critter(name, arr, m, w);
-        ((ProgramImpl) m).critterWorldSetUp(c,w);
         return c;
     }
 
@@ -271,11 +267,16 @@ public class ControllerImpl implements Controller {
 
     @Override
     public boolean advanceTime(int n) {
-        return false; //TODO
+        while(n>0){
+            if(!w.step()) return false;
+            n--;
+        }
+        return true; //TODO
     }
 
     @Override
     public void printWorld(PrintStream out) {
         //TODO
+        System.out.println(w.print());
     }
 }

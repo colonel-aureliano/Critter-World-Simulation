@@ -1,5 +1,5 @@
 name test world
 size 8 6
-critter eat-and-bud-critter.txt 0 2 2
-critter eat-and-bud-critter.txt 2 4 5
-critter spiral-critter.txt 4 4 0
+critter eat_and_bud_critter.txt 0 2 2
+critter eat_and_bud_critter.txt 2 4 5
+critter spiral_critter.txt 4 4 0

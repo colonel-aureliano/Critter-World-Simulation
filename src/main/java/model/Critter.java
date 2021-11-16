@@ -31,6 +31,7 @@ public class Critter implements ReadOnlyCritter {
         mem = arr;
         program = p;
         co=w;
+        ((ProgramImpl) p).critterWorldSetUp(this, (World) w);
         if (!classInv()) {
             setDefault();
         }
@@ -38,7 +39,8 @@ public class Critter implements ReadOnlyCritter {
 
     private void setDefault() {
         if(co==null){
-            System.out.println("WARNING: Critter "+name+" does not have a CritterObserver object, cannot perform step().");
+            System.out.println("WARNING: Critter "+name+" does not have a CritterObserver object, " +
+                    "cannot perform step().");
             if(memInv()) return;
         }
         System.out.println("WARNING: critter created with invalid values, will reset invalid values to default.");
