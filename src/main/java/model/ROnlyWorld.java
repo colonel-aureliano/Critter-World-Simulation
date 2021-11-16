@@ -115,7 +115,7 @@ public class ROnlyWorld implements ReadOnlyWorld{
         while (true) {
             c = random.nextInt(map.length);
             r = random.nextInt(map[0].length);
-            if (map[c][r] == 0) return new int[]{c, r};
+            if ((c+r) % 2 == 0 && map[c][r] == 0) return new int[]{c, r};
         }
     }
 
@@ -142,7 +142,7 @@ public class ROnlyWorld implements ReadOnlyWorld{
         while (true) {
             c = random.nextInt(map.length);
             r = random.nextInt(map[0].length);
-            if (map[c][r] == 0 | map[c][r] < -1) return new int[]{c, r};
+            if ((c+r) % 2 == 0 && (map[c][r] == 0 | map[c][r] < -1)) return new int[]{c, r};
         }
     }
 

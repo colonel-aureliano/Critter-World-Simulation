@@ -15,36 +15,36 @@ public abstract class AbstractNode implements Node {
     protected List<Node> children;
     protected boolean hasChild = true;
 
-    public void setInterpreter(Interpreter in){
-        this.interpreter=in;
-        if(!hasChild) return;
-        for(Node node: children){
+    public void setInterpreter(Interpreter in) {
+        this.interpreter = in;
+        if (!hasChild) return;
+        for (Node node : children) {
             ((AbstractNode) node).setInterpreter(in);
         }
     }
 
-    public Node getRoot(){
+    public Node getRoot() {
         return root;
     }
 
-    protected void setRoot(Node n){
+    protected void setRoot(Node n) {
         root = n;
-        if(!hasChild) return;
-        for(Node node: children){
+        if (!hasChild) return;
+        for (Node node : children) {
             ((AbstractNode) node).setRoot(n);
         }
     }
 
-    public AbstractNode(){
+    public AbstractNode() {
         hasChild = false;
     }
 
-    public AbstractNode(Node s){
+    public AbstractNode(Node s) {
         children = new ArrayList<>(Arrays.asList(s));
     }
 
-    public AbstractNode(Node l, Node r){
-        children = new ArrayList<>(Arrays.asList(l,r));
+    public AbstractNode(Node l, Node r) {
+        children = new ArrayList<>(Arrays.asList(l, r));
     }
 
     public AbstractNode(List<Node> c) {
@@ -55,11 +55,11 @@ public abstract class AbstractNode implements Node {
     public final int size() {
         int t = 0;
         if (hasChild) {
-            for(Node n: children){
-                t+=n.size();
+            for (Node n : children) {
+                t += n.size();
             }
         }
-        return t+1;
+        return t + 1;
     }
 
     @Override
@@ -68,11 +68,10 @@ public abstract class AbstractNode implements Node {
             return this;
         }
         int t = 1;
-        for(Node n: children){
-            try{
-                return (n.nodeAt(index-t));
-            }
-            catch (Exception e){
+        for (Node n : children) {
+            try {
+                return (n.nodeAt(index - t));
+            } catch (Exception e) {
                 t += n.size();
             }
         }
@@ -90,7 +89,7 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public List<Node> getChildren() {
-        if(hasChild) {
+        if (hasChild) {
             return children;
         }
         return new ArrayList<Node>(); // returning an empty list when called on a leaf node
@@ -101,19 +100,18 @@ public abstract class AbstractNode implements Node {
      *
      * @return the parent of this {@code Node}, or {@Maybe.none} if this {@code Node} is the root.
      * Requires: this must exist in the AST of root.
-     *
+     * <p>
      * This method does not need to be implemented and may be removed from the interface.
      */
     public Maybe<Node> getParent() {
-        if(this == root){
+        if (this == root) {
             return Maybe.none();
-        }
-        else{
+        } else {
             Node n;
-            for (int i = 0; i < root.size(); i++){
+            for (int i = 0; i < root.size(); i++) {
                 n = root.nodeAt(i);
-                try{
-                    if(n.getChildren().contains(this)){
+                try {
+                    if (n.getChildren().contains(this)) {
                         return Maybe.some(n);
                     }
                 } catch (Exception e) {
@@ -126,6 +124,7 @@ public abstract class AbstractNode implements Node {
 
     /**
      * Replace this node by replacement in the AST by changing the children of this node's parent.
+     *
      * @param replacement
      * @return true if method is successful
      */

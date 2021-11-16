@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class WorldTest {
 
-    public Critter createCritter(String n){
+    public Critter createCritter(String n, CritterObserver w){
         String name = n;
         int[] arr = {7, 1, 1, 1, 250, 1 , 89};
         String s = "1 = 1 --> mem[3] := 3; mem[3] = 3 --> bud;";
@@ -26,15 +26,15 @@ class WorldTest {
         } catch (SyntaxError e) {
             e.printStackTrace();
         }
-        Critter c = new Critter(name,arr,p,null);
+        Critter c = new Critter(name,arr,p,w);
         return c;
     }
 
     // Figure 1 in A5 spec
     public World Figure1() {
         World w = new World(6, 8, "small");
-        Critter c1 = createCritter("Forrest Critter");
-        Critter c2 = createCritter("Ocean Critter");
+        Critter c1 = createCritter("Forrest Critter", w);
+        Critter c2 = createCritter("Ocean Critter", w);
         w.addCritter(2, 4, c1,1);
         w.addCritter(2, 0, c2,5);
         w.addRock(0,8);
@@ -52,7 +52,7 @@ class WorldTest {
     @Test
     public void testActions() {
         World w = Figure1();
-        Critter c = createCritter("New Critter1");
+        Critter c = createCritter("New Critter1", w);
         assert(w.getNumberOfAliveCritters() == 2);
         w.addCritter( 1, 7, c,5);
         assert(w.getNumberOfAliveCritters() == 3);
@@ -78,7 +78,7 @@ class WorldTest {
         w.onTurn(w.critters.get(0), true);
         assertFalse(w.wantToMate(w.critters.get(0)));
         assert(w.wantToMate(c));
-        Critter baby = createCritter("Baby");
+        Critter baby = createCritter("Baby", w);
         w.onMate(c, w.critters.get(0), baby);
         assert(w.map[2][2] == 4);
         assert(w.directions.get(3) == 0);
@@ -110,6 +110,25 @@ class WorldTest {
 
         System.out.println(w.print());
 
+    }
+
+    @Test
+    public void testMana() {
+        World w = Figure1();
+        w.loadParams(true, false);
+        w.step();
+        w.step();
+        w.step();
+        w.step();
+        w.step();
+        w.step();
+        w.step();
+        w.step();
+        w.step();
+        w.step();
+        w.step();
+        w.step();
+        System.out.println(w.print());
     }
 
 }
