@@ -92,6 +92,7 @@ public class World extends ROnlyWorld implements CritterObserver {
      * return true is Manna is added to World.
      */
     private boolean addManna() {
+        if (getNumberOfAliveCritters() == 0) return false;
         Random r = new Random();
         if (r.nextInt(getNumberOfAliveCritters()) > 0) return false;
         for (int i = 0; i <= Constants.MANNA_COUNT * getSize() / 1000; i++) {
