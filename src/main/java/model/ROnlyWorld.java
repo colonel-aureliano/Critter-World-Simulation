@@ -9,7 +9,7 @@ import java.util.Random;
 public class ROnlyWorld implements ReadOnlyWorld{
 
     /** World name */
-    String name;
+    protected String name;
 
     /** number of time steps passed */
     protected int steps;
@@ -37,13 +37,13 @@ public class ROnlyWorld implements ReadOnlyWorld{
     protected boolean ForcedMutation;
 
     /**
-     * Create a Read Only world with Create a world whose upper right corner is (w, h), and name n
+     * Create a Read Only world width w, height h, and name n
      * Getter class
      */
     public ROnlyWorld(int w, int h, String n) {
         steps = 0;
         name = n;
-        map = new int[w+1][h+1];
+        map = new int[w][h];
         critters = new ArrayList<>();
         directions = new ArrayList<>();
     }
@@ -56,7 +56,7 @@ public class ROnlyWorld implements ReadOnlyWorld{
     /**
      * return true if there exists empty space in this world
      */
-    public boolean hasEmptySpace() {
+    protected boolean hasEmptySpace() {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
                 if (map[i][j] == 0) return true;
@@ -82,7 +82,7 @@ public class ROnlyWorld implements ReadOnlyWorld{
     /**
      * return true if there exists food space in this world
      */
-    public boolean hasFoodSpace() {
+    protected boolean hasFoodSpace() {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
                 if (map[i][j] == 0 | map[i][j] < -1) return true;
@@ -95,7 +95,7 @@ public class ROnlyWorld implements ReadOnlyWorld{
      * return a space for food in format (c, r)
      * Requires: has space for food
      */
-    public int[] getFoodSpace() {
+    protected int[] getFoodSpace() {
         if (!hasEmptySpace()) return new int[]{-1, -1};
         int c, r;
         Random random = new Random();

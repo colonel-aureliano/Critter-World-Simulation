@@ -5,10 +5,10 @@ import java.util.*;
 public class World extends ROnlyWorld implements CritterObserver {
 
     /** Stores the critters that want to mate in the current time step */
-    HashSet<ReadOnlyCritter> puberty = new HashSet<>();
+    private HashSet<ReadOnlyCritter> puberty = new HashSet<>();
 
     /**
-     * Create a world whose upper right corner is (w, h), and name n
+     * Create a Read Only world width w, height h, and name n
      * Setter class
      */
     public World(int w, int h, String n) {

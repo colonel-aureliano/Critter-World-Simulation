@@ -32,7 +32,7 @@ class WorldTest {
 
     // Figure 1 in A5 spec
     public World Figure1() {
-        World w = new World(6, 8, "small");
+        World w = new World(7, 9, "small");
         Critter c1 = createCritter("Forrest Critter", w);
         Critter c2 = createCritter("Ocean Critter", w);
         w.addCritter(2, 4, c1,1);
@@ -74,7 +74,6 @@ class WorldTest {
         assert(w.onAhead(c,3) == 89);
 
         // mating
-        w.puberty.clear();
         w.onTurn(w.critters.get(0), true);
         assertFalse(w.wantToMate(w.critters.get(0)));
         assert(w.wantToMate(c));
@@ -115,8 +114,8 @@ class WorldTest {
     @Test
     public void testMana() {
         World w = Figure1();
-        w.loadParams(true, false);
-        int n = 40;
+        w.loadParams(true, true);
+        int n = 50;
         for (int i = 0; i < n; i ++) {
             w.step();
         }
