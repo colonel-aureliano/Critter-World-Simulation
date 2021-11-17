@@ -84,8 +84,15 @@ public abstract class AbstractNode implements Node {
         return sb;
     }
 
+    protected abstract Node cloneHelper();
+
     @Override
-    public abstract Node clone();
+    public Node clone(){
+        AbstractNode n = (AbstractNode) cloneHelper();
+        n.interpreter=interpreter;
+        n.root=(root);
+        return n;
+    }
 
     @Override
     public List<Node> getChildren() {

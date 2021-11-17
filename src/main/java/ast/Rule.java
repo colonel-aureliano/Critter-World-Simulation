@@ -22,7 +22,7 @@ public class Rule extends AbstractNode {
     }
 
     @Override
-    public Node clone() {
+    public Node cloneHelper() {
         return new Rule((Condition) children.get(0).clone(), (Command) children.get(1).clone());
     }
 

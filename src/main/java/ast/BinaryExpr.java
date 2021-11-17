@@ -27,7 +27,7 @@ public class BinaryExpr extends Expr {
     }
 
     @Override
-    public Node clone() {
+    public Node cloneHelper() {
         return new BinaryExpr((Expr) children.get(0).clone(),operator,(Expr) children.get(1).clone());
     }
 

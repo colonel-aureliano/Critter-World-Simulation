@@ -54,6 +54,8 @@ public class Mutation4 implements Mutation{
                     i = Integer.parseInt(node.toString());
                     i += java.lang.Integer.MAX_VALUE / rand.nextInt();
                     replacement = new Factor(i);
+                    ((AbstractNode)replacement).interpreter=((AbstractNode)program).interpreter;
+                    ((AbstractNode)replacement).root=program;
                 } while (node.toString().equals(replacement.toString()));
             } catch (Exception e) {
                 //canApply() didn't catch an invalid node attempting to undergo Mutation 4

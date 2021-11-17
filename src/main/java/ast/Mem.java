@@ -19,7 +19,7 @@ public class Mem extends Expr {
     private String visit(Visitor v) { return v.visit(this); }
 
     @Override
-    public Node clone() {
+    public Node cloneHelper() {
         return new Mem((Expr) children.get(0).clone());
     }
 

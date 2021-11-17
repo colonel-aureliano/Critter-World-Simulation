@@ -30,7 +30,7 @@ public class Relation extends Condition {
     }
 
     @Override
-    public Node clone() {
+    public Node cloneHelper() {
         return new Relation((Expr) children.get(0).clone(), operator, (Expr) children.get(1).clone());
     }
 

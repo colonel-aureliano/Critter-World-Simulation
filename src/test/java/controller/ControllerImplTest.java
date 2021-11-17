@@ -21,14 +21,16 @@ class ControllerImplTest {
     @Test
     void testExampleWorld() {
         ControllerImpl c = new ControllerImpl();
-        assert (c.loadWorld("src/test/resources/A5files/test_world.txt", false, false));
+        assert (c.loadWorld("src/test/resources/A5files/test_world.txt", false, true));
         assert (c.getReadOnlyWorld().getNumberOfAliveCritters() == 3);
         PrintStream o = new PrintStream(System.out);
         c.printWorld(o);
+        System.out.println();
         for (int i = 0; i < 10; i++) {
             c.advanceTime(1);
             c.printWorld(o);
-            System.out.println(c.getReadOnlyWorld().getNumberOfAliveCritters());
+            System.out.println();
+            //System.out.println(c.getReadOnlyWorld().getNumberOfAliveCritters());
         }
     }
 

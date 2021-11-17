@@ -96,6 +96,7 @@ public class Critter implements ReadOnlyCritter {
      */
     public void mutate(){
         program.mutate();
+        ((ProgramImpl) program).critterWorldSetUp(this, (World) co);
         return;
     }
 

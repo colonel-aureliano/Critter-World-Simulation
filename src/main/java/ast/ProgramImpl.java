@@ -103,7 +103,7 @@ public class ProgramImpl extends AbstractNode implements Program {
     }
 
     @Override
-    public Node clone() {
+    public Node cloneHelper() {
         List<Node> ln = new ArrayList<>();
         for (Node n : children) {
             ln.add(n.clone());

@@ -42,9 +42,19 @@ public class Factor extends Expr {
     }
 
     @Override
-    public Node clone() {
+    public Node cloneHelper() {
         if (operator == null) return new Factor(value);
-        else return new Factor(operator, (Factor) children.get(0).clone());
+        else {
+            try{
+                return new Factor(operator, (Factor) children.get(0).clone());
+            } catch (ClassCastException e){
+                try{
+                    return new Factor(operator, (BinaryExpr) children.get(0).clone());
+                } catch (ClassCastException e2) {
+                    return new Factor(0);
+                }
+            }
+        }
     }
 
     @Override

@@ -49,6 +49,8 @@ public class Mutation5 implements Mutation{
             }
         }
         ((AbstractNode) node).replace(insert);
+        ((AbstractNode) insert).root = program;
+        ((AbstractNode) insert).interpreter = ((ProgramImpl) program).interpreter;
         return Maybe.some(program);
     }
 

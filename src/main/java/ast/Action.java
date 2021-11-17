@@ -41,7 +41,7 @@ public class Action extends AbstractNode {
     }
 
     @Override
-    public Node clone() {
+    public Node cloneHelper() {
         if (operator == Operator.SERVE) {
             return new Action(operator, (Expr) children.get(0).clone());
         } else {

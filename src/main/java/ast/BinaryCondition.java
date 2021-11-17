@@ -42,7 +42,7 @@ public class BinaryCondition extends Condition {
     }
 
     @Override
-    public Node clone() {
+    public Node cloneHelper() {
         return new BinaryCondition((Condition) children.get(0).clone(), operator, (Condition) children.get(1).clone());
     }
 

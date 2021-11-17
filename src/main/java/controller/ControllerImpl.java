@@ -11,6 +11,7 @@ import parse.ParserFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Random;
 
 public class ControllerImpl implements Controller {
@@ -248,6 +249,10 @@ public class ControllerImpl implements Controller {
                     return null;
                 }
             }
+        }
+
+        if(arr[0]>7){
+            arr= Arrays.copyOf(arr,arr[0]);
         }
 
         Parser p = ParserFactory.getParser();

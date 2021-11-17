@@ -20,7 +20,7 @@ public class Update extends AbstractNode {
     }
 
     @Override
-    public Node clone() {
+    public Node cloneHelper() {
         return new Update((Expr) children.get(0).clone(), (Expr) children.get(1).clone());
     }
 
