@@ -353,4 +353,22 @@ class MutationImplTest {
         p.mutate();
         System.out.println(p);
     }
+
+    @Test
+    public void testClone() throws SyntaxError {
+        String s = "1 = 2 --> eat;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+
+        Mutation m = MutationFactory.getDuplicate();
+        m.apply(p,p.nodeAt(0));
+        m = MutationFactory.getReplace();
+        m.apply(p,p.nodeAt(p.size()-1));
+        assert(p.toString().equals("1 = 2 --> eat;\n1 = 2 --> eat;\n"));
+        m = MutationFactory.getInsert();
+        m.apply(p,p.nodeAt(2));
+        System.out.println(p);
+    }
 }
