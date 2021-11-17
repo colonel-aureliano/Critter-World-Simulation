@@ -124,7 +124,11 @@ public class ROnlyWorld implements ReadOnlyWorld{
 
     @Override
     public Maybe<ReadOnlyCritter> getReadOnlyCritter(int c, int r) {
-        if (map[c][r] <= 0) return Maybe.none();
+        try {
+            if (map[c][r] <= 0) return Maybe.none();
+        } catch (IndexOutOfBoundsException e) {
+            return Maybe.none();
+        }
         return Maybe.some(critters.get(map[c][r]-1));
     }
 
