@@ -67,8 +67,11 @@ public class Sensor extends Expr {
                 return interpreter.ahead(((Expr)children.get(0)).value());
             case RANDOM:
                 Random r = new Random();
-                if(((Expr)children.get(0)).value()<2) return 0;
-                return r.nextInt(((Expr)children.get(0)).value());
+                try{
+                    return r.nextInt(((Expr)children.get(0)).value());
+                } catch (IllegalArgumentException e){
+                    return 0;
+                }
             case SMELL:
                 return interpreter.smell();
         }

@@ -14,6 +14,8 @@ public final class ControllerFactory {
      *     controller contains a randomly initialized world.
      */
     public static Controller getConsoleController() {
-        return null;
+        Controller c = new ControllerImpl();
+        c.newWorld();
+        return c;
     }
 }

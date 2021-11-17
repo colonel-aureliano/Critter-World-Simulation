@@ -78,8 +78,9 @@ public class ProgramImpl extends AbstractNode implements Program {
             m.apply(this, this.nodeAt(index)).get();
             return i;
         } catch (NoMaybeValue noMaybeValue) {
-            throw new IllegalArgumentException("Program: mutation " + i + " failed at Node position " + index);
+            //throw new IllegalArgumentException("Program: mutation " + i + " failed at Node position " + index);
         }
+        return -1;
     }
 
     @Override

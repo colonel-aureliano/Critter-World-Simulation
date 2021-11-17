@@ -37,16 +37,15 @@ public class ControllerImpl implements Controller {
     @Override
     public boolean loadWorld(String filename, boolean enableManna, boolean enableForcedMutation) {
         try {
-            readWorld(filename);
+            if(!readWorld(filename)) return false;
         } catch (FileNotFoundException e) {
             return false;
         }
-        if (w == null) return false;
         w.loadParams(enableManna, enableForcedMutation);
         return true;
     }
 
-    private void readWorld(String filename) throws FileNotFoundException {
+    private boolean readWorld(String filename) throws FileNotFoundException {
         Reader r = new BufferedReader(new FileReader(filename));
         easyIO.Scanner s = new Scanner(r, "");
 
@@ -84,7 +83,7 @@ public class ControllerImpl implements Controller {
                     continue;
                 } catch (UnexpectedInput e) {
                     System.out.println("Illegal world file: invalid world name.");
-                    return;
+                    return false;
                 }
             }
 
@@ -101,7 +100,7 @@ public class ControllerImpl implements Controller {
                     break;
                 } catch (UnexpectedInput e) {
                     System.out.println("Illegal world file: invalid size values.");
-                    return;
+                    return false;
                 }
             }
         }
@@ -152,17 +151,18 @@ public class ControllerImpl implements Controller {
                     s.trailingWhitespace();
                     int direction = s.nextInt();
                     Critter c = readCritter(path.toString());
+                    if(c==null) return false;
                     w.addCritter(col, row, c, direction);
                 }
                 s.trailingWhitespace();
                 continue;
             } catch (UnexpectedInput | EOF e) {
                 System.out.println("Illegal world file: invalid objects in world.");
-                return;
+                return false;
             }
         }
 
-        return;
+        return true;
     }
 
     @Override

@@ -4,6 +4,7 @@ import ast.*;
 import cms.util.maybe.Maybe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -95,7 +96,11 @@ public class Critter implements ReadOnlyCritter {
      * Mutates the program of this critter with a random mutation.
      */
     public void mutate(){
-        program.mutate();
+        Random r = new Random();
+        int i;
+        if(r.nextBoolean()) i = 1; // a preference is given to Mutation Rule 1, remove
+        else i = r.nextInt(5)+2;
+        ((ProgramImpl)program).mutateWithType(i);
         ((ProgramImpl) program).critterWorldSetUp(this, (World) co);
         return;
     }
@@ -143,6 +148,7 @@ public class Critter implements ReadOnlyCritter {
         switch (o) {
             case WAIT:
                 mem[4] += mem[3] * Constants.SOLAR_FLUX;
+                if(mem[4]>500*mem[3]) mem[4]=500*mem[3];
                 break;
             case EAT:
                 if (500 * mem[3] - mem[4] > 0) {
@@ -233,6 +239,9 @@ public class Critter implements ReadOnlyCritter {
                     }
                     ran = rand.nextInt(8);
                 }
+                if(arr[0]>7){
+                    arr= Arrays.copyOf(arr,arr[0]);
+                }
                 Critter baby = new Critter(name + "'s baby", arr, p, co);
                 co.onBud(this, baby);
                 isDead();
@@ -289,6 +298,9 @@ public class Critter implements ReadOnlyCritter {
                             if (f < fatherRules.size()) ln.add(fatherRules.get(f++));
                             else in--;
                         }
+                    }
+                    if(a[0]>7){
+                        a= Arrays.copyOf(a,a[0]);
                     }
                     Program pro = new ProgramImpl(ln);
                     Critter b = new Critter(name + "&" + partner.name + "'s baby", a, pro, co);
