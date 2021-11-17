@@ -14,7 +14,7 @@ public class Mutation6 implements Mutation{
         if (!canApply(node)) return Maybe.none();
         int n = node.getChildren().size();
         if (node instanceof Program) {
-            node.getChildren().add(node.getChildren().get((int) (Math.random() * n)));
+            node.getChildren().add(node.getChildren().get((int) (Math.random() * n)).clone());
         } else if (node instanceof Command) {
             Node d;
             do {
@@ -22,9 +22,9 @@ public class Mutation6 implements Mutation{
             } while (d instanceof Action);
 
             if (node.getChildren().get(n - 1) instanceof Action) {
-                node.getChildren().add(n - 1, d);
+                node.getChildren().add(n - 1, d.clone());
             } else {
-                node.getChildren().add(d);
+                node.getChildren().add(d.clone());
             }
         }
         return Maybe.some(program);

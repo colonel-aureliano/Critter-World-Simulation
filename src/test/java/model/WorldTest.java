@@ -115,7 +115,7 @@ class WorldTest {
     public void testMana() {
         World w = Figure1();
         w.loadParams(true, true);
-        int n = 50;
+        int n = 500;
         for (int i = 0; i < n; i ++) {
             w.step();
         }

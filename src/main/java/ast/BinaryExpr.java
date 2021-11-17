@@ -56,7 +56,11 @@ public class BinaryExpr extends Expr {
                 return ((Expr) children.get(0)).value()*((Expr) children.get(1)).value();
             case DIVIDE:
                 if(((Expr) children.get(1)).value()==0) return 0;
-                return Math.floorDiv(((Expr) children.get(0)).value(),((Expr) children.get(1)).value());
+                try {
+                    return Math.floorDiv(((Expr) children.get(0)).value(), ((Expr) children.get(1)).value());
+                } catch (ArithmeticException e) { // divide by 0
+                    return ((Expr) children.get(0)).value();
+                }
             case MOD:
                 if(((Expr) children.get(1)).value()==0) return 0;
                 return Math.floorMod(((Expr) children.get(0)).value(),((Expr) children.get(1)).value());

@@ -128,7 +128,10 @@ public class Critter implements ReadOnlyCritter {
                             return;
                         }
                         try { // n is an instance of Update, with children l,r, represents mem[l] := r
-                            mem[((Expr) n.getChildren().get(0)).value()] = ((Expr) n.getChildren().get(1)).value();
+                            int value = ((Expr) n.getChildren().get(0)).value();
+                            if (value != 5) {
+                                mem[value] = ((Expr) n.getChildren().get(1)).value();
+                            }
                         } catch (Exception e) {
                         } // do not perform update
                     }
