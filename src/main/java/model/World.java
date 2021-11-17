@@ -4,14 +4,73 @@ import java.util.*;
 
 public class World extends ROnlyWorld implements CritterObserver {
 
+    /** Stores the critters that want to mate in the current time step */
     HashSet<ReadOnlyCritter> puberty = new HashSet<>();
 
     /**
      * Create a world whose upper right corner is (w, h), and name n
-     * the width is w+1 and height is h+1
+     * Setter class
      */
     public World(int w, int h, String n) {
         super(w, h, n);
+    }
+
+    /**
+     * Load the two Controller parameters
+     */
+    public void loadParams(boolean enableManna, boolean enableForcedMutation) {
+        Manna = enableManna;
+        ForcedMutation = enableForcedMutation;
+    }
+
+    /**
+     * Add a rock to world.
+     * Checks: (c, r) is empty, inside the world, and valid position
+     */
+    public boolean addRock(int c, int r) {
+        if ((c + r) % 2 == 1) return false;
+        try {
+            if (map[c][r] != 0) return false;
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
+        map[c][r] = -1;
+        return true;
+    }
+
+    /**
+     * Add food to world.
+     * Checks: (c, r) is empty or contains food, inside the world, and valid position
+     */
+    public boolean addFood(int c, int r, int amount) {
+        if ((c + r) % 2 == 1) return false;
+        try {
+            if (map[c][r] > 0 | map[c][r] == -1) return false;
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
+        if (map[c][r] == 0) map[c][r] = - amount - 1;
+        else map[c][r] -= amount;
+        return true;
+    }
+
+    /**
+     * Add critter to world
+     * Checks: (c, r) is empty, inside the world, and valid position
+     */
+    public boolean addCritter(int c, int r, ReadOnlyCritter critter, int direction) {
+        if ((c + r) % 2 == 1) return false;
+        try {
+            if (map[c][r] != 0) return false;
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
+        direction = direction % 6;
+        if (direction < 0) direction += 6;
+        critters.add(critter);
+        directions.add(direction);
+        map[c][r] = critters.size();
+        return true;
     }
 
     /**
@@ -58,8 +117,9 @@ public class World extends ROnlyWorld implements CritterObserver {
     }
 
     /**
-     * return the coordinate of the hex that is dis unit away from [c,r] in dir direction.
-     * Requires: 0 <= dir <= 5, c, r >= 0
+     * Return the coordinate of the hex that is dis unit away from [c,r] in dir direction.
+     * Might produce location index out of world boundary
+     * Requires: 0 <= dir <= 5
      */
     private int[] sense(int c, int r, int dir, int dis) {
         int column = c;
@@ -86,6 +146,7 @@ public class World extends ROnlyWorld implements CritterObserver {
             case 5:
                 column -= dis;
                 row += dis;
+                break;
         }
         return new int[]{column, row};
     }
@@ -93,6 +154,8 @@ public class World extends ROnlyWorld implements CritterObserver {
     @Override
     public int onNearby(ReadOnlyCritter c, int dir) {
         int[] info = findCritter(c);
+        dir = dir % 6;
+        if (dir < 0) dir += 6;
         int[] loc = sense(info[0], info[1], (dir + info[2]) % 6, 1);
         try {
             int i = map[loc[0]][loc[1]];

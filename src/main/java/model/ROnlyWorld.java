@@ -8,24 +8,37 @@ import java.util.Random;
 
 public class ROnlyWorld implements ReadOnlyWorld{
 
+    /** World name */
     String name;
+
+    /** number of time steps passed */
     protected int steps;
-    protected boolean Manna;
-    protected boolean ForcedMutation;
 
     /**
      * 0: the hex is empty
      * n > 0: critter with index n-1
      * n = -1: rock
      * n < -1: food with energy level (-n)-1
+     * Invariants:
+     * 1) map[c][r] for which c+r is odd must be 0
+     * 2) there cannot be two map values > 0 that are the same (duplicate critters)
      */
     protected int[][] map;
+
+    /** Stores critters whose index n+1 corresponds to map value
+     * Ex. critters[0] corresponds to 1 on the map */
     protected List<ReadOnlyCritter> critters;
+
+    /** Stores direction of critters.
+     * Invariant: 0 <= direction <= 5 */
     protected List<Integer> directions;
 
+    protected boolean Manna;
+    protected boolean ForcedMutation;
+
     /**
-     * Create a world with Create a world whose upper right corner is (w, h), and name n
-     * the width is w+1 and height is h+1
+     * Create a Read Only world with Create a world whose upper right corner is (w, h), and name n
+     * Getter class
      */
     public ROnlyWorld(int w, int h, String n) {
         steps = 0;
@@ -33,59 +46,6 @@ public class ROnlyWorld implements ReadOnlyWorld{
         map = new int[w+1][h+1];
         critters = new ArrayList<>();
         directions = new ArrayList<>();
-    }
-
-    public void loadParams(boolean enableManna, boolean enableForcedMutation) {
-        Manna = enableManna;
-        ForcedMutation = enableForcedMutation;
-    }
-
-    /**
-     * Add a rock to world.
-     * Checks: (c, r) is empty, inside the world, and valid position
-     */
-    public boolean addRock(int c, int r) {
-        if ((c + r) % 2 == 1) return false;
-        try {
-            if (map[c][r] != 0) return false;
-        } catch (IndexOutOfBoundsException e) {
-            return false;
-        }
-        map[c][r] = -1;
-        return true;
-    }
-
-    /**
-     * Add food to world.
-     * Checks: (c, r) is empty or contains food, inside the world, and valid position
-     */
-    public boolean addFood(int c, int r, int amount) {
-        if ((c + r) % 2 == 1) return false;
-        try {
-            if (map[c][r] > 0 | map[c][r] == -1) return false;
-        } catch (IndexOutOfBoundsException e) {
-            return false;
-        }
-        if (map[c][r] == 0) map[c][r] = - amount - 1;
-        else map[c][r] -= amount;
-        return true;
-    }
-
-    /**
-     * Add critter to world
-     * Checks: (c, r) is empty, inside the world, and valid position
-     */
-    public boolean addCritter(int c, int r, ReadOnlyCritter critter, int direction) {
-        if ((c + r) % 2 == 1) return false;
-        try {
-            if (map[c][r] != 0) return false;
-        } catch (IndexOutOfBoundsException e) {
-            return false;
-        }
-        critters.add(critter);
-        directions.add(direction);
-        map[c][r] = critters.size();
-        return true;
     }
 
     /**
