@@ -6,11 +6,10 @@ public interface CritterObserver {
 
     /**
      * report content of hex in direction dir.
-     * 0: empty
+     * 0: empty, or outside world boundary
      * n > 0: critter with appearance n
      * n = -1: rock
      * n < -1: food with energy value (-n) -1
-     * if sensing a space that is outside of the world,
      */
     int onNearby(ReadOnlyCritter c, int dir);
 
