@@ -37,7 +37,7 @@ public class ControllerImpl implements Controller {
     @Override
     public boolean loadWorld(String filename, boolean enableManna, boolean enableForcedMutation) {
         try {
-            if(!readWorld(filename)) return false;
+            if (!readWorld(filename)) return false;
         } catch (FileNotFoundException e) {
             return false;
         }
@@ -45,6 +45,9 @@ public class ControllerImpl implements Controller {
         return true;
     }
 
+    /**
+     * parse the file and return the World
+     */
     private boolean readWorld(String filename) throws FileNotFoundException {
         Reader r = new BufferedReader(new FileReader(filename));
         easyIO.Scanner s = new Scanner(r, "");
@@ -151,7 +154,7 @@ public class ControllerImpl implements Controller {
                     s.trailingWhitespace();
                     int direction = s.nextInt();
                     Critter c = readCritter(path.toString());
-                    if(c==null) return false;
+                    if (c == null) return false;
                     w.addCritter(col, row, c, direction);
                 }
                 s.trailingWhitespace();
@@ -177,7 +180,6 @@ public class ControllerImpl implements Controller {
         if (c == null) return false;
 
         Random r = new Random();
-
         while (n > 0) {
             int[] t = w.getEmptySpace();
             if (t[0] == -1 && t[1] == -1) return false; // not enough empty space in world to put critters
@@ -185,11 +187,12 @@ public class ControllerImpl implements Controller {
             int row = t[1];
             if (w.addCritter(col, row, c, r.nextInt(6))) n--;
         }
-
         return true;
     }
 
-    // readCritter is declared protected for testing purposes only
+    /**
+     * parse the Critter file and return a Critter
+     */
     private Critter readCritter(String filename) throws FileNotFoundException {
         Reader r = new BufferedReader(new FileReader(filename));
         easyIO.Scanner s = new Scanner(r, "");
@@ -251,8 +254,8 @@ public class ControllerImpl implements Controller {
             }
         }
 
-        if(arr[0]>7){
-            arr= Arrays.copyOf(arr,arr[0]);
+        if (arr[0] > 7) {
+            arr = Arrays.copyOf(arr, arr[0]);
         }
 
         Parser p = ParserFactory.getParser();
