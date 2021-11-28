@@ -69,4 +69,14 @@ public class ParserTest {
         }
     }
 
+    @Test
+    void testNegativeMem_Sensor() throws SyntaxError {
+        String s = "-(nearby[5]+5) = 7 --> bud;\n-mem[4] = 7 --> wait;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+        System.out.println(p);
+    }
+
 }
