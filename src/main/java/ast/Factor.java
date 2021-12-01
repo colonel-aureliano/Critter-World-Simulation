@@ -25,6 +25,28 @@ public class Factor extends Expr {
     }
 
     /**
+     * Create a factor for a negative Mem.
+     * Requires: op must be NEGATIVE
+     * @param op
+     * @param f
+     */
+    public Factor (Operator op, Mem f) {
+        super(f);
+        operator = op;
+    }
+
+    /**
+     * Create a factor for a negative Sensor.
+     * Requires: op must be NEGATIVE
+     * @param op
+     * @param f
+     */
+    public Factor (Operator op, Sensor f) {
+        super(f);
+        operator = op;
+    }
+
+    /**
      * Create a factor for a negative (BinaryExpr)
      * Requires: op must be NEGATIVE_PAREN
      * @param op

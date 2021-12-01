@@ -284,7 +284,15 @@ class ParserImpl implements Parser {
                     n = parseFactor(t);
                     e = new Factor(Factor.Operator.NEGATIVE, (Factor) n);
                 }catch (ClassCastException ex){
-                    e = new Factor(Factor.Operator.NEGATIVE_PAREN, (BinaryExpr) n);
+                    try{
+                        e = new Factor(Factor.Operator.NEGATIVE, (Mem) n);
+                    }catch (ClassCastException exc){
+                        try{
+                            e = new Factor(Factor.Operator.NEGATIVE, (Sensor) n);
+                        }catch (ClassCastException exce){
+                            e = new Factor(Factor.Operator.NEGATIVE_PAREN, (BinaryExpr) n);
+                        }
+                    }
                 }
                 break;
             default:

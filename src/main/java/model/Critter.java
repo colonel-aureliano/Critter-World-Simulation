@@ -129,7 +129,7 @@ public class Critter implements ReadOnlyCritter {
                         }
                         try { // n is an instance of Update, with children l,r, represents mem[l] := r
                             int value = ((Expr) n.getChildren().get(0)).value();
-                            if (value != 5) {
+                            if (value > 5) {
                                 mem[value] = ((Expr) n.getChildren().get(1)).value();
                             }
                         } catch (Exception e) {
@@ -143,6 +143,7 @@ public class Critter implements ReadOnlyCritter {
             if (noRuleTrue) break;
         }
         mem[4] += mem[3] * Constants.SOLAR_FLUX;
+        if(mem[4]>500*mem[3]) mem[4]=500*mem[3];
     }
 
     private void act(Action.Operator o, int complexity, Node n) {
@@ -174,9 +175,13 @@ public class Critter implements ReadOnlyCritter {
                 co.onMove(this, false);
                 break;
             case LEFT:
+                mem[4] -= mem[3];
+                if (isDead()) return;
                 co.onTurn(this, true);
                 break;
             case RIGHT:
+                mem[4] -= mem[3];
+                if (isDead()) return;
                 co.onTurn(this, false);
                 break;
             case SERVE:
@@ -262,6 +267,9 @@ public class Critter implements ReadOnlyCritter {
                         // If only one of the mating partners die, mating is unsuccessful
                         // and energy is also deducted from the other partner.
                         partner.isDead();
+                        mem[4] += Constants.MATE_COST * complexity;
+                        mem[4] -= mem[3];
+                        isDead();
                         return;
                     } else if (mem[4] < 0) {
                         isDead();
