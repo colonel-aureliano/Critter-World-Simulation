@@ -1,14 +1,14 @@
 package main;
 
 import ast.Program;
-import ast.ProgramImpl;
 import exceptions.SyntaxError;
 import parse.Parser;
 import parse.ParserFactory;
 
-import java.io.*;
-import java.util.Arrays;
-import java.util.Random;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
 
 public class ParseAndMutateApp {
 
@@ -33,13 +33,7 @@ public class ParseAndMutateApp {
             System.out.println("Program is vaild, printing program:");
             System.out.println(p);
 
-            Random rand = new Random();
-            while(n!=0){
-                int t = ((ProgramImpl)p).mutateWithType(rand.nextInt(6)+1);
-                System.out.println("Mutating program with mutation type "+t+":");
-                System.out.println(p);
-                n--;
-            }
+            ((Program) p).mutate();
 
         } catch (IllegalArgumentException | SyntaxError | FileNotFoundException e) {
             if(!(e instanceof SyntaxError)) System.out.println(e.getMessage());
