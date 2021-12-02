@@ -48,6 +48,10 @@ public class View extends Application {
             }
             final Parent node = FXMLLoader.load(r);
             final Scene scene = new Scene(node);
+            primaryStage.setScene(scene);
+            primaryStage.sizeToScene();
+            primaryStage.show();
+
         } catch (final IOException e) {
             System.out.println("Can't load FXML file.");
             e.printStackTrace();
