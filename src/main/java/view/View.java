@@ -71,7 +71,7 @@ public class View extends Application {
     private void drawHex() {
         gc = canvas.getGraphicsContext2D();
         w = controller.getReadOnlyWorld();
-        gc.fillPolygon();
+        //gc.fillPolygon();
         gc.fillRect(0,0,canvas.getHeight(), canvas.getHeight());
     }
 
@@ -101,7 +101,7 @@ public class View extends Application {
         File selectedFile = fileChooser.showOpenDialog(stage);
         String nStr = nCritters.getText();
         if (!nStr.matches("[0-9]+") ||
-                !controller.loadCritters(selectedFile.getName(), Integer.valueOf(nStr))) {
+                !controller.loadCritters(selectedFile.getAbsolutePath(), Integer.valueOf(nStr))) {
             a.setContentText("Load critter failed");
             a.show();
         }
