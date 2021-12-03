@@ -3,11 +3,7 @@ package view;
 import cms.util.maybe.NoMaybeValue;
 import controller.Controller;
 import controller.ControllerFactory;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.adapter.JavaBeanIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,12 +14,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import model.ReadOnlyCritter;
 import model.ReadOnlyWorld;
 
@@ -36,12 +32,12 @@ import java.util.TimerTask;
 
 public class View extends Application {
 
-    final Controller controller = ControllerFactory.getConsoleController();
+    protected final Controller controller = ControllerFactory.getConsoleController();
     Alert a = new Alert(Alert.AlertType.WARNING);
     GraphicsContext gc;
     ReadOnlyWorld w;
-    ArrayList<String> species = new ArrayList<>();
-    ArrayList<Paint> paints = new ArrayList<>();
+    ArrayList<String> species;
+    ArrayList<Paint> paints;
     double scale = 1;
 
     @FXML
@@ -94,12 +90,12 @@ public class View extends Application {
         }
     }
 
-    private void drawHex() {
+    protected void drawHex() {
         gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         w = controller.getReadOnlyWorld();
 
-        int len = 15;
+        double len = scale * 15;
         double[] xPoints;
         double[] yPoints;
         double x;
@@ -156,7 +152,6 @@ public class View extends Application {
                 }
             }
         }
-
     }
 
     @FXML
@@ -171,6 +166,8 @@ public class View extends Application {
             a.setContentText("Load world failed.");
             a.show();
         }
+        species = new ArrayList<>();
+        paints = new ArrayList<>();
         drawHex();
     }
 
@@ -184,8 +181,11 @@ public class View extends Application {
         Stage stage = new Stage();
         File selectedFile = fileChooser.showOpenDialog(stage);
         String nStr = nCritters.getText();
-        if (!nStr.matches("[0-9]+") ||
-                !controller.loadCritters(selectedFile.getAbsolutePath(), Integer.valueOf(nStr))) {
+
+        int n;
+        if (!nStr.matches("[0-9]+")) n = 1;
+        else n = Math.max(1, Integer.valueOf(nStr));
+        if (!controller.loadCritters(selectedFile.getAbsolutePath(), n)) {
             a.setContentText("Load critter failed");
             a.show();
         }
@@ -208,29 +208,36 @@ public class View extends Application {
         int n;
         if (!nStr.matches("[0-9]+")) n = 10;   //default advance rate is 10
         else n = Integer.valueOf(nStr);
-        if (n < 0) n = 10;
-        if (n == 0) return;   // advance rate is 0
-        playHelper(n);
+        if (n <= 0) n = 10;
+        exit = false;
+        advanceRate = n;
+        playHelper();
     }
 
-    TimerTask tt = new TimerTask() {
-        private volatile boolean exit = false;
-        public void requestExit(){
-            exit = true;
-        }
-        @Override
-        public void run() {
-            if (exit == true){
-                return;
-            }
-            controller.advanceTime(1);
-            drawHex();
-        }
-    };
+    int advanceRate;
+    long timeSince;
+    double animTime;
+    boolean exit;
     Timer timer = new Timer();
 
-    private void playHelper(int advanceRate){
-        timer.schedule(tt,0, (1000/advanceRate));
+    TimerTask newTT() {
+        TimerTask tt = new TimerTask() {
+            @Override
+            public void run() {
+                if (exit == true) return;
+                controller.advanceTime(1);
+                if (System.nanoTime() - timeSince > animTime) {
+                    drawHex();
+                    timeSince = System.nanoTime();
+                }
+            }
+        };
+        return tt;
+    }
+
+    private void playHelper() {
+        animTime = Math.pow(10, 9) / 30;
+        timer.schedule(newTT(), 0, (1000 / advanceRate));
     }
 
     @FXML
@@ -238,22 +245,32 @@ public class View extends Application {
         LoadWorld.setDisable(false);
         LoadCritter.setDisable(false);
         PlayOnce.setDisable(false);
-        timer.cancel();
+        exit = true;
     }
 
     @FXML
-    private void displayInfo(final ActionEvent ae) {
-        
+    private void displayInfo(final MouseEvent ae) {
+        double x = ae.getX();
+        double y = ae.getY();
+        System.out.println(x);
+        System.out.println(y);
+
     }
 
     @FXML
     private void zoom(final ActionEvent ae) {
         Button bt = (Button) ae.getSource();
-        if (bt == ZoomIn) scale = 1.25 * scale;
-        else if (bt == ZoomOut) scale = 0.8 * scale;
-        canvas.setScaleX(scale);
-        canvas.setScaleY(scale);
-
+        if (bt == ZoomIn) {
+            scale = 1.25 * scale;
+            canvas.setWidth(canvas.getWidth() * 1.25);
+            canvas.setHeight(canvas.getHeight() * 1.25);
+        }
+        else if (bt == ZoomOut) {
+            scale = 0.8 * scale;
+            canvas.setWidth(canvas.getWidth() * 0.8);
+            canvas.setHeight(canvas.getHeight() * 0.8);
+        }
+        drawHex();
     }
 }
 
