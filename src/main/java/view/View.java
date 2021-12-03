@@ -3,7 +3,11 @@ package view;
 import cms.util.maybe.NoMaybeValue;
 import controller.Controller;
 import controller.ControllerFactory;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.adapter.JavaBeanIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +23,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.ReadOnlyCritter;
 import model.ReadOnlyWorld;
 
@@ -26,6 +31,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class View extends Application {
 
@@ -193,12 +200,45 @@ public class View extends Application {
 
     @FXML
     private void play(final ActionEvent ae) {
+        LoadWorld.setDisable(true);
+        LoadCritter.setDisable(true);
+        PlayOnce.setDisable(true);
 
+        String nStr = RunRate.getText();
+        int n;
+        if (!nStr.matches("[0-9]+")) n = 10;   //default advance rate is 10
+        else n = Integer.valueOf(nStr);
+        if (n < 0) n = 10;
+        if (n == 0) return;   // advance rate is 0
+        playHelper(n);
+    }
+
+    TimerTask tt = new TimerTask() {
+        private volatile boolean exit = false;
+        public void requestExit(){
+            exit = true;
+        }
+        @Override
+        public void run() {
+            if (exit == true){
+                return;
+            }
+            controller.advanceTime(1);
+            drawHex();
+        }
+    };
+    Timer timer = new Timer();
+
+    private void playHelper(int advanceRate){
+        timer.schedule(tt,0, (1000/advanceRate));
     }
 
     @FXML
     private void stop(final ActionEvent ae) {
-
+        LoadWorld.setDisable(false);
+        LoadCritter.setDisable(false);
+        PlayOnce.setDisable(false);
+        timer.cancel();
     }
 
     @FXML
