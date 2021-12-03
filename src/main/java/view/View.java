@@ -1,5 +1,6 @@
 package view;
 
+import cms.util.maybe.NoMaybeValue;
 import controller.Controller;
 import controller.ControllerFactory;
 import javafx.application.Application;
@@ -13,20 +14,26 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import model.ReadOnlyCritter;
 import model.ReadOnlyWorld;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class View extends Application {
 
-    private final Controller controller = ControllerFactory.getConsoleController();
+    final Controller controller = ControllerFactory.getConsoleController();
     Alert a = new Alert(Alert.AlertType.WARNING);
     GraphicsContext gc;
     ReadOnlyWorld w;
+    ArrayList<String> species = new ArrayList<>();
+    ArrayList<Paint> paints = new ArrayList<>();
 
     @FXML
     private Button LoadWorld;
@@ -51,7 +58,10 @@ public class View extends Application {
             final URL r = getClass().getResource("scene.fxml");
             if (r == null) {
                 System.out.println("No FXML resource found.");
-                try {stop();} catch (final Exception e) {}
+                try {
+                    stop();
+                } catch (final Exception e) {
+                }
                 return;
             }
             final Parent node = FXMLLoader.load(r);
@@ -64,15 +74,71 @@ public class View extends Application {
         } catch (final IOException e) {
             System.out.println("Can't load FXML file.");
             e.printStackTrace();
-            try { stop(); } catch (final Exception e2) {}
+            try {
+                stop();
+            } catch (final Exception e2) {
+            }
         }
     }
 
     private void drawHex() {
         gc = canvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         w = controller.getReadOnlyWorld();
-        //gc.fillPolygon();
-        gc.fillRect(0,0,canvas.getHeight(), canvas.getHeight());
+
+        int len = 15;
+        double[] xPoints;
+        double[] yPoints;
+        double x;
+        double y;
+
+        for (int i = 0; i < w.getWidth(); i++) {
+            for (int j = w.getHeight() - 1; j >= 0; j--) {
+                if ((i + j) % 2 == 1) continue;
+                x = 1.5 * len * i + 0.5 * len;
+                y = (w.getHeight() - j) * Math.sqrt(3) / 2 * len + Math.sqrt(3) / 2 * len;
+                xPoints = new double[]{x, x + len, x + 1.5 * len, x + len, x, x - 0.5 * len};
+                yPoints = new double[]{y, y, y - Math.sqrt(3) / 2 * len, y - Math.sqrt(3) * len,
+                        y - Math.sqrt(3) * len, y - Math.sqrt(3) / 2 * len};
+                gc.strokePolygon(xPoints, yPoints, 6);
+                if (w.getTerrainInfo(i, j) == -1) {
+                    gc.setFill(Color.GRAY);
+                    xPoints = new double[]{x + 0.1 * len, x + 0.9 * len, x + 1.36 * len,
+                            x + 0.9 * len, x + 0.1 * len, x - 0.36 * len};
+                    yPoints = new double[]{y - 0.1 * len, y - 0.1 * len, y - Math.sqrt(3) / 2 * len,
+                            y - (Math.sqrt(3) - 0.1) * len, y - (Math.sqrt(3) - 0.1) * len,
+                            y - Math.sqrt(3) / 2 * len};
+                    gc.fillPolygon(xPoints, yPoints, 6);
+                } else if (w.getTerrainInfo(i, j) < -1) {
+                    gc.setFill(Color.GREEN);
+                    gc.fillOval((xPoints[0] + xPoints[1] - len) / 2, (yPoints[0] + yPoints[3] - len) / 2, len, len);
+                } else {
+                    try {
+                        ReadOnlyCritter c = w.getReadOnlyCritter(i, j).get();
+                        Paint p;
+                        if (species.indexOf(c.getSpecies()) == -1) {
+                            p = Color.color(Math.random(), Math.random(), Math.random());
+                            species.add(c.getSpecies());
+                            paints.add(p);
+                        } else {
+                            p = paints.get(species.indexOf(c.getSpecies()));
+                        }
+                        gc.setFill(p);
+                        double size = 0.5 * (Math.log(c.getMemory()[3]) + 1) * len;
+                        gc.fillOval((xPoints[0] + xPoints[1] - size) / 2, (yPoints[0] + yPoints[3] - size) / 2,
+                                size, size);
+                        double radians = (6.0 - w.getCritterDirection(i, j)) / 3.0 * Math.PI + 0.5 * Math.PI;
+                        gc.strokeLine((xPoints[0] + xPoints[1]) / 2 + Math.cos(radians) * 0.5 * size,
+                                (yPoints[0] + yPoints[3]) / 2 + Math.sin(radians) * 0.5 * size,
+                                (xPoints[0] + xPoints[1]) / 2 + Math.cos(radians) * 0.8 * size,
+                                (yPoints[0] + yPoints[3]) / 2 + Math.sin(radians) * 0.8 * size);
+                    } catch (NoMaybeValue e) {
+                        continue;
+                    }
+                }
+            }
+        }
+
     }
 
     @FXML
@@ -111,6 +177,7 @@ public class View extends Application {
     @FXML
     private void playOnce(final ActionEvent ae) {
         controller.advanceTime(1);
+        drawHex();
     }
 
     @FXML

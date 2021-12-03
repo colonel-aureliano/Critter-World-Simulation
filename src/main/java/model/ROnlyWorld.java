@@ -48,10 +48,17 @@ public class ROnlyWorld implements ReadOnlyWorld{
         directions = new ArrayList<>();
     }
 
-    /**
-     * return size of the world
-     */
-    public int getSize() {return (int) Math.ceil(map.length * map[0].length / 2.0);}
+    @Override
+    public int getSize() { return (int) Math.ceil(map.length * map[0].length / 2.0); }
+    @Override
+    public int getHeight() { return map[0].length; }
+    @Override
+    public int getWidth() { return map.length; }
+    @Override
+    public int getCritterDirection(int c, int r) {
+        if (map[c][r] <= 0) return -1;;
+        return directions.get(map[c][r]-1);
+    }
 
     /**
      * return true if there exists empty space in this world
