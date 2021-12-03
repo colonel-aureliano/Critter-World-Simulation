@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.ReadOnlyCritter;
@@ -34,6 +35,7 @@ public class View extends Application {
     ReadOnlyWorld w;
     ArrayList<String> species = new ArrayList<>();
     ArrayList<Paint> paints = new ArrayList<>();
+    double scale = 1;
 
     @FXML
     private Button LoadWorld;
@@ -50,7 +52,13 @@ public class View extends Application {
     @FXML
     private TextField RunRate;
     @FXML
+    private Button ZoomIn;
+    @FXML
+    private Button ZoomOut;
+    @FXML
     private Canvas canvas;
+    @FXML
+    private TextFlow info;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -66,11 +74,9 @@ public class View extends Application {
             }
             final Parent node = FXMLLoader.load(r);
             final Scene scene = new Scene(node);
-
             primaryStage.setScene(scene);
             primaryStage.sizeToScene();
             primaryStage.show();
-
         } catch (final IOException e) {
             System.out.println("Can't load FXML file.");
             e.printStackTrace();
@@ -128,12 +134,17 @@ public class View extends Application {
                         gc.fillOval((xPoints[0] + xPoints[1] - size) / 2, (yPoints[0] + yPoints[3] - size) / 2,
                                 size, size);
                         double radians = (6.0 - w.getCritterDirection(i, j)) / 3.0 * Math.PI + 0.5 * Math.PI;
+                        radians -= 1.0 / 12.0 * Math.PI;
                         gc.strokeLine((xPoints[0] + xPoints[1]) / 2 + Math.cos(radians) * 0.5 * size,
-                                (yPoints[0] + yPoints[3]) / 2 + Math.sin(radians) * 0.5 * size,
-                                (xPoints[0] + xPoints[1]) / 2 + Math.cos(radians) * 0.8 * size,
-                                (yPoints[0] + yPoints[3]) / 2 + Math.sin(radians) * 0.8 * size);
+                                (yPoints[0] + yPoints[3]) / 2 - Math.sin(radians) * 0.5 * size,
+                                (xPoints[0] + xPoints[1]) / 2 + Math.cos(radians) * 0.7 * size,
+                                (yPoints[0] + yPoints[3]) / 2 - Math.sin(radians) * 0.7 * size);
+                        radians += 1.0 / 6.0 * Math.PI;
+                        gc.strokeLine((xPoints[0] + xPoints[1]) / 2 + Math.cos(radians) * 0.5 * size,
+                                (yPoints[0] + yPoints[3]) / 2 - Math.sin(radians) * 0.5 * size,
+                                (xPoints[0] + xPoints[1]) / 2 + Math.cos(radians) * 0.7 * size,
+                                (yPoints[0] + yPoints[3]) / 2 - Math.sin(radians) * 0.7 * size);
                     } catch (NoMaybeValue e) {
-                        continue;
                     }
                 }
             }
@@ -190,5 +201,19 @@ public class View extends Application {
 
     }
 
+    @FXML
+    private void displayInfo(final ActionEvent ae) {
+        
+    }
 
+    @FXML
+    private void zoom(final ActionEvent ae) {
+        Button bt = (Button) ae.getSource();
+        if (bt == ZoomIn) scale = 1.25 * scale;
+        else if (bt == ZoomOut) scale = 0.8 * scale;
+        canvas.setScaleX(scale);
+        canvas.setScaleY(scale);
+
+    }
 }
+
