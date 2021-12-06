@@ -34,8 +34,8 @@ public class View extends Application {
     GraphicsContext gc;
     ReadOnlyWorld w;
     ReadOnlyCritter selectedC;
-    ArrayList<String> species;
-    ArrayList<Paint> paints;
+    ArrayList<String> species = new ArrayList<>();
+    ArrayList<Paint> paints = new ArrayList<>();
     double scale = 1;
     double len;
 
@@ -66,6 +66,10 @@ public class View extends Application {
     @FXML
     private Canvas canvas;
     @FXML
+    private Text TimeStep;
+    @FXML
+    private Text AliveCritters;
+    @FXML
     private Text mem0;
     @FXML
     private Text mem1;
@@ -85,7 +89,7 @@ public class View extends Application {
     private Text lastRule;
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         try {
             final URL r = getClass().getResource("scene.fxml");
             if (r == null) {
@@ -116,8 +120,9 @@ public class View extends Application {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         w = controller.getReadOnlyWorld();
 
-        len = Math.min(canvas.getWidth() / w.getWidth(), canvas.getHeight() / w.getHeight());
-        len = scale * Math.min(15, Math.floor(len));
+        len = Math.min(canvas.getWidth() / (w.getWidth() * 1.5 + 0.5),
+                canvas.getHeight() / ((w.getHeight()) + 1) * 2 / Math.sqrt(3));
+        len = scale * Math.min(15, len);
         double[] xPoints;
         double[] yPoints;
         double x;
@@ -179,6 +184,10 @@ public class View extends Application {
                 }
             }
         }
+
+        TimeStep.setText("Time Step: " + w.getSteps());
+        AliveCritters.setText("# Alive Critters: "+ w.getNumberOfAliveCritters());
+
     }
 
     private double[] smallX(double x) {
@@ -209,8 +218,6 @@ public class View extends Application {
     private void SubmitWorld(final ActionEvent ae) {
         if (controller.loadWorld(selectedFile.getAbsolutePath(),
                 EnforceManna.isSelected(), EnforceMutation.isSelected())) {
-            species = new ArrayList<>();
-            paints = new ArrayList<>();
             drawHex();
         } else {
             a.setContentText("Load world failed.");

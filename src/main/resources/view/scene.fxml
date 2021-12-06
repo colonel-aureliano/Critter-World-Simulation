@@ -62,9 +62,15 @@
                   </HBox>
                   <Label prefHeight="20.0" prefWidth="76.0" text="Advance Rate" />
                   <TextField fx:id="RunRate" promptText="10" />
-                  <Text fx:id="mem0" strokeType="OUTSIDE" strokeWidth="0.0" text="No Critter Selected" wrappingWidth="232.21630859375">
+                  <Text fx:id="TimeStep" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Step : 0">
                      <VBox.margin>
                         <Insets top="10.0" />
+                     </VBox.margin>
+                  </Text>
+                  <Text fx:id="AliveCritters" strokeType="OUTSIDE" strokeWidth="0.0" text="# Alive Critters: 0" />
+                  <Text fx:id="mem0" strokeType="OUTSIDE" strokeWidth="0.0" text="No Critter Selected" wrappingWidth="232.21630859375">
+                     <VBox.margin>
+                        <Insets />
                      </VBox.margin>
                   </Text>
                   <Text fx:id="mem1" strokeType="OUTSIDE" strokeWidth="0.0" />

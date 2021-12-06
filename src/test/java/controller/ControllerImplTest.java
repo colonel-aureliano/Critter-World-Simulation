@@ -1,12 +1,8 @@
 package controller;
 
-import cms.util.maybe.NoMaybeValue;
-import model.World;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.io.PrintStream;
 
 class ControllerImplTest {
 
@@ -38,6 +34,8 @@ class ControllerImplTest {
     void testNewWorld() {
         Controller c = new ControllerImpl();
         c.newWorld();
+        c.loadCritters("src/test/resources/A5files/eat_and_bud_critter.txt", 3);
+        c.advanceTime(10);
         c.printWorld(System.out);
     }
 

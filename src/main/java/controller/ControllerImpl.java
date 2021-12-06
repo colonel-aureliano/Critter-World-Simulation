@@ -181,6 +181,7 @@ public class ControllerImpl implements Controller {
             int col = t[0];
             int row = t[1];
             if (w.addCritter(col, row, c, r.nextInt(6))) n--;
+            c = readCritter(filename);
         }
         return true;
     }
