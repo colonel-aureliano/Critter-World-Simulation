@@ -48,7 +48,7 @@
                         <Insets />
                      </VBox.margin>
                   </HBox>
-                  <CheckBox fx:id="SelectLocation" mnemonicParsing="false" text="Select Critter Location">
+                  <CheckBox fx:id="SelectLocation" mnemonicParsing="false" text="Place Critter on Selected Hex">
                      <VBox.margin>
                         <Insets bottom="8.0" top="1.0" />
                      </VBox.margin>
@@ -92,18 +92,19 @@
          <children>
             <ScrollPane prefHeight="400.0" prefWidth="466.0">
                <content>
-                  <Canvas fx:id="canvas" height="400.0" onMouseClicked="#selectCritter" width="367.0" />
+                  <Canvas fx:id="canvas" height="400.0" onMouseClicked="#selectHex" width="367.0" />
                </content>
             </ScrollPane>
-            <HBox alignment="BOTTOM_LEFT" maxWidth="-Infinity" prefHeight="367.0" prefWidth="48.0" StackPane.alignment="BOTTOM_LEFT">
-               <children>
-                  <Button fx:id="ZoomOut" mnemonicParsing="false" onAction="#zoom" text="-" />
-                  <Button fx:id="ZoomIn" mnemonicParsing="false" onAction="#zoom" text="+" />
-               </children>
-               <padding>
+            <Button fx:id="ZoomIn" alignment="BOTTOM_LEFT" mnemonicParsing="false" onAction="#zoom" text="+" StackPane.alignment="BOTTOM_LEFT">
+               <StackPane.margin>
                   <Insets bottom="20.0" left="5.0" />
-               </padding>
-            </HBox>
+               </StackPane.margin>
+            </Button>
+            <Button fx:id="ZoomOut" alignment="TOP_CENTER" mnemonicParsing="false" onAction="#zoom" text="-" StackPane.alignment="BOTTOM_LEFT">
+               <StackPane.margin>
+                  <Insets bottom="20.0" left="30.0" />
+               </StackPane.margin>
+            </Button>
          </children>
       </StackPane>
    </children>

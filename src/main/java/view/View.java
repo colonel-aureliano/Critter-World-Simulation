@@ -34,6 +34,7 @@ public class View extends Application {
     GraphicsContext gc;
     ReadOnlyWorld w;
     ReadOnlyCritter selectedC;
+    int[] selectedHex;
     ArrayList<String> species = new ArrayList<>();
     ArrayList<Paint> paints = new ArrayList<>();
     double scale = 1;
@@ -140,11 +141,14 @@ public class View extends Application {
                 gc.setLineWidth(1.0);
                 gc.strokePolygon(xPoints, yPoints, 6);
 
+                if (selectedHex != null && selectedHex[0] == i && selectedHex[1] == j) {
+                    gc.setLineWidth(2.5);
+                    gc.strokePolygon(xPoints, yPoints, 6);
+                }
+
                 if (w.getTerrainInfo(i, j) == -1) {
                     gc.setFill(Color.GRAY);
-                    xPoints = smallX(x);
-                    yPoints = smallY(y);
-                    gc.fillPolygon(xPoints, yPoints, 6);
+                    gc.fillPolygon(smallX(x), smallY(y), 6);
                 } else if (w.getTerrainInfo(i, j) < -1) {
                     gc.setFill(Color.GREEN);
                     gc.fillOval((xPoints[0] + xPoints[1] - len) / 2, (yPoints[0] + yPoints[3] - len) / 2, len, len);
@@ -165,6 +169,8 @@ public class View extends Application {
                                 size, size);
                         double radians = (6.0 - w.getCritterDirection(i, j)) / 3.0 * Math.PI + 0.5 * Math.PI
                                 - 1.0 / 12.0 * Math.PI;
+                        gc.setStroke(Color.BLACK);
+                        gc.setLineWidth(1.0);
                         for (int r = 0; r < 2; r++) {
                             gc.strokeLine((xPoints[0] + xPoints[1]) / 2 + Math.cos(radians) * 0.5 * size,
                                     (yPoints[0] + yPoints[3]) / 2 - Math.sin(radians) * 0.5 * size,
@@ -175,9 +181,7 @@ public class View extends Application {
                         if (c == selectedC) {
                             gc.setStroke(p);
                             gc.setLineWidth(2);
-                            xPoints = smallX(x);
-                            yPoints = smallY(y);
-                            gc.strokePolygon(xPoints, yPoints, 6);
+                            gc.strokePolygon(smallX(x), smallY(y), 6);
                         }
                     } catch (NoMaybeValue e) {
                     }
@@ -220,7 +224,7 @@ public class View extends Application {
                 EnforceManna.isSelected(), EnforceMutation.isSelected())) {
             drawHex();
         } else {
-            a.setContentText("Load world failed.");
+            a.setContentText("Load World Failed.");
             a.show();
         }
         EnforceManna.setDisable(true);
@@ -230,6 +234,7 @@ public class View extends Application {
 
     @FXML
     private void loadCritter(final ActionEvent ae) {
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Critter File");
         fileChooser.getExtensionFilters().addAll(
@@ -238,13 +243,12 @@ public class View extends Application {
         File selectedFile = fileChooser.showOpenDialog(stage);
 
         if (SelectLocation.isSelected()) {
-
-            // TODO: select specific destination
-
-            if (controller.loadCritters(selectedFile.getAbsolutePath(), 0, 0)) {
+            if (selectedHex != null
+                    && controller.loadCritters(selectedFile.getAbsolutePath(), selectedHex[0], selectedHex[1])) {
                 CritterName.setText(selectedFile.getName());
+                drawHex();
             } else {
-                a.setContentText("Load critter failed");
+                a.setContentText("Load Critter Failed");
                 a.show();
             }
             return;
@@ -266,7 +270,7 @@ public class View extends Application {
         if (controller.loadCritters(selectedFile.getAbsolutePath(), n)) {
             CritterName.setText(selectedFile.getName());
         } else {
-            a.setContentText("Load critter failed");
+            a.setContentText("Load Critter Failed");
             a.show();
         }
         drawHex();
@@ -331,15 +335,17 @@ public class View extends Application {
     }
 
     @FXML
-    private void selectCritter(final MouseEvent ae) {
-        double x = ae.getX();
-        double y = ae.getY();
+    private void selectHex(final MouseEvent me) {
+        double x = me.getX();
+        double y = me.getY();
         int[] hexInfo = getHex(x, y);
         try {
             selectedC = w.getReadOnlyCritter(hexInfo[0], hexInfo[1]).get();
+            selectedHex = null;
             displayInfo();
         } catch (NoMaybeValue e) {
             selectedC = null;
+            selectedHex = hexInfo;
             mem0.setText("No Critter Selected");
             mem1.setText("");
             mem2.setText("");
