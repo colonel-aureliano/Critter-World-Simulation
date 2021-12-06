@@ -1,5 +1,5 @@
 name test world
-size 12 6
+size 12 24
 critter example-critter.txt 10 0 2
 critter eat_and_bud_critter.txt 10 4 5
 critter spiral_critter.txt 4 4 0

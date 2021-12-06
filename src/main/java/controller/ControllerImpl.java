@@ -32,6 +32,7 @@ public class ControllerImpl implements Controller {
             w.addRock(t[0], t[1]);
             n--;
         }
+        w.loadParams(false, false);
     }
 
     @Override
@@ -170,19 +171,13 @@ public class ControllerImpl implements Controller {
 
     @Override
     public boolean loadCritters(String filename, int n) {
-        if (w == null) return false; // cannot load critter before world is initialized
-        Critter c;
-        try {
-            c = readCritter(filename);
-        } catch (FileNotFoundException e) {
-            return false;
-        }
+        Critter c = readCritter(filename);
         if (c == null) return false;
 
         Random r = new Random();
         while (n > 0) {
+            if (!w.hasEmptySpace()) return false;
             int[] t = w.getEmptySpace();
-            if (t[0] == -1 && t[1] == -1) return false; // not enough empty space in world to put critters
             int col = t[0];
             int row = t[1];
             if (w.addCritter(col, row, c, r.nextInt(6))) n--;
@@ -190,11 +185,26 @@ public class ControllerImpl implements Controller {
         return true;
     }
 
+    @Override
+    public boolean loadCritters(String filename, int col, int row) {
+        Critter c = readCritter(filename);
+        if (c == null) return false;
+        Random r = new Random();
+        return w.addCritter(col, row, c, r.nextInt(6));
+    }
+
     /**
      * parse the Critter file and return a Critter
      */
-    private Critter readCritter(String filename) throws FileNotFoundException {
-        Reader r = new BufferedReader(new FileReader(filename));
+    private Critter readCritter(String filename) {
+        if (w == null) return null;
+
+        Reader r;
+        try {
+            r = new BufferedReader(new FileReader(filename));
+        } catch (FileNotFoundException e) {
+            return null;
+        }
         easyIO.Scanner s = new Scanner(r, "");
 
         String name = null;

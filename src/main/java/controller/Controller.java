@@ -1,7 +1,8 @@
 package controller;
 
-import java.io.PrintStream;
 import model.ReadOnlyWorld;
+
+import java.io.PrintStream;
 
 /**
  * Controller interface that allows the course staff to test your critter world implementation.
@@ -40,6 +41,11 @@ public interface Controller {
      * @return whether all critters are successfully loaded.
      */
     boolean loadCritters(String filename, int n);
+
+    /**
+     * Load critter to specific destination
+     */
+    boolean loadCritters(String filename, int col, int row);
 
     /**
      * Advances the world by n time steps.

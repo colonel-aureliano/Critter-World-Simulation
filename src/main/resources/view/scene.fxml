@@ -3,57 +3,102 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.View">
    <children>
-      <VBox prefHeight="400.0" prefWidth="331.0">
+      <ScrollPane>
+         <content>
+            <VBox prefHeight="400.0" prefWidth="331.0">
+               <children>
+                  <HBox prefHeight="28.0" prefWidth="262.0">
+                     <children>
+                        <Button fx:id="LoadWorld" mnemonicParsing="false" onAction="#loadWorld" text="Load World" />
+                        <Text fx:id="WorldName" strokeType="OUTSIDE" strokeWidth="0.0">
+                           <HBox.margin>
+                              <Insets left="5.0" top="5.0" />
+                           </HBox.margin>
+                        </Text>
+                     </children>
+                  </HBox>
+                  <CheckBox fx:id="EnforceManna" disable="true" mnemonicParsing="false" text="Enforce Manna" />
+                  <CheckBox fx:id="EnforceMutation" disable="true" mnemonicParsing="false" text="Enforce Mutation" />
+                  <Button fx:id="SubmitWorld" disable="true" mnemonicParsing="false" onAction="#SubmitWorld" text="Submit World">
+                     <VBox.margin>
+                        <Insets bottom="5.0" top="1.0" />
+                     </VBox.margin>
+                  </Button>
+                  <HBox prefHeight="0.0" prefWidth="233.0">
+                     <children>
+                        <Button fx:id="LoadCritter" mnemonicParsing="false" onAction="#loadCritter" text="Load Critter" />
+                        <Text fx:id="CritterName" strokeType="OUTSIDE" strokeWidth="0.0">
+                           <HBox.margin>
+                              <Insets left="5.0" top="5.0" />
+                           </HBox.margin>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </HBox>
+                  <CheckBox fx:id="SelectLocation" mnemonicParsing="false" text="Select Critter Location">
+                     <VBox.margin>
+                        <Insets bottom="8.0" top="1.0" />
+                     </VBox.margin>
+                  </CheckBox>
+                  <HBox prefHeight="28.0" prefWidth="262.0">
+                     <children>
+                        <Button fx:id="PlayOnce" mnemonicParsing="false" onAction="#playOnce" text="Play Once" />
+                        <Button mnemonicParsing="false" onAction="#play" text="Play " />
+                        <Button mnemonicParsing="false" onAction="#stop" text="Stop" />
+                     </children>
+                  </HBox>
+                  <Label prefHeight="20.0" prefWidth="76.0" text="Advance Rate" />
+                  <TextField fx:id="RunRate" promptText="10" />
+                  <Text fx:id="mem0" strokeType="OUTSIDE" strokeWidth="0.0" text="No Critter Selected" wrappingWidth="232.21630859375">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Text>
+                  <Text fx:id="mem1" strokeType="OUTSIDE" strokeWidth="0.0" />
+                  <Text fx:id="mem2" strokeType="OUTSIDE" strokeWidth="0.0" />
+                  <Text fx:id="mem3" strokeType="OUTSIDE" strokeWidth="0.0" />
+                  <Text fx:id="mem4" strokeType="OUTSIDE" strokeWidth="0.0" />
+                  <Text fx:id="mem5" strokeType="OUTSIDE" strokeWidth="0.0" />
+                  <Text fx:id="mem6" strokeType="OUTSIDE" strokeWidth="0.0" />
+                  <Text fx:id="critterFile" strokeType="OUTSIDE" strokeWidth="0.0" />
+                  <Text fx:id="lastRule" strokeType="OUTSIDE" strokeWidth="0.0" />
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </VBox>
+         </content>
+      </ScrollPane>
+      <StackPane>
          <children>
-            <HBox prefHeight="28.0" prefWidth="262.0">
-               <children>
-                  <Button fx:id="LoadWorld" mnemonicParsing="false" onAction="#loadWorld" text="Load World" />
-                  <Button fx:id="LoadCritter" mnemonicParsing="false" onAction="#loadCritter" text="Load Critter" />
-               </children>
-            </HBox>
-            <Label text="Number of Critters" />
-            <TextField fx:id="nCritters" prefHeight="22.0" prefWidth="224.0">
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin>
-            </TextField>
-            <HBox prefHeight="28.0" prefWidth="262.0">
-               <children>
-                  <Button fx:id="PlayOnce" mnemonicParsing="false" onAction="#playOnce" text="Play Once" />
-                  <Button fx:id="Play" mnemonicParsing="false" onAction="#play" text="Play " />
-                  <Button fx:id="Stop" mnemonicParsing="false" onAction="#stop" text="Stop" />
-               </children>
-            </HBox>
-            <Label prefHeight="20.0" prefWidth="76.0" text="Advance Rate" />
-            <TextField fx:id="RunRate" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="232.21630859375" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-            <HBox alignment="TOP_RIGHT" prefHeight="23.0" prefWidth="82.0">
+            <ScrollPane prefHeight="400.0" prefWidth="466.0">
+               <content>
+                  <Canvas fx:id="canvas" height="400.0" onMouseClicked="#selectCritter" width="367.0" />
+               </content>
+            </ScrollPane>
+            <HBox alignment="BOTTOM_LEFT" maxWidth="-Infinity" prefHeight="367.0" prefWidth="48.0" StackPane.alignment="BOTTOM_LEFT">
                <children>
                   <Button fx:id="ZoomOut" mnemonicParsing="false" onAction="#zoom" text="-" />
                   <Button fx:id="ZoomIn" mnemonicParsing="false" onAction="#zoom" text="+" />
                </children>
+               <padding>
+                  <Insets bottom="20.0" left="5.0" />
+               </padding>
             </HBox>
          </children>
-      </VBox>
-      <ScrollPane prefHeight="400.0" prefWidth="466.0">
-         <content>
-            <Canvas fx:id="canvas" height="400.0" onMouseClicked="#displayInfo" width="367.0" />
-         </content>
-      </ScrollPane>
+      </StackPane>
    </children>
 </HBox>

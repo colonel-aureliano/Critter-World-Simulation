@@ -63,7 +63,7 @@ public class ROnlyWorld implements ReadOnlyWorld{
     /**
      * return true if there exists empty space in this world
      */
-    protected boolean hasEmptySpace() {
+    public boolean hasEmptySpace() {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
                 if (map[i][j] == 0) return true;

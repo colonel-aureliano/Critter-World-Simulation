@@ -1,3 +1,3 @@
 name empty world
-size 50 10
+size 40 60
 critter spiral_critter.txt 25 5 0

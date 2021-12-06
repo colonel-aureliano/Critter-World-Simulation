@@ -304,6 +304,7 @@ public class World extends ROnlyWorld implements CritterObserver {
     @Override
     public boolean onDeath(ReadOnlyCritter c, int energy) {
         int[] info = findCritter(c);
+        if (info == null) return false;
         map[info[0]][info[1]] = - energy - 1; // add energy
         return true;
     }
