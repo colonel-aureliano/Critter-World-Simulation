@@ -30,14 +30,19 @@
                   </HBox>
                   <CheckBox fx:id="EnforceManna" disable="true" mnemonicParsing="false" text="Enforce Manna" />
                   <CheckBox fx:id="EnforceMutation" disable="true" mnemonicParsing="false" text="Enforce Mutation" />
-                  <Button fx:id="SubmitWorld" disable="true" mnemonicParsing="false" onAction="#SubmitWorld" text="Submit World">
-                     <VBox.margin>
-                        <Insets bottom="5.0" top="1.0" />
-                     </VBox.margin>
-                  </Button>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="SubmitWorld" disable="true" mnemonicParsing="false" onAction="#SubmitWorld" text="Submit World" />
+                        <Button fx:id="RandomWorld" mnemonicParsing="false" onAction="#randomWorld" text="Random World">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
                   <HBox prefHeight="0.0" prefWidth="233.0">
                      <children>
-                        <Button fx:id="LoadCritter" mnemonicParsing="false" onAction="#loadCritter" text="Load Critter" />
+                        <Button fx:id="LoadCritter" disable="true" mnemonicParsing="false" onAction="#loadCritter" text="Load Critter" />
                         <Text fx:id="CritterName" strokeType="OUTSIDE" strokeWidth="0.0">
                            <HBox.margin>
                               <Insets left="5.0" top="5.0" />
@@ -45,23 +50,29 @@
                         </Text>
                      </children>
                      <VBox.margin>
-                        <Insets />
+                        <Insets top="5.0" />
                      </VBox.margin>
                   </HBox>
-                  <CheckBox fx:id="SelectLocation" mnemonicParsing="false" text="Place Critter on Selected Hex">
+                  <CheckBox fx:id="SelectLocation" disable="true" mnemonicParsing="false" text="Place Critter on Selected Hex">
                      <VBox.margin>
                         <Insets bottom="8.0" top="1.0" />
                      </VBox.margin>
                   </CheckBox>
                   <HBox prefHeight="28.0" prefWidth="262.0">
                      <children>
-                        <Button fx:id="PlayOnce" mnemonicParsing="false" onAction="#playOnce" text="Play Once" />
-                        <Button mnemonicParsing="false" onAction="#play" text="Play " />
-                        <Button mnemonicParsing="false" onAction="#stop" text="Stop" />
+                        <Button fx:id="PlayOnce" disable="true" mnemonicParsing="false" onAction="#playOnce" text="Play Once" />
+                        <Button fx:id="Play" disable="true" mnemonicParsing="false" onAction="#play" text="Play ">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin></Button>
+                        <Button fx:id="Stop" disable="true" mnemonicParsing="false" onAction="#stop" text="Stop">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin></Button>
                      </children>
                   </HBox>
                   <Label prefHeight="20.0" prefWidth="76.0" text="Advance Rate" />
-                  <TextField fx:id="RunRate" promptText="10" />
+                  <TextField fx:id="RunRate" disable="true" promptText="10" />
                   <Text fx:id="TimeStep" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Step : 0">
                      <VBox.margin>
                         <Insets top="10.0" />
@@ -95,12 +106,12 @@
                   <Canvas fx:id="canvas" height="400.0" onMouseClicked="#selectHex" width="367.0" />
                </content>
             </ScrollPane>
-            <Button fx:id="ZoomIn" alignment="BOTTOM_LEFT" mnemonicParsing="false" onAction="#zoom" text="+" StackPane.alignment="BOTTOM_LEFT">
+            <Button fx:id="ZoomIn" alignment="BOTTOM_LEFT" disable="true" mnemonicParsing="false" onAction="#zoom" text="+" StackPane.alignment="BOTTOM_LEFT">
                <StackPane.margin>
                   <Insets bottom="20.0" left="5.0" />
                </StackPane.margin>
             </Button>
-            <Button fx:id="ZoomOut" alignment="TOP_CENTER" mnemonicParsing="false" onAction="#zoom" text="-" StackPane.alignment="BOTTOM_LEFT">
+            <Button fx:id="ZoomOut" alignment="TOP_CENTER" disable="true" mnemonicParsing="false" onAction="#zoom" text="-" StackPane.alignment="BOTTOM_LEFT">
                <StackPane.margin>
                   <Insets bottom="20.0" left="30.0" />
                </StackPane.margin>

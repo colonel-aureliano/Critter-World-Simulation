@@ -51,6 +51,8 @@ public class View extends Application {
     @FXML
     private Button SubmitWorld;
     @FXML
+    private Button RandomWorld;
+    @FXML
     private Button LoadCritter;
     @FXML
     private CheckBox SelectLocation;
@@ -58,6 +60,10 @@ public class View extends Application {
     private Text CritterName;
     @FXML
     private Button PlayOnce;
+    @FXML
+    private Button Play;
+    @FXML
+    private Button Stop;
     @FXML
     private TextField RunRate;
     @FXML
@@ -223,20 +229,44 @@ public class View extends Application {
     private void SubmitWorld(final ActionEvent ae) {
         if (controller.loadWorld(selectedFile.getAbsolutePath(),
                 EnforceManna.isSelected(), EnforceMutation.isSelected())) {
-            selectedHex = null;
-            selectedC = null;
-            scale = 1;
-            species = new ArrayList<>();
-            paints = new ArrayList<>();
-            drawHex();
-            clearInfo();
+            newWorld();
         } else {
+            WorldName.setText("");
             a.setContentText("Load World Failed.");
             a.show();
         }
         EnforceManna.setDisable(true);
         EnforceMutation.setDisable(true);
         SubmitWorld.setDisable(true);
+    }
+
+    @FXML
+    private void randomWorld(final ActionEvent ae) {
+        controller.newWorld();
+        EnforceManna.setSelected(false);
+        EnforceMutation.setSelected(false);
+        WorldName.setText("");
+        newWorld();
+    }
+
+    private void newWorld() {
+        selectedHex = null;
+        selectedC = null;
+        scale = 1;
+        species = new ArrayList<>();
+        paints = new ArrayList<>();
+        drawHex();
+        clearInfo();
+        if (Play.isDisabled()) {
+            LoadCritter.setDisable(false);
+            SelectLocation.setDisable(false);
+            Play.setDisable(false);
+            PlayOnce.setDisable(false);
+            Stop.setDisable(false);
+            RunRate.setDisable(false);
+            ZoomOut.setDisable(false);
+            ZoomIn.setDisable(false);
+        }
     }
 
     @FXML
@@ -278,6 +308,7 @@ public class View extends Application {
         if (controller.loadCritters(selectedFile.getAbsolutePath(), n)) {
             CritterName.setText(selectedFile.getName());
         } else {
+            CritterName.setText("");
             a.setContentText("Load Critter Failed");
             a.show();
         }
@@ -293,8 +324,10 @@ public class View extends Application {
     @FXML
     private void play(final ActionEvent ae) {
         LoadWorld.setDisable(true);
+        RandomWorld.setDisable(true);
         LoadCritter.setDisable(true);
         PlayOnce.setDisable(true);
+        RunRate.setDisable(true);
 
         String nStr = RunRate.getText();
         int n;
@@ -336,8 +369,10 @@ public class View extends Application {
     @FXML
     private void stop(final ActionEvent ae) {
         LoadWorld.setDisable(false);
+        RandomWorld.setDisable(false);
         LoadCritter.setDisable(false);
         PlayOnce.setDisable(false);
+        RunRate.setDisable(false);
         exit = true;
     }
 
