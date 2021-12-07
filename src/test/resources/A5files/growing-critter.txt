@@ -1,0 +1,16 @@
+species: growing critter
+memsize: 7
+defense: 1
+offense: 1
+size: 1
+energy: 500
+posture: 55
+ENERGY = SIZE*500 --> grow;
+ENERGY != SIZE*500 and smell=0 --> eat;
+smell != 1000000 and nearby[0] = 0 and smell mod 1000 = 0 --> forward;
+smell != 1000000 and smell mod 1000<3 --> right;
+smell != 1000000 and smell mod 1000>=3 --> left;
+nearby[0]>0 and random[3] = 0 --> attack;
+random[2] = 1 --> left;
+random[2] = 0 --> forward;
+random[2] = 0 --> forward;
