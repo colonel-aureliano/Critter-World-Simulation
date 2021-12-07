@@ -1,5 +1,6 @@
 package ast;
 
+import model.Critter;
 import model.ReadOnlyCritter;
 import model.World;
 
@@ -32,7 +33,8 @@ public class Interpreter {
      * Returns the value of smell for critter c in world w.
      */
     public int smell() {
-        return w.onSmell(c);
+        if (((Critter)c).getSmellValue()==-1) ((Critter) c).setSmellValue(w.onSmell(c));
+        return ((Critter) c).getSmellValue();
     }
 
     /**

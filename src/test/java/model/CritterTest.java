@@ -59,8 +59,8 @@ class CritterTest {
     @Test
     void testStep() throws SyntaxError, NoMaybeValue {
         String name = "forest critter";
-        int[] arr = {5,0,0,0,0,5,89};
-        String s = "mem[3] != 3 --> mem[3] := 3;\n mem[3] = 3 --> wait;";
+        int[] arr = {5,0,0,3,0,5,89};
+        String s = "mem[6] != 50 --> mem[6] := 50; mem[3] = 3 --> wait;";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
@@ -68,11 +68,12 @@ class CritterTest {
 
         Critter c = new Critter(name,arr,p,dummy());
         assert(c.getLastRuleString().equals(Maybe.none()));
-        int[] arr2 = {7,1,1,1,250,1,89};
+        int[] arr2 = {7,1,1,3,250,1,89};
         assert(Arrays.equals(c.getMemory(), arr2));
 
-        c.step(); // mem[3] set to 3, performs wait
-        int[] arr3 = {7,1,1,3,253,2,89};
+        c.step(); // turn 1: mem[6] set to 50; turn 2: performs wait
+        int[] arr3 = {7,1,1,3,253,2,50};
+        System.out.println(Arrays.toString(c.getMemory()));
         assert(Arrays.equals(c.getMemory(), arr3));
         assert(c.getLastRuleString().get().equals("mem[3] = 3 --> wait;\n"));
     }
@@ -81,7 +82,7 @@ class CritterTest {
     void testStep999() throws SyntaxError, NoMaybeValue {
         String name = "forest critter";
         int[] arr = {7,1,1,1,1,1,13};
-        String s = "mem[0] = 7 --> mem[2] := 3;\n mem[0] = 7 --> mem[2] := 10;";
+        String s = "mem[6] != 7 --> mem[6] := 7;\n mem[0] = 7 --> mem[2] := 10;";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Reader r = new BufferedReader(new InputStreamReader(in));
         Parser parser = ParserFactory.getParser();
@@ -90,11 +91,10 @@ class CritterTest {
         Critter c = new Critter(name,arr,p,dummy());
         assert(Arrays.equals(c.getMemory(), arr));
         c.step();
-        // mem[2] is set to 3, wait is performed at the end (i.e. mem[4] is set to 2)
-        // mem[2] is never updated to 10 because of how the passes work
-        int[] arr2 = {7,1,3,1,2,999,13};
+        // mem[6] is set to 7, wait is performed at the end
+        int[] arr2 = {7,1,1,1,2,999,7};
         assert(Arrays.equals(c.getMemory(), arr2));
-        assert(c.getLastRuleString().get().equals("mem[0] = 7 --> mem[2] := 3;\n"));
+        assert(c.getLastRuleString().get().equals("mem[6] != 7 --> mem[6] := 7;\n"));
     }
 
     @Test
