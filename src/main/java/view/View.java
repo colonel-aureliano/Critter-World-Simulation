@@ -187,6 +187,7 @@ public class View extends Application {
                     }
                 }
             }
+            if (selectedC != null) displayInfo();
         }
 
         TimeStep.setText("Time Step: " + w.getSteps());
@@ -313,7 +314,6 @@ public class View extends Application {
                 controller.advanceTime(1);
                 if (System.nanoTime() - timeSince > animTime) {
                     drawHex();
-                    if (selectedC != null) displayInfo();
                     timeSince = System.nanoTime();
                 }
             }
@@ -342,7 +342,6 @@ public class View extends Application {
         try {
             selectedC = w.getReadOnlyCritter(hexInfo[0], hexInfo[1]).get();
             selectedHex = null;
-            displayInfo();
         } catch (NoMaybeValue e) {
             selectedC = null;
             selectedHex = hexInfo;
@@ -418,6 +417,10 @@ public class View extends Application {
             canvas.setWidth(canvas.getWidth() * 0.8);
             canvas.setHeight(canvas.getHeight() * 0.8);
         }
+        if (scale > 10) ZoomIn.setDisable(true);
+        else ZoomIn.setDisable(false);
+        if (scale < 0.1) ZoomOut.setDisable(true);
+        else ZoomOut.setDisable(false);
         drawHex();
     }
 }
