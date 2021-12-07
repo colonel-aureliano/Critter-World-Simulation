@@ -331,12 +331,18 @@ public class View extends Application {
 
         String nStr = RunRate.getText();
         int n;
-        if (!nStr.matches("[0-9]+")) n = 10;   //default advance rate is 10
-        else n = Integer.valueOf(nStr);
-        if (n <= 0) n = 10;
+        if(nStr.equals("")) n = 10;
+        else {
+            try {
+                n = Integer.valueOf(nStr);
+            } catch (NumberFormatException e) {
+                return;
+            }
+        }
+        if (n <= 0) return;
         RunRate.setText(Integer.toString(n));
-        exit = false;
         advanceRate = n;
+        exit = false;
         playHelper();
     }
 
@@ -344,13 +350,16 @@ public class View extends Application {
     long timeSince;
     double animTime;
     boolean exit;
-    Timer timer = new Timer();
+    Timer timer = new Timer();;
 
     TimerTask newTT() {
         TimerTask tt = new TimerTask() {
             @Override
             public void run() {
-                if (exit == true) return;
+                if (exit == true){
+                    cancel();
+                    return;
+                }
                 controller.advanceTime(1);
                 if (System.nanoTime() - timeSince > animTime) {
                     drawHex();

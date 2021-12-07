@@ -225,16 +225,15 @@ public class World extends ROnlyWorld implements CritterObserver {
     }
 
     public int smartSmellImpl(int[] info) {
-        //optimization possible: only need to keep track of minimum
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        int currentMin = 1000000;
 
         // Checking immediate surroundings.
         int f = frontSearch(info);
         if (f != -1) {
             if (f == 0) return 0;
-            pq.add(1000 + f);
+            currentMin=Math.min(1000+f,currentMin);
         }
-        f = frontSearch(new int[]{info[0], info[1], (info[2] + 3) % 6}); // going in reverse direction
+        f = frontSearch(new int[]{info[0], info[1], (info[2] + 3) % 6});
         if (f != -1) {
             int turn = f == 0 ? 0 : 1;
             int t = turn == 1 ? 2 : 3;
@@ -250,11 +249,10 @@ public class World extends ROnlyWorld implements CritterObserver {
                     d = 2;
                     break;
             }
-            pq.add(t * 1000 + d);
+            currentMin=Math.min(t * 1000 + d,currentMin);
         }
-        if (!pq.isEmpty() && pq.peek() < 2000) return pq.remove();
+        if (currentMin < 2000) return currentMin;
 
-        // pq is either empty or has elements >= 2000
         // Checking remote surroundings.
         int distance;
         int direction; // direction relative to critter
@@ -267,11 +265,10 @@ public class World extends ROnlyWorld implements CritterObserver {
             distance += 1;
             int[] newInfo = infoAfterForward(info, i);
             int t = closestFoodOnBranch(newInfo, distance);
-            if (t != -1) pq.add(t * 1000 + direction);
+            if (t != -1) currentMin=Math.min(t * 1000 + direction,currentMin);
         }
 
-        if (pq.isEmpty()) return 1000000;
-        else return pq.remove();
+        return currentMin;
     }
 
     private int closestFoodOnBranch(int[] info, int distance) {
@@ -284,17 +281,18 @@ public class World extends ROnlyWorld implements CritterObserver {
 
         // no food immediately in front
         distance += 1;
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        //PriorityQueue<Integer> pq = new PriorityQueue<>();
+        int currentMin = Integer.MAX_VALUE;
         for (int i : new int[]{0, 1, 5}) {
             int[] newInfo = infoAfterForward(info, i);
             int t;
             if (i == 0) t = closestFoodOnBranch(newInfo, distance);
             else t = closestFoodOnBranch(newInfo, distance + 1);
-            if (t != -1) pq.add(t);
+            if (t != -1) currentMin=Math.min(t,currentMin);
         }
 
-        if (pq.isEmpty()) return -1;
-        else return pq.remove();
+        if (currentMin==Integer.MAX_VALUE) return -1;
+        else return currentMin;
     }
 
     /**

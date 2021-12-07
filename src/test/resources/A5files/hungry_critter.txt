@@ -1,14 +1,15 @@
 species: hungry critter
 memsize: 7
-defense: 2
-offense: 2
-size: 1
+defense: 1
+offense: 1
+size: 2
 energy: 250
 posture: 20
-smell=0 --> eat;
-smell != 1000000 and smell mod 1000 = 0 --> forward;
+ENERGY = SIZE*500 --> bud;
+ENERGY != SIZE*500 and smell=0 --> eat;
+smell != 1000000 and nearby[0] = 0 and smell mod 1000 = 0 --> forward;
 smell != 1000000 and smell mod 1000<3 --> right;
 smell != 1000000 and smell mod 1000>=3 --> left;
-ENERGY = SIZE*500 --> bud;
 random[2] = 1 --> left;
+random[2] = 0 --> forward;
 random[2] = 0 --> forward;

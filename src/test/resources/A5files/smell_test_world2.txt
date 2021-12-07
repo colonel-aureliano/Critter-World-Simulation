@@ -1,12 +1,12 @@
 name smell test world 2
 size 11 21
 critter hungry_critter.txt 4 12 1
-food 2 14 10
-food 6 20 10
-food 6 18 10
-food 6 6 10
-food 9 7 10
-food 9 17 10
+food 2 14 1000
+food 6 20 50
+food 6 18 50
+food 6 6 50
+food 9 7 50
+food 9 17 200
 rock 1 13
 rock 1 15
 rock 2 16

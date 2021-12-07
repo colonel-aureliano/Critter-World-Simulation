@@ -1,0 +1,28 @@
+name dfs-world
+size 19 33
+
+food 9 17 150
+food 9 15 100
+food 10 16 100
+food 10 18 100
+food 9 19 100
+food 8 18 100
+food 8 16 100
+food 9 13 50
+food 10 14 50
+food 11 15 50
+food 11 17 50
+food 11 19 50
+food 10 20 50
+food 9 21 50
+food 8 20 50
+food 7 19 50
+food 7 17 50
+food 7 15 50
+food 8 14 50
+food 14 12 10
+food 4 12 10
+food 4 22 10
+food 14 22 10
+food 9 7 10
+food 9 27 10
