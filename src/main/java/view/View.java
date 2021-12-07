@@ -328,6 +328,7 @@ public class View extends Application {
         LoadCritter.setDisable(true);
         PlayOnce.setDisable(true);
         RunRate.setDisable(true);
+        SelectLocation.setDisable(true);
 
         String nStr = RunRate.getText();
         int n;
@@ -355,13 +356,12 @@ public class View extends Application {
     boolean exit;
     Timer timer = new Timer();;
 
-    TimerTask newTT() {
+    private TimerTask newTT() {
         TimerTask tt = new TimerTask() {
             @Override
             public void run() {
                 if (exit == true){
                     drawHex();
-                    cancel();
                     return;
                 }
                 controller.advanceTime(1);
@@ -376,8 +376,11 @@ public class View extends Application {
 
     private void playHelper() {
         animTime = Math.pow(10, 9) / 30;
-        timer.schedule(newTT(), 0, (1000 / advanceRate));
+        pointer = newTT();
+        timer.schedule(pointer, 0, (1000 / advanceRate));
     }
+
+    TimerTask pointer;
 
     @FXML
     private void stop(final ActionEvent ae) {
@@ -386,7 +389,9 @@ public class View extends Application {
         LoadCritter.setDisable(false);
         PlayOnce.setDisable(false);
         RunRate.setDisable(false);
+        SelectLocation.setDisable(false);
         exit = true;
+        pointer.cancel();
     }
 
     @FXML
