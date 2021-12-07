@@ -4,6 +4,7 @@ import cms.util.maybe.NoMaybeValue;
 import controller.Controller;
 import controller.ControllerFactory;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -360,15 +361,17 @@ public class View extends Application {
         TimerTask tt = new TimerTask() {
             @Override
             public void run() {
-                if (exit == true){
-                    drawHex();
-                    return;
-                }
-                controller.advanceTime(1);
-                if (System.nanoTime() - timeSince > animTime) {
-                    drawHex();
-                    timeSince = System.nanoTime();
-                }
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (exit == true) return;
+                        controller.advanceTime(1);
+                        if (System.nanoTime() - timeSince > animTime) {
+                            drawHex();
+                            timeSince = System.nanoTime();
+                        }
+                    }
+                });
             }
         };
         return tt;
@@ -392,6 +395,7 @@ public class View extends Application {
         SelectLocation.setDisable(false);
         exit = true;
         pointer.cancel();
+        drawHex();
     }
 
     @FXML
