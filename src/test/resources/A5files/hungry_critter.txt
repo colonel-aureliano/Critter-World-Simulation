@@ -1,0 +1,11 @@
+species: hungry critter
+memsize: 7
+defense: 2
+offense: 2
+size: 1
+energy: 250
+posture: 20
+smell=0 --> eat;
+smell mod 1000 = 0 --> forward;
+smell mod 1000<3 --> right;
+smell mod 1000>=3 --> left;

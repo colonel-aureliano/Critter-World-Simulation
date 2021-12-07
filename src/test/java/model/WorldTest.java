@@ -1,6 +1,7 @@
 package model;
 
 import ast.Program;
+import cms.util.maybe.NoMaybeValue;
 import exceptions.SyntaxError;
 import org.junit.jupiter.api.Test;
 import parse.Parser;
@@ -94,14 +95,6 @@ class WorldTest {
         assert(w.map[2][8] == -31);
         assertFalse(w.onMove(c, true));
 
-        // smell
-        assert(w.onSmell(c) == 2000);
-        w.onTurn(w.critters.get(0), false);
-        assert(w.onSmell(w.critters.get(0)) == 4005);
-        w.onEatFood(c, 30);
-        assert(w.map[2][8] == 0);
-        assert(w.onSmell(baby) == 1000000);
-
         // death
         w.onDeath(w.critters.get(0), 10);
         assert(w.map[2][4] == -11);
@@ -121,6 +114,53 @@ class WorldTest {
         }
         assert(w.getSteps() == n);
         System.out.println(w.print());
+    }
+
+    @Test
+    void testSmell() throws SyntaxError, NoMaybeValue {
+        String name = "Smelling Critter";
+        int[] arr = {7,2,2,1,250,1,20};
+        // size = 1, energy = 250
+        String s = "smell=0 --> eat;\nsmell mod 1000 = 0 --> forward;\n" +
+                "smell mod 1000<3 --> right;\nsmell mod 1000>=3 --> left;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+
+        World w = new World(6, 10, "smelling world");
+        Critter c = new Critter(name,arr,p,w);
+        w.addCritter(0, 0, c, 1);
+        w.addFood(5,5,10);
+        w.step();
+        w.step();
+        w.step();
+        w.step();
+        w.step();
+        assertEquals("smell = 0 --> eat;\n",c.getLastRuleString().get());
+    }
+
+    @Test
+    void testSmell999() throws SyntaxError, NoMaybeValue {
+        String name = "Smelling Critter";
+        int[] arr = {7,2,2,1,250,1,20};
+        // size = 1, energy = 250
+        String s = "smell=0 --> eat;\nmem[0]=7 --> mem[0]:=6;";
+        InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        Reader r = new BufferedReader(new InputStreamReader(in));
+        Parser parser = ParserFactory.getParser();
+        Program p = parser.parse(r);
+
+        World w = new World(6, 10, "smelling world");
+        Critter c = new Critter(name,arr,p,w);
+        w.addCritter(3, 3, c, 0);
+        // No food in world.
+
+        w.step();
+        assertEquals(c.getMemory()[5],999);
+        w.addFood(4,4,100);
+        w.step();
+        assertEquals(c.getMemory()[5],999);
     }
 
 }

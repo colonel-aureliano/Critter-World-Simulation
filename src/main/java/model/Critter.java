@@ -105,6 +105,16 @@ public class Critter implements ReadOnlyCritter {
         return;
     }
 
+    private int smellValue = -1;
+
+    public int getSmellValue(){
+        return smellValue;
+    }
+
+    public void setSmellValue(int v){
+        smellValue = v;
+    }
+
     /**
      * Advances the critter by one time step.
      */
@@ -113,24 +123,26 @@ public class Critter implements ReadOnlyCritter {
         List<Node> l = program.getChildren();
 
         mem[5] = 0;
+        smellValue = -1;
         while (mem[5] < Constants.MAX_RULES_PER_TURN) {
             mem[5]++;
             boolean noRuleTrue = true;
             for (Node i : l) {
                 if (((Rule) i).value()) { // Condition for rule is true. Should perform update/action.
-                    lastRuleExecuted = i;
                     Node c = i.getChildren().get(1); // Command node
                     for (Node n : c.getChildren()) {
                         if (n.getCategory() == NodeCategory.ACTION) {
                             Action.Operator o = ((Action) n).getOperator();
                             int complexity = l.size() * Constants.RULE_COST + (mem[2] + mem[1]) * Constants.ABILITY_COST;
                             act(o, complexity, n);
+                            lastRuleExecuted = i;
                             return;
                         }
                         try { // n is an instance of Update, with children l,r, represents mem[l] := r
                             int value = ((Expr) n.getChildren().get(0)).value();
                             if (value > 5) {
                                 mem[value] = ((Expr) n.getChildren().get(1)).value();
+                                lastRuleExecuted = i;
                             }
                         } catch (Exception e) {
                         } // do not perform update
