@@ -6,6 +6,9 @@ size: 1
 energy: 250
 posture: 20
 smell=0 --> eat;
-smell mod 1000 = 0 --> forward;
-smell mod 1000<3 --> right;
-smell mod 1000>=3 --> left;
+smell != 1000000 and smell mod 1000 = 0 --> forward;
+smell != 1000000 and smell mod 1000<3 --> right;
+smell != 1000000 and smell mod 1000>=3 --> left;
+ENERGY = SIZE*500 --> bud;
+random[2] = 1 --> left;
+random[2] = 0 --> forward;
