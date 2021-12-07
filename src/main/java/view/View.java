@@ -336,10 +336,13 @@ public class View extends Application {
             try {
                 n = Integer.valueOf(nStr);
             } catch (NumberFormatException e) {
-                return;
+                n = 0;
             }
         }
-        if (n <= 0) return;
+        if (n <= 0) {
+            RunRate.setText("0");
+            return;
+        }
         RunRate.setText(Integer.toString(n));
         advanceRate = n;
         exit = false;
@@ -357,6 +360,7 @@ public class View extends Application {
             @Override
             public void run() {
                 if (exit == true){
+                    drawHex();
                     cancel();
                     return;
                 }
