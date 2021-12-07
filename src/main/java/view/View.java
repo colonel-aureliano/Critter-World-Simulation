@@ -223,7 +223,13 @@ public class View extends Application {
     private void SubmitWorld(final ActionEvent ae) {
         if (controller.loadWorld(selectedFile.getAbsolutePath(),
                 EnforceManna.isSelected(), EnforceMutation.isSelected())) {
+            selectedHex = null;
+            selectedC = null;
+            scale = 1;
+            species = new ArrayList<>();
+            paints = new ArrayList<>();
             drawHex();
+            clearInfo();
         } else {
             a.setContentText("Load World Failed.");
             a.show();
@@ -242,6 +248,7 @@ public class View extends Application {
                 new FileChooser.ExtensionFilter("Text Files", "*.txt"));
         Stage stage = new Stage();
         File selectedFile = fileChooser.showOpenDialog(stage);
+        if (selectedFile == null) return;
 
         if (SelectLocation.isSelected()) {
             if (selectedHex != null
@@ -345,15 +352,7 @@ public class View extends Application {
         } catch (NoMaybeValue e) {
             selectedC = null;
             selectedHex = hexInfo;
-            mem0.setText("No Critter Selected");
-            mem1.setText("");
-            mem2.setText("");
-            mem3.setText("");
-            mem4.setText("");
-            mem5.setText("");
-            mem6.setText("");
-            critterFile.setText("");
-            lastRule.setText("");
+            clearInfo();
         }
         drawHex();
     }
@@ -378,6 +377,18 @@ public class View extends Application {
         } catch (NoMaybeValue e) {
             lastRule.setText("No Rule Executed");
         }
+    }
+
+    private void clearInfo() {
+        mem0.setText("No Critter Selected");
+        mem1.setText("");
+        mem2.setText("");
+        mem3.setText("");
+        mem4.setText("");
+        mem5.setText("");
+        mem6.setText("");
+        critterFile.setText("");
+        lastRule.setText("");
     }
 
     /**
