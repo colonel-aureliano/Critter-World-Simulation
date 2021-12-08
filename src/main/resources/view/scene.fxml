@@ -14,7 +14,7 @@
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.View">
    <children>
-      <ScrollPane>
+      <ScrollPane fx:id="LScrollPane">
          <content>
             <VBox prefHeight="400.0" prefWidth="331.0">
                <children>
@@ -50,7 +50,7 @@
                         </Text>
                      </children>
                      <VBox.margin>
-                        <Insets top="5.0" />
+                        <Insets top="8.0" />
                      </VBox.margin>
                   </HBox>
                   <CheckBox fx:id="SelectLocation" disable="true" mnemonicParsing="false" text="Place Critter on Selected Hex">
@@ -64,18 +64,31 @@
                         <Button fx:id="Play" disable="true" mnemonicParsing="false" onAction="#play" text="Play ">
                            <HBox.margin>
                               <Insets left="5.0" />
-                           </HBox.margin></Button>
+                           </HBox.margin>
+                        </Button>
                         <Button fx:id="Stop" disable="true" mnemonicParsing="false" onAction="#stop" text="Stop">
                            <HBox.margin>
                               <Insets left="5.0" />
-                           </HBox.margin></Button>
+                           </HBox.margin>
+                        </Button>
                      </children>
                   </HBox>
-                  <Label fx:id="LabelRR" disable="true" prefHeight="17.0" prefWidth="122.0" text="Max Advance Rate" />
-                  <TextField fx:id="RunRate" disable="true" promptText="10" />
+                  <HBox prefHeight="20.0" prefWidth="321.0">
+                     <children>
+                        <Label fx:id="LabelRR" contentDisplay="CENTER" disable="true" prefHeight="17.0" prefWidth="108.0" text="Max Advance Rate">
+                           <HBox.margin>
+                              <Insets top="4.0" />
+                           </HBox.margin>
+                        </Label>
+                        <TextField fx:id="RunRate" disable="true" prefHeight="26.0" prefWidth="73.0" promptText="10" />
+                     </children>
+                     <VBox.margin>
+                        <Insets top="8.0" />
+                     </VBox.margin>
+                  </HBox>
                   <Text fx:id="TimeStep" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Step : 0">
                      <VBox.margin>
-                        <Insets top="10.0" />
+                        <Insets top="2.0" />
                      </VBox.margin>
                   </Text>
                   <Text fx:id="AliveCritters" strokeType="OUTSIDE" strokeWidth="0.0" text="# Alive Critters: 0" />

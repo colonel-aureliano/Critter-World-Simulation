@@ -14,6 +14,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
@@ -25,7 +26,10 @@ import model.ReadOnlyWorld;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.NoSuchElementException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class View extends Application {
 
@@ -41,6 +45,10 @@ public class View extends Application {
     double scale = 1;
     double len;
 
+    @FXML
+    private ScrollPane LScrollPane;
+    @FXML
+    private AnchorPane LAnchorPane;
     @FXML
     private Button LoadWorld;
     @FXML
@@ -440,10 +448,10 @@ public class View extends Application {
         mem5.setText("PASS: " + selectedC.getMemory()[5]);
         mem6.setText("POSTURE: " + selectedC.getMemory()[6]);
         critterFile.setText('\n' + "Critter Program" + '\n' + selectedC.getProgramString());
-        critterFile.setWrappingWidth(RunRate.getWidth());
+        critterFile.setWrappingWidth(LScrollPane.getWidth());
         try {
             lastRule.setText("Last Executed Rule" + '\n' + selectedC.getLastRuleString().get());
-            lastRule.setWrappingWidth(RunRate.getWidth());
+            lastRule.setWrappingWidth(LScrollPane.getWidth());
         } catch (NoMaybeValue e) {
             lastRule.setText("No Rule Executed");
         }
