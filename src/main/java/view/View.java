@@ -5,6 +5,9 @@ import controller.Controller;
 import controller.ControllerFactory;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -122,6 +125,12 @@ public class View extends Application {
             final Scene scene = new Scene(node);
             primaryStage.setScene(scene);
             primaryStage.sizeToScene();
+            primaryStage.widthProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                    primaryStage.sizeToScene();
+                }
+            });
             primaryStage.show();
         } catch (final IOException e) {
             System.out.println("Can't load FXML file.");
