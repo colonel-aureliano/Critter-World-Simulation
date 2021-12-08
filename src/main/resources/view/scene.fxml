@@ -21,11 +21,11 @@
                   <HBox prefHeight="28.0" prefWidth="262.0">
                      <children>
                         <Button fx:id="LoadWorld" mnemonicParsing="false" onAction="#loadWorld" text="Load World" />
-                        <Text fx:id="WorldName" strokeType="OUTSIDE" strokeWidth="0.0">
+                        <Button fx:id="RandomWorld" mnemonicParsing="false" onAction="#randomWorld" text="Random World">
                            <HBox.margin>
-                              <Insets left="5.0" top="5.0" />
+                              <Insets left="10.0" />
                            </HBox.margin>
-                        </Text>
+                        </Button>
                      </children>
                   </HBox>
                   <CheckBox fx:id="EnforceManna" disable="true" mnemonicParsing="false" text="Enforce Manna" />
@@ -33,11 +33,11 @@
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
                         <Button fx:id="SubmitWorld" disable="true" mnemonicParsing="false" onAction="#SubmitWorld" text="Submit World" />
-                        <Button fx:id="RandomWorld" mnemonicParsing="false" onAction="#randomWorld" text="Random World">
+                        <Text fx:id="WorldName" strokeType="OUTSIDE" strokeWidth="0.0">
                            <HBox.margin>
-                              <Insets left="10.0" />
+                              <Insets left="5.0" top="5.0" />
                            </HBox.margin>
-                        </Button>
+                        </Text>
                      </children>
                   </HBox>
                   <HBox prefHeight="0.0" prefWidth="233.0">
@@ -71,7 +71,7 @@
                            </HBox.margin></Button>
                      </children>
                   </HBox>
-                  <Label prefHeight="20.0" prefWidth="76.0" text="Advance Rate" />
+                  <Label fx:id="LabelRR" disable="true" prefHeight="17.0" prefWidth="122.0" text="Max Advance Rate" />
                   <TextField fx:id="RunRate" disable="true" promptText="10" />
                   <Text fx:id="TimeStep" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Step : 0">
                      <VBox.margin>

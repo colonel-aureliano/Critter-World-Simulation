@@ -25,6 +25,17 @@ public class ControllerImpl implements Controller {
 
     @Override
     public void newWorld() {
+        randomWorld();
+        w.loadParams(false, false);
+    }
+
+    @Override
+    public void newWorld(boolean enableManna, boolean enableForcedMutation) {
+        randomWorld();
+        w.loadParams(enableManna, enableForcedMutation);
+    }
+
+    private void randomWorld() {
         w = new World(Constants.WIDTH, Constants.HEIGHT, "Default World");
         int n = 20; // putting 20 rocks into world
         while (n > 0) {
@@ -32,7 +43,6 @@ public class ControllerImpl implements Controller {
             w.addRock(t[0], t[1]);
             n--;
         }
-        w.loadParams(false, false);
     }
 
     @Override

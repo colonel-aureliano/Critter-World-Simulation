@@ -66,6 +66,8 @@ public class View extends Application {
     @FXML
     private Button Stop;
     @FXML
+    private Label LabelRR;
+    @FXML
     private TextField RunRate;
     @FXML
     private Button ZoomIn;
@@ -227,8 +229,21 @@ public class View extends Application {
     }
 
     @FXML
+    private void randomWorld(final ActionEvent ae) {
+        selectedFile = null;
+        EnforceManna.setDisable(false);
+        EnforceMutation.setDisable(false);
+        SubmitWorld.setDisable(false);
+        WorldName.setText("Random World");
+    }
+
+    @FXML
     private void SubmitWorld(final ActionEvent ae) {
-        if (controller.loadWorld(selectedFile.getAbsolutePath(),
+        if (selectedFile == null) {
+            controller.newWorld(EnforceManna.isSelected(), EnforceMutation.isSelected());
+            newWorld();
+        }
+        else if (controller.loadWorld(selectedFile.getAbsolutePath(),
                 EnforceManna.isSelected(), EnforceMutation.isSelected())) {
             newWorld();
         } else {
@@ -239,15 +254,6 @@ public class View extends Application {
         EnforceManna.setDisable(true);
         EnforceMutation.setDisable(true);
         SubmitWorld.setDisable(true);
-    }
-
-    @FXML
-    private void randomWorld(final ActionEvent ae) {
-        controller.newWorld();
-        EnforceManna.setSelected(false);
-        EnforceMutation.setSelected(false);
-        WorldName.setText("");
-        newWorld();
     }
 
     private void newWorld() {
@@ -264,6 +270,7 @@ public class View extends Application {
             Play.setDisable(false);
             PlayOnce.setDisable(false);
             Stop.setDisable(false);
+            LabelRR.setDisable(false);
             RunRate.setDisable(false);
             ZoomOut.setDisable(false);
             ZoomIn.setDisable(false);
@@ -304,8 +311,17 @@ public class View extends Application {
             nStr = "1";
         }
         int n;
-        if (!nStr.matches("[0-9]+")) n = 1;
-        else n = Math.max(1, Integer.valueOf(nStr));
+        if (!nStr.matches("[0-9]+")) {
+            n = 1;
+            a.setContentText("One critter will be loaded. Please enter number only.");
+            a.show();
+        }
+        else n = Integer.valueOf(nStr);
+        if (n < 1) {
+            n = 1;
+            a.setContentText("One critter will be loaded. Please enter positive values");
+            a.show();
+        }
         if (controller.loadCritters(selectedFile.getAbsolutePath(), n)) {
             CritterName.setText(selectedFile.getName());
         } else {
@@ -328,6 +344,7 @@ public class View extends Application {
         RandomWorld.setDisable(true);
         LoadCritter.setDisable(true);
         PlayOnce.setDisable(true);
+        LabelRR.setDisable(true);
         RunRate.setDisable(true);
         SelectLocation.setDisable(true);
 
@@ -353,7 +370,7 @@ public class View extends Application {
 
     int advanceRate = 30;
     long timeSince;
-    double animTime;
+    double animTime = Math.pow(10, 9) / 30;
     boolean exit;
     Timer timer = new Timer();;
 
@@ -378,7 +395,6 @@ public class View extends Application {
     }
 
     private void playHelper() {
-        animTime = Math.pow(10, 9) / 30;
         pointer = newTT();
         timer.schedule(pointer, 0, (1000 / advanceRate));
     }
@@ -391,6 +407,7 @@ public class View extends Application {
         RandomWorld.setDisable(false);
         LoadCritter.setDisable(false);
         PlayOnce.setDisable(false);
+        LabelRR.setDisable(false);
         RunRate.setDisable(false);
         SelectLocation.setDisable(false);
         exit = true;

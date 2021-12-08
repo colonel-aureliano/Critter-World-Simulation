@@ -20,6 +20,9 @@ public interface Controller {
     /** Starts new random world simulation. */
     void newWorld();
 
+    /** Start new random world simulation with Manna and Mutation. */
+    void newWorld(boolean enableManna, boolean enableForcedMutation);
+
     /**
      * Starts new simulation with world specified in filename.
      *
