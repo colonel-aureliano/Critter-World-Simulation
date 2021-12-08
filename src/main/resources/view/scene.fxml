@@ -23,7 +23,7 @@
                         <Button fx:id="LoadWorld" mnemonicParsing="false" onAction="#loadWorld" text="Load World" />
                         <Button fx:id="RandomWorld" mnemonicParsing="false" onAction="#randomWorld" text="Random World">
                            <HBox.margin>
-                              <Insets left="10.0" />
+                              <Insets left="5.0" />
                            </HBox.margin>
                         </Button>
                      </children>
@@ -63,11 +63,11 @@
                         <Button fx:id="PlayOnce" disable="true" mnemonicParsing="false" onAction="#playOnce" text="Play Once" />
                         <Button fx:id="Play" disable="true" mnemonicParsing="false" onAction="#play" text="Play ">
                            <HBox.margin>
-                              <Insets left="10.0" />
+                              <Insets left="5.0" />
                            </HBox.margin></Button>
                         <Button fx:id="Stop" disable="true" mnemonicParsing="false" onAction="#stop" text="Stop">
                            <HBox.margin>
-                              <Insets left="10.0" />
+                              <Insets left="5.0" />
                            </HBox.margin></Button>
                      </children>
                   </HBox>

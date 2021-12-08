@@ -231,10 +231,10 @@ public class View extends Application {
     @FXML
     private void randomWorld(final ActionEvent ae) {
         selectedFile = null;
+        WorldName.setText("Random World");
         EnforceManna.setDisable(false);
         EnforceMutation.setDisable(false);
         SubmitWorld.setDisable(false);
-        WorldName.setText("Random World");
     }
 
     @FXML
