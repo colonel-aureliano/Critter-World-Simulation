@@ -106,7 +106,7 @@ public class View extends Application {
                 System.out.println("No FXML resource found.");
                 try {
                     stop();
-                } catch (final Exception e) {
+                } catch (final Exception ignored) {
                 }
                 return;
             }
@@ -120,7 +120,7 @@ public class View extends Application {
             e.printStackTrace();
             try {
                 stop();
-            } catch (final Exception e2) {
+            } catch (final Exception ignored) {
             }
         }
     }
@@ -165,7 +165,7 @@ public class View extends Application {
                     try {
                         ReadOnlyCritter c = w.getReadOnlyCritter(i, j).get();
                         Paint p;
-                        if (species.indexOf(c.getSpecies()) == -1) {
+                        if (!species.contains(c.getSpecies())) {
                             p = Color.color(Math.random(), Math.random(), Math.random());
                             species.add(c.getSpecies());
                             paints.add(p);
@@ -192,7 +192,7 @@ public class View extends Application {
                             gc.setLineWidth(2);
                             gc.strokePolygon(smallX(x), smallY(y), 6);
                         }
-                    } catch (NoMaybeValue e) {
+                    } catch (NoMaybeValue ignored) {
                     }
                 }
             }
@@ -216,7 +216,7 @@ public class View extends Application {
     }
 
     @FXML
-    private void loadWorld(final ActionEvent ae) {
+    private void loadWorld() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open World File");
         fileChooser.getExtensionFilters().addAll(
@@ -229,7 +229,7 @@ public class View extends Application {
     }
 
     @FXML
-    private void randomWorld(final ActionEvent ae) {
+    private void randomWorld() {
         selectedFile = null;
         WorldName.setText("Random World");
         EnforceManna.setDisable(false);
@@ -238,7 +238,7 @@ public class View extends Application {
     }
 
     @FXML
-    private void SubmitWorld(final ActionEvent ae) {
+    private void SubmitWorld() {
         if (selectedFile == null) {
             controller.newWorld(EnforceManna.isSelected(), EnforceMutation.isSelected());
             newWorld();
@@ -278,7 +278,7 @@ public class View extends Application {
     }
 
     @FXML
-    private void loadCritter(final ActionEvent ae) {
+    private void loadCritter() {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Critter File");
@@ -316,7 +316,7 @@ public class View extends Application {
             a.setContentText("One critter will be loaded. Please enter number only.");
             a.show();
         }
-        else n = Integer.valueOf(nStr);
+        else n = Integer.parseInt(nStr);
         if (n < 1) {
             n = 1;
             a.setContentText("One critter will be loaded. Please enter positive values");
@@ -333,13 +333,13 @@ public class View extends Application {
     }
 
     @FXML
-    private void playOnce(final ActionEvent ae) {
+    private void playOnce() {
         controller.advanceTime(1);
         drawHex();
     }
 
     @FXML
-    private void play(final ActionEvent ae) {
+    private void play() {
         LoadWorld.setDisable(true);
         RandomWorld.setDisable(true);
         LoadCritter.setDisable(true);
@@ -353,7 +353,7 @@ public class View extends Application {
         if(nStr.equals("")) n = 10;
         else {
             try {
-                n = Integer.valueOf(nStr);
+                n = Integer.parseInt(nStr);
             } catch (NumberFormatException e) {
                 n = 0;
             }
@@ -372,26 +372,22 @@ public class View extends Application {
     long timeSince;
     double animTime = Math.pow(10, 9) / 30;
     boolean exit;
-    Timer timer = new Timer();;
+    Timer timer = new Timer();
 
     private TimerTask newTT() {
-        TimerTask tt = new TimerTask() {
+        return new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (exit == true) return;
-                        controller.advanceTime(1);
-                        if (System.nanoTime() - timeSince > animTime) {
-                            drawHex();
-                            timeSince = System.nanoTime();
-                        }
+                Platform.runLater(() -> {
+                    if (exit) return;
+                    controller.advanceTime(1);
+                    if (System.nanoTime() - timeSince > animTime) {
+                        drawHex();
+                        timeSince = System.nanoTime();
                     }
                 });
             }
         };
-        return tt;
     }
 
     private void playHelper() {
@@ -502,10 +498,8 @@ public class View extends Application {
             canvas.setWidth(canvas.getWidth() * 0.8);
             canvas.setHeight(canvas.getHeight() * 0.8);
         }
-        if (scale > 10) ZoomIn.setDisable(true);
-        else ZoomIn.setDisable(false);
-        if (scale < 0.1) ZoomOut.setDisable(true);
-        else ZoomOut.setDisable(false);
+        ZoomIn.setDisable(scale > 10);
+        ZoomOut.setDisable(scale < 0.1);
         drawHex();
     }
 }
