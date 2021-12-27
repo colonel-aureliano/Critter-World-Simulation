@@ -272,16 +272,16 @@ public class World extends ROnlyWorld implements CritterObserver {
     }
 
     private int closestFoodOnBranch(int[] info, int distance) {
-        if (distance > 10 || getTerrainInfo(info[0], info[1]) == -1) return -1;
+        if (distance > Constants.MAX_SMELL_DISTANCE || !HexIsEmpty(info[0],info[1])) return -1;
         int f = frontSearch(info);
         if (f != -1) {
             int temp = f == 5 ? 1 : f;
+            if (temp != 0 && distance==Constants.MAX_SMELL_DISTANCE) return -1;
             return temp + distance;
         }
 
         // no food immediately in front
         distance += 1;
-        //PriorityQueue<Integer> pq = new PriorityQueue<>();
         int currentMin = Integer.MAX_VALUE;
         for (int i : new int[]{0, 1, 5}) {
             int[] newInfo = infoAfterForward(info, i);
@@ -374,6 +374,17 @@ public class World extends ROnlyWorld implements CritterObserver {
                 break;
         }
         return false;
+    }
+
+    private boolean HexIsEmpty(int c, int r){
+        if ((c+r) % 2 == 1) return false; // invalid location
+        try {
+            int i = map[c][r];
+            if (i==0) return true;
+            return false;
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
     }
 
     /**
